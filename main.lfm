@@ -1,0 +1,93 @@
+object fMian: TfMian
+  Left = 273
+  Height = 380
+  Top = 233
+  Width = 728
+  Caption = 'Lpro - Checking of installed programs licenses'
+  ClientHeight = 360
+  ClientWidth = 728
+  Menu = MainMenu1
+  OnCreate = FormCreate
+  LCLVersion = '1.6.0.4'
+  object StringGrid1: TStringGrid
+    Left = 0
+    Height = 360
+    Top = 0
+    Width = 728
+    Color = clDefault
+    FixedCols = 0
+    Font.CharSet = ANSI_CHARSET
+    Font.Height = -13
+    Font.Name = 'Times New Roman'
+    Font.Pitch = fpVariable
+    Font.Quality = fqDraft
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goThumbTracking, goSmoothScroll]
+    ParentFont = False
+    RowCount = 1
+    TabOrder = 0
+    TitleFont.CharSet = ANSI_CHARSET
+    TitleFont.Height = -13
+    TitleFont.Name = 'Times New Roman'
+    TitleFont.Pitch = fpVariable
+    TitleFont.Quality = fqDraft
+    OnDrawCell = StringGrid1DrawCell
+  end
+  object MainMenu1: TMainMenu
+    left = 488
+    top = 200
+    object mFile: TMenuItem
+      Caption = 'File'
+      object mExit: TMenuItem
+        Caption = 'Exit'
+        OnClick = mExitClick
+      end
+    end
+    object mSearch: TMenuItem
+      Caption = 'Search'
+      object mBeginSerch: TMenuItem
+        Caption = 'Start search'
+        OnClick = mBeginSerchClick
+      end
+    end
+    object mVid: TMenuItem
+      Caption = 'View'
+      object mShrift: TMenuItem
+        Caption = 'Font'
+        OnClick = mShriftClick
+      end
+      object mSort00: TMenuItem
+        Caption = 'Sort by name'
+        OnClick = mSort00Click
+      end
+      object mSort01: TMenuItem
+        Caption = 'Sort by type'
+        OnClick = mSort01Click
+      end
+      object mSort02: TMenuItem
+        Caption = 'Sort by license'
+        OnClick = mSort02Click
+      end
+      object mSort03: TMenuItem
+        Caption = 'Sort by cost'
+        OnClick = mSort03Click
+      end
+      object mSort04: TMenuItem
+        Caption = 'Sort by replacement'
+        OnClick = mSort04Click
+      end
+    end
+    object mSpravka: TMenuItem
+      Caption = 'Help'
+      object mAbout: TMenuItem
+        Caption = 'About'
+        OnClick = mAboutClick
+      end
+    end
+  end
+  object FD: TFontDialog
+    MinFontSize = 0
+    MaxFontSize = 0
+    left = 245
+    top = 113
+  end
+end
