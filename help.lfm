@@ -1,0 +1,64 @@
+object fHelp: TfHelp
+  Left = 262
+  Height = 508
+  Top = 264
+  Width = 890
+  Caption = 'Справка'
+  ClientHeight = 508
+  ClientWidth = 890
+  OnCreate = FormCreate
+  Position = poMainFormCenter
+  LCLVersion = '1.6.0.4'
+  object IpHtmlPanel1: TIpHtmlPanel
+    Left = 200
+    Height = 513
+    Top = 0
+    Width = 687
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    DataProvider = IpFileDataProvider1
+    FixedTypeface = 'Times New Roman'
+    DefaultTypeFace = 'default'
+    DefaultFontSize = 12
+    FlagErrors = False
+    PrintSettings.MarginLeft = 0.5
+    PrintSettings.MarginTop = 0.5
+    PrintSettings.MarginRight = 0.5
+    PrintSettings.MarginBottom = 0.5
+    TabOrder = 0
+  end
+  object RGrazdeli: TRadioGroup
+    Left = 8
+    Height = 201
+    Top = 0
+    Width = 185
+    AutoFill = True
+    Caption = 'Разделы'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 181
+    ClientWidth = 181
+    ItemIndex = 0
+    Items.Strings = (
+      'Возможности'
+      'Назначение и актуальность'
+      'Типы лицензий программ'
+      'Автоматический поиск'
+      'Ручной поиск'
+      'Установленное ПО'
+      'Поиск в базе'
+      'Подбор замены'
+      'Возможные ошибки'
+    )
+    OnSelectionChanged = RGrazdeliSelectionChanged
+    TabOrder = 1
+  end
+  object IpFileDataProvider1: TIpFileDataProvider
+    left = 80
+    top = 248
+  end
+end

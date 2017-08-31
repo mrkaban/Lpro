@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectSession>
+    <PathDelim Value="\"/>
+    <Version Value="9"/>
+    <BuildModes Active="Default"/>
+    <Units Count="2">
+      <Unit0>
+        <Filename Value="updproj.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="-1"/>
+        <UsageCount Value="23"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="update.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="fUpdate"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="Update"/>
+        <IsVisibleTab Value="True"/>
+        <TopLine Value="114"/>
+        <CursorPos X="92" Y="130"/>
+        <UsageCount Value="23"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit1>
+    </Units>
+    <JumpHistory Count="7" HistoryIndex="6">
+      <Position1>
+        <Filename Value="update.pas"/>
+        <Caret Line="71" Column="90" TopLine="55"/>
+      </Position1>
+      <Position2>
+        <Filename Value="update.pas"/>
+        <Caret Line="59" Column="4" TopLine="44"/>
+      </Position2>
+      <Position3>
+        <Filename Value="update.pas"/>
+        <Caret Line="127" Column="96" TopLine="157"/>
+      </Position3>
+      <Position4>
+        <Filename Value="update.pas"/>
+        <Caret Line="147" Column="21" TopLine="132"/>
+      </Position4>
+      <Position5>
+        <Filename Value="update.pas"/>
+        <Caret Line="148" Column="31" TopLine="133"/>
+      </Position5>
+      <Position6>
+        <Filename Value="update.pas"/>
+        <Caret Line="128" Column="117" TopLine="112"/>
+      </Position6>
+      <Position7>
+        <Filename Value="update.pas"/>
+        <Caret Line="129" Column="117" TopLine="113"/>
+      </Position7>
+    </JumpHistory>
+  </ProjectSession>
+</CONFIG>

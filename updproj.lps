@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <ProjectSession>
+    <PathDelim Value="\"/>
+    <Version Value="10"/>
+    <BuildModes Active="Default"/>
+    <Units Count="3">
+      <Unit0>
+        <Filename Value="updproj.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <EditorIndex Value="-1"/>
+        <UsageCount Value="23"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="update.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="fUpdate"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="Update"/>
+        <IsVisibleTab Value="True"/>
+        <TopLine Value="111"/>
+        <CursorPos X="24" Y="137"/>
+        <UsageCount Value="23"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="main.pas"/>
+        <UnitName Value="Main"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="842"/>
+        <CursorPos X="3" Y="865"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit2>
+    </Units>
+    <JumpHistory Count="7" HistoryIndex="6">
+      <Position1>
+        <Filename Value="main.pas"/>
+        <Caret Line="18" Column="21" TopLine="10"/>
+      </Position1>
+      <Position2>
+        <Filename Value="main.pas"/>
+        <Caret Line="90" Column="31" TopLine="59"/>
+      </Position2>
+      <Position3>
+        <Filename Value="main.pas"/>
+        <Caret Line="429" Column="12" TopLine="406"/>
+      </Position3>
+      <Position4>
+        <Filename Value="update.pas"/>
+        <Caret Line="121" Column="53" TopLine="114"/>
+      </Position4>
+      <Position5>
+        <Filename Value="update.pas"/>
+        <Caret Line="133" Column="89" TopLine="85"/>
+      </Position5>
+      <Position6>
+        <Filename Value="update.pas"/>
+        <Caret Line="71" TopLine="134"/>
+      </Position6>
+      <Position7>
+        <Filename Value="update.pas"/>
+        <Caret Line="185" Column="62" TopLine="168"/>
+      </Position7>
+    </JumpHistory>
+  </ProjectSession>
+</CONFIG>

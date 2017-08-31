@@ -1,0 +1,2038 @@
+object fPodborZameni: TfPodborZameni
+  Left = 251
+  Height = 260
+  Top = 527
+  Width = 812
+  BorderStyle = bsToolWindow
+  Caption = 'Подбор свободно-распространяемой замены'
+  ClientHeight = 260
+  ClientWidth = 812
+  OnCreate = FormCreate
+  LCLVersion = '1.6.2.0'
+  object bCDDVD: TButton
+    Left = 24
+    Height = 25
+    Top = 40
+    Width = 67
+    Caption = 'CD и DVD'
+    OnClick = bCDDVDClick
+    TabOrder = 0
+  end
+  object vCdZapis: TButton
+    Left = 24
+    Height = 25
+    Top = 80
+    Width = 75
+    Caption = 'Запись'
+    OnClick = vCdZapisClick
+    TabOrder = 1
+  end
+  object bCdProch: TButton
+    Left = 112
+    Height = 25
+    Top = 80
+    Width = 75
+    Caption = 'Прочее'
+    OnClick = bCdProchClick
+    TabOrder = 2
+  end
+  object bBezopasnost: TButton
+    Left = 104
+    Height = 25
+    Top = 40
+    Width = 88
+    Caption = 'Безопасность'
+    OnClick = bBezopasnostClick
+    TabOrder = 3
+  end
+  object bCdZapKomleks: TButton
+    Left = 24
+    Height = 25
+    Top = 128
+    Width = 163
+    Caption = 'Комплексная программа'
+    OnClick = bCdZapKomleksClick
+    TabOrder = 4
+  end
+  object lProgramName: TLabel
+    Left = 362
+    Height = 23
+    Top = 218
+    Width = 187
+    Caption = 'Название программы'
+    Font.CharSet = RUSSIAN_CHARSET
+    Font.Height = -21
+    Font.Name = 'Times New Roman'
+    Font.Pitch = fpVariable
+    Font.Quality = fqDraft
+    ParentColor = False
+    ParentFont = False
+  end
+  object bSkachat: TButton
+    Left = 221
+    Height = 25
+    Top = 216
+    Width = 128
+    Caption = 'Посмотреть на сайте'
+    OnClick = bSkachatClick
+    TabOrder = 5
+  end
+  object bCdProchIsoEm: TButton
+    Left = 24
+    Height = 25
+    Top = 128
+    Width = 96
+    Caption = 'ISO эмулятор'
+    OnClick = bCdProchIsoEmClick
+    TabOrder = 6
+  end
+  object bCdProchDvdmenu: TButton
+    Left = 136
+    Height = 25
+    Top = 128
+    Width = 216
+    Caption = 'Создание DVD меню (DVD-авторинг)'
+    OnClick = bCdProchDvdmenuClick
+    TabOrder = 7
+  end
+  object bCdProchVossdan: TButton
+    Left = 360
+    Height = 25
+    Top = 128
+    Width = 360
+    Caption = 'Восстановление данных с повреждённого оптического диска'
+    OnClick = bCdProchVossdanClick
+    TabOrder = 8
+  end
+  object bBezAv: TButton
+    Left = 24
+    Height = 25
+    Top = 80
+    Width = 75
+    Caption = 'Антивирус'
+    OnClick = bBezAvClick
+    TabOrder = 9
+  end
+  object bBezAvSprover: TButton
+    Left = 32
+    Height = 25
+    Top = 128
+    Width = 203
+    Caption = 'С проверкой в реальном времени'
+    OnClick = bBezAvSproverClick
+    TabOrder = 10
+  end
+  object bBezAvBezprover: TButton
+    Left = 256
+    Height = 25
+    Top = 128
+    Width = 224
+    Caption = 'Без проверкой в реальном времени'
+    OnClick = bBezAvBezproverClick
+    TabOrder = 11
+  end
+  object bBezRezKop: TButton
+    Left = 112
+    Height = 25
+    Top = 80
+    Width = 147
+    Caption = 'Резервное копирование'
+    OnClick = bBezRezKopClick
+    TabOrder = 12
+  end
+  object bBezRezkopDomKomp: TButton
+    Left = 32
+    Height = 25
+    Top = 128
+    Width = 152
+    Caption = 'Домашний компьютер'
+    OnClick = bBezRezkopDomKompClick
+    TabOrder = 13
+  end
+  object bBezRezkopRabkomp: TButton
+    Left = 192
+    Height = 25
+    Top = 128
+    Width = 136
+    Caption = 'Рабочий компьютер'
+    OnClick = bBezRezkopRabkompClick
+    TabOrder = 14
+  end
+  object bBezShifr: TButton
+    Left = 272
+    Height = 25
+    Top = 80
+    Width = 99
+    Caption = 'Шифрование'
+    OnClick = bBezShifrClick
+    TabOrder = 15
+  end
+  object bBezShifrFile: TButton
+    Left = 24
+    Height = 25
+    Top = 128
+    Width = 104
+    Caption = 'Файлы и папки'
+    OnClick = bBezShifrFileClick
+    TabOrder = 16
+  end
+  object bBezShifrHdd: TButton
+    Left = 136
+    Height = 25
+    Top = 128
+    Width = 104
+    Caption = 'Жесткий диск'
+    OnClick = bBezShifrHddClick
+    TabOrder = 17
+  end
+  object bBezParol: TButton
+    Left = 384
+    Height = 25
+    Top = 80
+    Width = 75
+    Caption = 'Пароли'
+    OnClick = bBezParolClick
+    TabOrder = 18
+  end
+  object bBezParolHranPar: TButton
+    Left = 24
+    Height = 25
+    Top = 128
+    Width = 104
+    Caption = 'Хранить пароли'
+    OnClick = bBezParolHranParClick
+    TabOrder = 19
+  end
+  object bBezParolSozdpar: TButton
+    Left = 136
+    Height = 25
+    Top = 128
+    Width = 112
+    Caption = 'Создать пароль'
+    OnClick = bBezParolSozdparClick
+    TabOrder = 20
+  end
+  object bBezProch: TButton
+    Left = 472
+    Height = 25
+    Top = 80
+    Width = 75
+    Caption = 'Прочее'
+    OnClick = bBezProchClick
+    TabOrder = 21
+  end
+  object bBezProchAnonbrow: TButton
+    Left = 24
+    Height = 25
+    Top = 128
+    Width = 128
+    Caption = 'Анонимный браузер'
+    OnClick = bBezProchAnonbrowClick
+    TabOrder = 22
+  end
+  object bBezProchFiltr: TButton
+    Left = 160
+    Height = 25
+    Top = 128
+    Width = 232
+    Caption = 'Фильтр соединений по черному списку'
+    OnClick = bBezProchFiltrClick
+    TabOrder = 23
+  end
+  object bBezProchMonIzmFile: TButton
+    Left = 400
+    Height = 25
+    Top = 128
+    Width = 200
+    Caption = 'Мониторинг изменений файлов'
+    OnClick = bBezProchMonIzmFileClick
+    TabOrder = 24
+  end
+  object bBezProchBezdel: TButton
+    Left = 608
+    Height = 25
+    Top = 128
+    Width = 144
+    Caption = 'Безопасное удаление'
+    OnClick = bBezProchBezdelClick
+    TabOrder = 25
+  end
+  object bGraf: TButton
+    Left = 200
+    Height = 25
+    Top = 40
+    Width = 64
+    Caption = 'Графика'
+    OnClick = bGrafClick
+    TabOrder = 26
+  end
+  object bGrafGrafedit: TButton
+    Left = 24
+    Height = 25
+    Top = 80
+    Width = 144
+    Caption = 'Графические редакторы'
+    OnClick = bGrafGrafeditClick
+    TabOrder = 27
+  end
+  object bGrafGrafeditVector: TButton
+    Left = 24
+    Height = 25
+    Top = 128
+    Width = 123
+    Caption = 'Векторный редактор'
+    OnClick = bGrafGrafeditVectorClick
+    TabOrder = 28
+  end
+  object bGrafGrafeditRedfot: TButton
+    Left = 160
+    Height = 25
+    Top = 128
+    Width = 136
+    Caption = 'Редактор фотографий'
+    OnClick = bGrafGrafeditRedfotClick
+    TabOrder = 29
+  end
+  object bGrafGrafeditRedico: TButton
+    Left = 304
+    Height = 25
+    Top = 128
+    Width = 104
+    Caption = 'Редактор иконок'
+    OnClick = bGrafGrafeditRedicoClick
+    TabOrder = 30
+  end
+  object bGrafGrafeditRedkart: TButton
+    Left = 416
+    Height = 25
+    Top = 128
+    Width = 115
+    Caption = 'Редактор картинок'
+    OnClick = bGrafGrafeditRedkartClick
+    TabOrder = 31
+  end
+  object bGrafGrafeditIzdsys: TButton
+    Left = 536
+    Height = 25
+    Top = 128
+    Width = 139
+    Caption = 'Издательская система'
+    OnClick = bGrafGrafeditIzdsysClick
+    TabOrder = 32
+  end
+  object bGrafSapr: TButton
+    Left = 176
+    Height = 25
+    Top = 80
+    Width = 48
+    Caption = 'САПР'
+    OnClick = bGrafSaprClick
+    TabOrder = 33
+  end
+  object bGrafSaprSolveSpace: TButton
+    Left = 24
+    Height = 25
+    Top = 128
+    Width = 72
+    Caption = 'SolveSpace'
+    OnClick = bGrafSaprSolveSpaceClick
+    TabOrder = 34
+  end
+  object bGrafSaprFreeCAD: TButton
+    Left = 104
+    Height = 25
+    Top = 128
+    Width = 56
+    Caption = 'FreeCAD'
+    OnClick = bGrafSaprFreeCADClick
+    TabOrder = 35
+  end
+  object bGrafSaprNaroCAD: TButton
+    Left = 168
+    Height = 25
+    Top = 128
+    Width = 64
+    Caption = 'NaroCAD'
+    OnClick = bGrafSaprNaroCADClick
+    TabOrder = 36
+  end
+  object bGrafSaprBRLCAD: TButton
+    Left = 237
+    Height = 25
+    Top = 128
+    Width = 59
+    Caption = 'BRL-CAD'
+    OnClick = bGrafSaprBRLCADClick
+    TabOrder = 37
+  end
+  object bGrafSaprLibreCAD: TButton
+    Left = 304
+    Height = 25
+    Top = 128
+    Width = 64
+    Caption = 'LibreCAD'
+    OnClick = bGrafSaprLibreCADClick
+    TabOrder = 38
+  end
+  object bGrafSaprKiCad: TButton
+    Left = 376
+    Height = 25
+    Top = 128
+    Width = 48
+    Caption = 'KiCad'
+    OnClick = bGrafSaprKiCadClick
+    TabOrder = 39
+  end
+  object bGrafSaprQucs: TButton
+    Left = 432
+    Height = 25
+    Top = 128
+    Width = 48
+    Caption = 'Qucs'
+    OnClick = bGrafSaprQucsClick
+    TabOrder = 40
+  end
+  object bGraf2D: TButton
+    Left = 232
+    Height = 25
+    Top = 80
+    Width = 96
+    Caption = '2D анимация'
+    OnClick = bGraf2DClick
+    TabOrder = 41
+  end
+  object bGraf2DPencil2d: TButton
+    Left = 24
+    Height = 25
+    Top = 128
+    Width = 64
+    Caption = 'Pencil2D'
+    OnClick = bGraf2DPencil2dClick
+    TabOrder = 42
+  end
+  object bGraf2DPencil: TButton
+    Left = 96
+    Height = 25
+    Top = 128
+    Width = 64
+    Caption = 'Pencil'
+    OnClick = bGraf2DPencilClick
+    TabOrder = 43
+  end
+  object bGraf2DTupi: TButton
+    Left = 173
+    Height = 25
+    Top = 128
+    Width = 51
+    Caption = 'Tupi'
+    OnClick = bGraf2DTupiClick
+    TabOrder = 44
+  end
+  object bGraf2DSynfigStudio: TButton
+    Left = 240
+    Height = 25
+    Top = 128
+    Width = 88
+    Caption = 'Synfig Studio'
+    OnClick = bGraf2DSynfigStudioClick
+    TabOrder = 45
+  end
+  object bGraf3D: TButton
+    Left = 336
+    Height = 25
+    Top = 80
+    Width = 128
+    Caption = '3D моделирование'
+    OnClick = bGraf3DClick
+    TabOrder = 46
+  end
+  object bGraf3DMakeHuman: TButton
+    Left = 24
+    Height = 25
+    Top = 128
+    Width = 88
+    Caption = 'MakeHuman'
+    OnClick = bGraf3DMakeHumanClick
+    TabOrder = 47
+  end
+  object bGraf3DSeamless3d: TButton
+    Left = 125
+    Height = 25
+    Top = 128
+    Width = 75
+    Caption = 'Seamless3d'
+    OnClick = bGraf3DSeamless3dClick
+    TabOrder = 48
+  end
+  object bGraf3DOpenFX: TButton
+    Left = 208
+    Height = 25
+    Top = 128
+    Width = 64
+    Caption = 'OpenFX'
+    OnClick = bGraf3DOpenFXClick
+    TabOrder = 49
+  end
+  object bGraf3DK3D: TButton
+    Left = 280
+    Height = 25
+    Top = 128
+    Width = 51
+    Caption = 'K-3D'
+    OnClick = bGraf3DK3DClick
+    TabOrder = 50
+  end
+  object bGraf3DArtofIllusion: TButton
+    Left = 336
+    Height = 25
+    Top = 128
+    Width = 75
+    Caption = 'Art of Illusion'
+    OnClick = bGraf3DArtofIllusionClick
+    TabOrder = 51
+  end
+  object bGraf3DBlender: TButton
+    Left = 416
+    Height = 25
+    Top = 128
+    Width = 64
+    Caption = 'Blender'
+    OnClick = bGraf3DBlenderClick
+    TabOrder = 52
+  end
+  object bGraf3DSweetHome3D: TButton
+    Left = 488
+    Height = 25
+    Top = 128
+    Width = 104
+    Caption = 'Sweet Home 3D'
+    OnClick = bGraf3DSweetHome3DClick
+    TabOrder = 53
+  end
+  object bGrafProsmotr: TButton
+    Left = 472
+    Height = 25
+    Top = 80
+    Width = 75
+    Caption = 'Просмотр'
+    OnClick = bGrafProsmotrClick
+    TabOrder = 54
+  end
+  object bGrafProsmotrNomacs: TButton
+    Left = 24
+    Height = 25
+    Top = 128
+    Width = 136
+    Caption = 'nomacs Image Lounge'
+    OnClick = bGrafProsmotrNomacsClick
+    TabOrder = 55
+  end
+  object bGrafProsmotrAdvancedPhoto: TButton
+    Left = 168
+    Height = 25
+    Top = 128
+    Width = 104
+    Caption = 'Advanced Photo'
+    OnClick = bGrafProsmotrAdvancedPhotoClick
+    TabOrder = 56
+  end
+  object bGrafProsmotrJMG: TButton
+    Left = 280
+    Height = 25
+    Top = 128
+    Width = 112
+    Caption = 'JMG Photo Printer'
+    OnClick = bGrafProsmotrJMGClick
+    TabOrder = 57
+  end
+  object bGrafProsmotrImageGlass: TButton
+    Left = 408
+    Height = 25
+    Top = 128
+    Width = 75
+    Caption = 'ImageGlass'
+    OnClick = bGrafProsmotrImageGlassClick
+    TabOrder = 58
+  end
+  object bGrafPreobr: TButton
+    Left = 560
+    Height = 25
+    Top = 80
+    Width = 107
+    Caption = 'Преобразование'
+    OnClick = bGrafPreobrClick
+    TabOrder = 59
+  end
+  object bGrafPreobrCaesium: TButton
+    Left = 24
+    Height = 25
+    Top = 128
+    Width = 75
+    Caption = 'Caesium'
+    OnClick = bGrafPreobrCaesiumClick
+    TabOrder = 60
+  end
+  object bGrafPreobrConverseen: TButton
+    Left = 109
+    Height = 25
+    Top = 128
+    Width = 83
+    Caption = 'Converseen'
+    OnClick = bGrafPreobrConverseenClick
+    TabOrder = 61
+  end
+  object bGrafPreobrSIET: TButton
+    Left = 208
+    Height = 25
+    Top = 128
+    Width = 51
+    Caption = 'SIET'
+    OnClick = bGrafPreobrSIETClick
+    TabOrder = 62
+  end
+  object bDrugie: TButton
+    Left = 272
+    Height = 25
+    Top = 40
+    Width = 56
+    Caption = 'Другие'
+    OnClick = bDrugieClick
+    TabOrder = 63
+  end
+  object bDrugieObr: TButton
+    Left = 24
+    Height = 25
+    Top = 80
+    Width = 128
+    Caption = 'Образование, наука'
+    OnClick = bDrugieObrClick
+    TabOrder = 64
+  end
+  object bDrugieObrMnemosyne: TButton
+    Left = 21
+    Height = 25
+    Top = 128
+    Width = 166
+    Caption = 'Интервальное повторение'
+    OnClick = bDrugieObrMnemosyneClick
+    TabOrder = 65
+  end
+  object bDrugieObrMaxima: TButton
+    Left = 197
+    Height = 25
+    Top = 128
+    Width = 219
+    Caption = 'Система аналитических вычислений'
+    OnClick = bDrugieObrMaximaClick
+    TabOrder = 66
+  end
+  object bDrugieObriTest: TButton
+    Left = 424
+    Height = 25
+    Top = 128
+    Width = 144
+    Caption = 'Тестирование учащихся'
+    OnClick = bDrugieObriTestClick
+    TabOrder = 67
+  end
+  object bDrugieObrScilab: TButton
+    Left = 21
+    Height = 25
+    Top = 168
+    Width = 267
+    Caption = 'Пакет прикладных математических программ'
+    OnClick = bDrugieObrScilabClick
+    TabOrder = 68
+  end
+  object bDrugieObrOpenTeacher: TButton
+    Left = 576
+    Height = 25
+    Top = 128
+    Width = 171
+    Caption = 'Учитель иностранных языков'
+    OnClick = bDrugieObrOpenTeacherClick
+    TabOrder = 69
+  end
+  object bDrugieObrDWSIM: TButton
+    Left = 296
+    Height = 25
+    Top = 168
+    Width = 208
+    Caption = 'Симулятор химических процессов'
+    OnClick = bDrugieObrDWSIMClick
+    TabOrder = 70
+  end
+  object bDrugieVirtpl: TButton
+    Left = 160
+    Height = 25
+    Top = 80
+    Width = 152
+    Caption = 'Виртуальные планетарии'
+    OnClick = bDrugieVirtplClick
+    TabOrder = 71
+  end
+  object bDrugieVirtplSkyChart: TButton
+    Left = 24
+    Height = 25
+    Top = 128
+    Width = 152
+    Caption = 'Sky Chart / Cartes du Ciel'
+    OnClick = bDrugieVirtplSkyChartClick
+    TabOrder = 72
+  end
+  object bDrugieVirtplStellarium: TButton
+    Left = 184
+    Height = 25
+    Top = 128
+    Width = 75
+    Caption = 'Stellarium'
+    OnClick = bDrugieVirtplStellariumClick
+    TabOrder = 73
+  end
+  object bDrugieVirtplCelestia: TButton
+    Left = 269
+    Height = 25
+    Top = 128
+    Width = 62
+    Caption = 'Celestia'
+    OnClick = bDrugieVirtplCelestiaClick
+    TabOrder = 74
+  end
+  object bDrugieKat: TButton
+    Left = 317
+    Height = 25
+    Top = 80
+    Width = 99
+    Caption = 'Каталогизация'
+    OnClick = bDrugieKatClick
+    TabOrder = 75
+  end
+  object bDrugieKatStuffOrganizer: TButton
+    Left = 21
+    Height = 25
+    Top = 128
+    Width = 331
+    Caption = 'Stuff Organizer - Каталогизатор книг, фотографий, музыки'
+    OnClick = bDrugieKatStuffOrganizerClick
+    TabOrder = 76
+  end
+  object bDrugieKatDataCrow: TButton
+    Left = 360
+    Height = 25
+    Top = 128
+    Width = 288
+    Caption = 'Data Crow - Каталогизатор фильмов, фотографий'
+    OnClick = bDrugieKatDataCrowClick
+    TabOrder = 77
+  end
+  object bDrugieKatAntMovieCatalog: TButton
+    Left = 24
+    Height = 25
+    Top = 168
+    Width = 307
+    Caption = 'Ant Movie Catalog - Управление коллекцией фильмов'
+    OnClick = bDrugieKatAntMovieCatalogClick
+    TabOrder = 78
+  end
+  object bDrugieKatGCstar: TButton
+    Left = 341
+    Height = 25
+    Top = 168
+    Width = 203
+    Caption = 'GCstar - Управление коллекциями'
+    OnClick = bDrugieKatGCstarClick
+    TabOrder = 79
+  end
+  object bDrugieZam: TButton
+    Left = 424
+    Height = 25
+    Top = 80
+    Width = 64
+    Caption = 'Заметки'
+    OnClick = bDrugieZamClick
+    TabOrder = 80
+  end
+  object bDrugieZamOutWiker: TButton
+    Left = 24
+    Height = 25
+    Top = 128
+    Width = 75
+    Caption = 'OutWiker'
+    OnClick = bDrugieZamOutWikerClick
+    TabOrder = 81
+  end
+  object bDrugieZamRedNotebook: TButton
+    Left = 109
+    Height = 25
+    Top = 128
+    Width = 99
+    Caption = 'RedNotebook'
+    OnClick = bDrugieZamRedNotebookClick
+    TabOrder = 82
+  end
+  object bDrugieZamPNotes: TButton
+    Left = 216
+    Height = 25
+    Top = 128
+    Width = 72
+    Caption = 'PNotes'
+    OnClick = bDrugieZamPNotesClick
+    TabOrder = 83
+  end
+  object bDrugieZamQQwnNotes: TButton
+    Left = 293
+    Height = 25
+    Top = 128
+    Width = 91
+    Caption = 'QQwnNotes'
+    OnClick = bDrugieZamQQwnNotesClick
+    TabOrder = 84
+  end
+  object bMultim: TButton
+    Left = 336
+    Height = 25
+    Top = 40
+    Width = 88
+    Caption = 'Мультимедиа'
+    OnClick = bMultimClick
+    TabOrder = 85
+  end
+  object bMultimVosp: TButton
+    Left = 24
+    Height = 25
+    Top = 80
+    Width = 112
+    Caption = 'Воспроизведение'
+    OnClick = bMultimVospClick
+    TabOrder = 86
+  end
+  object bMultimVospOnline: TButton
+    Left = 24
+    Height = 25
+    Top = 128
+    Width = 88
+    Caption = 'Онлайн-видео'
+    OnClick = bMultimVospOnlineClick
+    TabOrder = 87
+  end
+  object bMultimVospVideo: TButton
+    Left = 117
+    Height = 25
+    Top = 128
+    Width = 48
+    Caption = 'Видео'
+    OnClick = bMultimVospVideoClick
+    TabOrder = 88
+  end
+  object bMultimVospAudio: TButton
+    Left = 173
+    Height = 25
+    Top = 128
+    Width = 51
+    Caption = 'Аудио'
+    OnClick = bMultimVospAudioClick
+    TabOrder = 89
+  end
+  object bMultimVospMedCentr: TButton
+    Left = 232
+    Height = 25
+    Top = 128
+    Width = 91
+    Caption = 'Медиа-центр'
+    OnClick = bMultimVospMedCentrClick
+    TabOrder = 90
+  end
+  object bMultimEdit: TButton
+    Left = 144
+    Height = 25
+    Top = 80
+    Width = 102
+    Caption = 'Редактирование'
+    OnClick = bMultimEditClick
+    TabOrder = 91
+  end
+  object bMultimEditVlmc: TButton
+    Left = 24
+    Height = 25
+    Top = 128
+    Width = 238
+    Caption = 'VideoLAN Movie Creator - Видео редактор'
+    OnClick = bMultimEditVlmcClick
+    TabOrder = 92
+  end
+  object bMultimEditAvidemux: TButton
+    Left = 269
+    Height = 25
+    Top = 128
+    Width = 163
+    Caption = 'avidemux - Редактор видео'
+    OnClick = bMultimEditAvidemuxClick
+    TabOrder = 93
+  end
+  object bMultimEditShotcut: TButton
+    Left = 440
+    Height = 25
+    Top = 128
+    Width = 152
+    Caption = 'Shotcut - Видео редактор'
+    OnClick = bMultimEditShotcutClick
+    TabOrder = 94
+  end
+  object bMultimEditAudacity: TButton
+    Left = 24
+    Height = 25
+    Top = 168
+    Width = 208
+    Caption = 'Audacity - Редактор аудио файлов'
+    OnClick = bMultimEditAudacityClick
+    TabOrder = 95
+  end
+  object bMultimEditWaveShop: TButton
+    Left = 240
+    Height = 25
+    Top = 168
+    Width = 208
+    Caption = 'WaveShop - Редактор аудио файлов'
+    OnClick = bMultimEditWaveShopClick
+    TabOrder = 96
+  end
+  object bMultimKonvert: TButton
+    Left = 253
+    Height = 25
+    Top = 80
+    Width = 115
+    Caption = 'Конвертирование'
+    OnClick = bMultimKonvertClick
+    TabOrder = 97
+  end
+  object bMultimKonvertHandBrake: TButton
+    Left = 24
+    Height = 25
+    Top = 128
+    Width = 211
+    Caption = 'HandBrake - Конвертер видео в mp4'
+    OnClick = bMultimKonvertHandBrakeClick
+    TabOrder = 98
+  end
+  object bMultimKonvertQWinFF: TButton
+    Left = 240
+    Height = 25
+    Top = 128
+    Width = 160
+    Caption = 'QWinFF - Медиаконвертер'
+    OnClick = bMultimKonvertQWinFFClick
+    TabOrder = 99
+  end
+  object bMultimKonvertTEncoder: TButton
+    Left = 408
+    Height = 25
+    Top = 128
+    Width = 256
+    Caption = 'TEncoder Video Converter - Медиаконвертер'
+    OnClick = bMultimKonvertTEncoderClick
+    TabOrder = 100
+  end
+  object bMultimKonvertfreac: TButton
+    Left = 21
+    Height = 25
+    Top = 168
+    Width = 155
+    Caption = 'fre:ac - Аудио конвертер'
+    OnClick = bMultimKonvertfreacClick
+    TabOrder = 101
+  end
+  object bMultimKonvertTAudioConverter: TButton
+    Left = 184
+    Height = 25
+    Top = 168
+    Width = 208
+    Caption = 'TAudioConverter - Конвертер аудио'
+    OnClick = bMultimKonvertTAudioConverterClick
+    TabOrder = 102
+  end
+  object bMultimZahvat: TButton
+    Left = 376
+    Height = 25
+    Top = 80
+    Width = 99
+    Caption = 'Захват экрана'
+    OnClick = bMultimZahvatClick
+    TabOrder = 103
+  end
+  object bMultimZahvatOBS: TButton
+    Left = 24
+    Height = 25
+    Top = 128
+    Width = 307
+    Caption = 'OBS - Захват и трансляция видео с экрана монитора'
+    OnClick = bMultimZahvatOBSClick
+    TabOrder = 104
+  end
+  object bMultimZahvatFoxToolsShooter: TButton
+    Left = 341
+    Height = 25
+    Top = 128
+    Width = 315
+    Caption = 'FoxTools Shooter - Хитрый стрелок экранов (Ножницы)'
+    OnClick = bMultimZahvatFoxToolsShooterClick
+    TabOrder = 105
+  end
+  object bMultimZahvatGreenshot: TButton
+    Left = 24
+    Height = 25
+    Top = 168
+    Width = 184
+    Caption = 'Greenshot - Снятие скриншотов'
+    OnClick = bMultimZahvatGreenshotClick
+    TabOrder = 106
+  end
+  object bMultimZahvatShareX: TButton
+    Left = 221
+    Height = 25
+    Top = 168
+    Width = 251
+    Caption = 'ShareX - Снятие и публикация скриншотов'
+    OnClick = bMultimZahvatShareXClick
+    TabOrder = 107
+  end
+  object bOffice: TButton
+    Left = 432
+    Height = 25
+    Top = 40
+    Width = 48
+    Caption = 'Офис'
+    OnClick = bOfficeClick
+    TabOrder = 108
+  end
+  object bOfficeFinance: TButton
+    Left = 24
+    Height = 25
+    Top = 80
+    Width = 67
+    Caption = 'Финансы'
+    OnClick = bOfficeFinanceClick
+    TabOrder = 109
+  end
+  object bOfficeFinanceAnanas: TButton
+    Left = 24
+    Height = 25
+    Top = 128
+    Width = 72
+    Caption = 'Аналог 1с'
+    OnClick = bOfficeFinanceAnanasClick
+    TabOrder = 110
+  end
+  object bOfficeFinanceHomeBank: TButton
+    Left = 104
+    Height = 25
+    Top = 128
+    Width = 147
+    Caption = 'Учет личных финансов'
+    OnClick = bOfficeFinanceHomeBankClick
+    TabOrder = 111
+  end
+  object bOfficeFinanceMoneyManagerEx: TButton
+    Left = 256
+    Height = 25
+    Top = 128
+    Width = 176
+    Caption = 'Личный менеджер финансов'
+    OnClick = bOfficeFinanceMoneyManagerExClick
+    TabOrder = 112
+  end
+  object bOfficeFinanceKMyMoney: TButton
+    Left = 440
+    Height = 25
+    Top = 128
+    Width = 136
+    Caption = 'Менеджер финансов'
+    OnClick = bOfficeFinanceKMyMoneyClick
+    TabOrder = 113
+  end
+  object bOfficeFinanceRepairCenter: TButton
+    Left = 584
+    Height = 25
+    Top = 128
+    Width = 120
+    Caption = 'Учет заказов в СЦ'
+    OnClick = bOfficeFinanceRepairCenterClick
+    TabOrder = 114
+  end
+  object bOfficeFinanceFakturama: TButton
+    Left = 24
+    Height = 25
+    Top = 168
+    Width = 171
+    Caption = 'Учет для Интернет-магазина'
+    OnClick = bOfficeFinanceFakturamaClick
+    TabOrder = 115
+  end
+  object bOfficeFinanceFramingWorkshop: TButton
+    Left = 200
+    Height = 25
+    Top = 168
+    Width = 184
+    Caption = 'Учет для багетной мастерской'
+    OnClick = bOfficeFinanceFramingWorkshopClick
+    TabOrder = 116
+  end
+  object bOfficeFinanceSysUchZayv: TButton
+    Left = 392
+    Height = 25
+    Top = 168
+    Width = 139
+    Caption = 'Система Учета Заявок'
+    OnClick = bOfficeFinanceSysUchZayvClick
+    TabOrder = 117
+  end
+  object bOfficeFinanceMoiprodazhi: TButton
+    Left = 536
+    Height = 25
+    Top = 168
+    Width = 203
+    Caption = 'Учет продаж для торговых точек'
+    OnClick = bOfficeFinanceMoiprodazhiClick
+    TabOrder = 118
+  end
+  object bOfficeAnalog: TButton
+    Left = 96
+    Height = 25
+    Top = 80
+    Width = 152
+    Caption = 'Аналоги Microsoft Office'
+    OnClick = bOfficeAnalogClick
+    TabOrder = 119
+  end
+  object bOfficeAnalogONLYOFFICEDesktopEditors: TButton
+    Left = 24
+    Height = 25
+    Top = 128
+    Width = 347
+    Caption = 'ONLYOFFICE Desktop Editors - Аналог word, excel, powerpoint'
+    OnClick = bOfficeAnalogONLYOFFICEDesktopEditorsClick
+    TabOrder = 120
+  end
+  object bOfficeAnalogLibreOffice: TButton
+    Left = 376
+    Height = 25
+    Top = 128
+    Width = 302
+    Caption = 'LibreOffice - Аналог word, excel, powerpoint, access'
+    OnClick = bOfficeAnalogLibreOfficeClick
+    TabOrder = 121
+  end
+  object bOfficeAnalogApacheOpenOffice: TButton
+    Left = 24
+    Height = 25
+    Top = 168
+    Width = 344
+    Caption = 'Apache OpenOffice - Аналог word, excel, powerpoint, access'
+    OnClick = bOfficeAnalogApacheOpenOfficeClick
+    TabOrder = 122
+  end
+  object bOfficeAnalogCalligraGemini: TButton
+    Left = 373
+    Height = 25
+    Top = 168
+    Width = 259
+    Caption = 'Calligra Gemini — Аналог word и powerpoint'
+    OnClick = bOfficeAnalogCalligraGeminiClick
+    TabOrder = 123
+  end
+  object bOfficePdf: TButton
+    Left = 253
+    Height = 25
+    Top = 80
+    Width = 75
+    Caption = 'PDF и DjVu'
+    OnClick = bOfficePdfClick
+    TabOrder = 124
+  end
+  object bOfficePdfSumatraPDF: TButton
+    Left = 21
+    Height = 25
+    Top = 128
+    Width = 75
+    Caption = 'Просмотр'
+    OnClick = bOfficePdfSumatraPDFClick
+    TabOrder = 125
+  end
+  object bOfficePdfCalibre: TButton
+    Left = 101
+    Height = 25
+    Top = 128
+    Width = 171
+    Caption = 'Конвертер электронных книг'
+    OnClick = bOfficePdfCalibreClick
+    TabOrder = 126
+  end
+  object bOfficePdfTEBookConverter: TButton
+    Left = 277
+    Height = 25
+    Top = 128
+    Width = 243
+    Caption = 'Преобразование, просмотр, организация'
+    OnClick = bOfficePdfTEBookConverterClick
+    TabOrder = 127
+  end
+  object bOfficePdfRedaktorpdf: TButton
+    Left = 528
+    Height = 25
+    Top = 128
+    Width = 144
+    Caption = 'Редактор PDF файлов'
+    OnClick = bOfficePdfRedaktorpdfClick
+    TabOrder = 128
+  end
+  object bOfficePdfPDFsamBasic: TButton
+    Left = 21
+    Height = 25
+    Top = 168
+    Width = 238
+    Caption = 'Объединение, слияние и вращение PDF'
+    OnClick = bOfficePdfPDFsamBasicClick
+    TabOrder = 129
+  end
+  object bOfficePdfFB2: TButton
+    Left = 272
+    Height = 25
+    Top = 168
+    Width = 99
+    Caption = 'Редактор FB2'
+    OnClick = bOfficePdfFB2Click
+    TabOrder = 130
+  end
+  object bOfficeScan: TButton
+    Left = 333
+    Height = 25
+    Top = 80
+    Width = 115
+    Caption = 'Сканер и принтер'
+    OnClick = bOfficeScanClick
+    TabOrder = 131
+  end
+  object bOfficeScanNASP2: TButton
+    Left = 24
+    Height = 25
+    Top = 128
+    Width = 211
+    Caption = 'NASP2 - Сканирование документов'
+    OnClick = bOfficeScanNASP2Click
+    TabOrder = 132
+  end
+  object bOfficeScanVietOCR: TButton
+    Left = 248
+    Height = 25
+    Top = 128
+    Width = 248
+    Caption = 'VietOCR - Сканирование и распознавание'
+    OnClick = bOfficeScanVietOCRClick
+    TabOrder = 133
+  end
+  object bOfficeScanCognitiveOpenOCR: TButton
+    Left = 504
+    Height = 25
+    Top = 128
+    Width = 248
+    Caption = 'Cognitive OpenOCR - Распознавание текста'
+    OnClick = bOfficeScanCognitiveOpenOCRClick
+    TabOrder = 134
+  end
+  object bOfficeScanPDFCreator: TButton
+    Left = 24
+    Height = 25
+    Top = 168
+    Width = 216
+    Caption = 'PDFCreator - Виртуальный принтер'
+    OnClick = bOfficeScanPDFCreatorClick
+    TabOrder = 135
+  end
+  object bOfficePlan: TButton
+    Left = 456
+    Height = 25
+    Top = 80
+    Width = 232
+    Caption = 'Планирование, управление проектами'
+    OnClick = bOfficePlanClick
+    TabOrder = 136
+  end
+  object bOfficePlanGanttProject: TButton
+    Left = 21
+    Height = 25
+    Top = 128
+    Width = 91
+    Caption = 'GanttProject'
+    OnClick = bOfficePlanGanttProjectClick
+    TabOrder = 137
+  end
+  object bOfficePlanProjectLibre: TButton
+    Left = 120
+    Height = 25
+    Top = 128
+    Width = 91
+    Caption = 'ProjectLibre'
+    OnClick = bOfficePlanProjectLibreClick
+    TabOrder = 138
+  end
+  object bOfficePlanWindowsPlanner: TButton
+    Left = 221
+    Height = 25
+    Top = 128
+    Width = 110
+    Caption = 'Windows Planner'
+    OnClick = bOfficePlanWindowsPlannerClick
+    TabOrder = 139
+  end
+  object bOfficePlanTaskUnifier: TButton
+    Left = 341
+    Height = 25
+    Top = 128
+    Width = 83
+    Caption = 'TaskUnifier'
+    OnClick = bOfficePlanTaskUnifierClick
+    TabOrder = 140
+  end
+  object bOfficePlanTaskCoach: TButton
+    Left = 432
+    Height = 25
+    Top = 128
+    Width = 80
+    Caption = 'Task Coach'
+    OnClick = bOfficePlanTaskCoachClick
+    TabOrder = 141
+  end
+  object bOfficePlanMozillaSunbird: TButton
+    Left = 517
+    Height = 25
+    Top = 128
+    Width = 107
+    Caption = 'Mozilla Sunbird'
+    OnClick = bOfficePlanMozillaSunbirdClick
+    TabOrder = 142
+  end
+  object bOfficePlanTheTimelineProject: TButton
+    Left = 21
+    Height = 25
+    Top = 168
+    Width = 139
+    Caption = 'The Timeline Project'
+    OnClick = bOfficePlanTheTimelineProjectClick
+    TabOrder = 143
+  end
+  object bOfficePlaOnepointProjectBasicEdition: TButton
+    Left = 173
+    Height = 25
+    Top = 168
+    Width = 189
+    Caption = 'Onepoint Project Basic Edition'
+    OnClick = bOfficePlaOnepointProjectBasicEditionClick
+    TabOrder = 144
+  end
+  object bRazrab: TButton
+    Left = 488
+    Height = 25
+    Top = 40
+    Width = 88
+    Caption = 'Разработчику'
+    OnClick = bRazrabClick
+    TabOrder = 145
+  end
+  object bRazrabHtml: TButton
+    Left = 24
+    Height = 25
+    Top = 80
+    Width = 144
+    Caption = 'HTML, CSS и JavaScript'
+    OnClick = bRazrabHtmlClick
+    TabOrder = 146
+  end
+  object bRazrabHtmlBrackets: TButton
+    Left = 24
+    Height = 25
+    Top = 128
+    Width = 72
+    Caption = 'Brackets'
+    OnClick = bRazrabHtmlBracketsClick
+    TabOrder = 147
+  end
+  object bRazrabHtmlBluefish: TButton
+    Left = 104
+    Height = 25
+    Top = 128
+    Width = 75
+    Caption = 'Bluefish'
+    OnClick = bRazrabHtmlBluefishClick
+    TabOrder = 148
+  end
+  object bRazrabHtmlBlueGriffon: TButton
+    Left = 189
+    Height = 25
+    Top = 128
+    Width = 93
+    Caption = 'BlueGriffon'
+    OnClick = bRazrabHtmlBlueGriffonClick
+    TabOrder = 149
+  end
+  object bRazrabHtmlkodeWeave: TButton
+    Left = 293
+    Height = 25
+    Top = 128
+    Width = 91
+    Caption = 'kodeWeave'
+    OnClick = bRazrabHtmlkodeWeaveClick
+    TabOrder = 150
+  end
+  object bRazrabHtmlNotepad: TButton
+    Left = 392
+    Height = 25
+    Top = 128
+    Width = 91
+    Caption = 'Notepad++'
+    OnClick = bRazrabHtmlNotepadClick
+    TabOrder = 151
+  end
+  object bRazrabCpp: TButton
+    Left = 176
+    Height = 25
+    Top = 80
+    Width = 64
+    Caption = 'C/C++'
+    OnClick = bRazrabCppClick
+    TabOrder = 152
+  end
+  object bRazrabCppWxDev: TButton
+    Left = 24
+    Height = 25
+    Top = 128
+    Width = 75
+    Caption = 'WxDev-C++'
+    OnClick = bRazrabCppWxDevClick
+    TabOrder = 153
+  end
+  object bRazrabCppCodeBlocks: TButton
+    Left = 104
+    Height = 25
+    Top = 128
+    Width = 88
+    Caption = 'Code::Blocks'
+    OnClick = bRazrabCppCodeBlocksClick
+    TabOrder = 154
+  end
+  object bRazrabCppNetBeans: TButton
+    Left = 197
+    Height = 25
+    Top = 128
+    Width = 75
+    Caption = 'NetBeans'
+    OnClick = bRazrabCppNetBeansClick
+    TabOrder = 155
+  end
+  object bRazrabCppXamarinStudio: TButton
+    Left = 280
+    Height = 25
+    Top = 128
+    Width = 104
+    Caption = 'Xamarin Studio'
+    OnClick = bRazrabCppXamarinStudioClick
+    TabOrder = 156
+  end
+  object bRazrabCppBluefish: TButton
+    Left = 392
+    Height = 25
+    Top = 128
+    Width = 72
+    Caption = 'Bluefish'
+    OnClick = bRazrabCppBluefishClick
+    TabOrder = 157
+  end
+  object bRazrabOp: TButton
+    Left = 253
+    Height = 25
+    Top = 80
+    Width = 91
+    Caption = 'Object Pascal'
+    OnClick = bRazrabOpClick
+    TabOrder = 158
+  end
+  object bRazrabOpLazarus: TButton
+    Left = 24
+    Height = 25
+    Top = 128
+    Width = 80
+    Caption = 'Lazarus'
+    OnClick = bRazrabOpLazarusClick
+    TabOrder = 159
+  end
+  object bInternet: TButton
+    Left = 584
+    Height = 25
+    Top = 40
+    Width = 112
+    Caption = 'Сеть и Интернет'
+    OnClick = bInternetClick
+    TabOrder = 160
+  end
+  object bInternetBrow: TButton
+    Left = 24
+    Height = 25
+    Top = 80
+    Width = 155
+    Caption = 'Интернет обозреватели'
+    OnClick = bInternetBrowClick
+    TabOrder = 161
+  end
+  object bInternetBrowMozillaFirefox: TButton
+    Left = 24
+    Height = 25
+    Top = 128
+    Width = 136
+    Caption = 'Надежный браузер'
+    OnClick = bInternetBrowMozillaFirefoxClick
+    TabOrder = 162
+  end
+  object bInternetBrowOtterBrowser: TButton
+    Left = 168
+    Height = 25
+    Top = 128
+    Width = 280
+    Caption = 'Развивающийся браузер в стиле старой оперы'
+    OnClick = bInternetBrowOtterBrowserClick
+    TabOrder = 163
+  end
+  object bInternetBrowChromium: TButton
+    Left = 456
+    Height = 25
+    Top = 128
+    Width = 147
+    Caption = 'Предок Google Chrome'
+    OnClick = bInternetBrowChromiumClick
+    TabOrder = 164
+  end
+  object bInternetTalk: TButton
+    Left = 189
+    Height = 25
+    Top = 80
+    Width = 80
+    Caption = 'Общение'
+    OnClick = bInternetTalkClick
+    TabOrder = 165
+  end
+  object bInternetTalkKVIrc: TButton
+    Left = 24
+    Height = 25
+    Top = 128
+    Width = 120
+    Caption = 'KVIrc - IRC клиент'
+    OnClick = bInternetTalkKVIrcClick
+    TabOrder = 166
+  end
+  object bInternetTalkTkabber: TButton
+    Left = 152
+    Height = 25
+    Top = 128
+    Width = 144
+    Caption = 'Tkabber - Jabber клиент'
+    OnClick = bInternetTalkTkabberClick
+    TabOrder = 167
+  end
+  object bInternetTalkPidgin: TButton
+    Left = 304
+    Height = 25
+    Top = 128
+    Width = 128
+    Caption = 'Pidgin - ICQ клиент'
+    OnClick = bInternetTalkPidginClick
+    TabOrder = 168
+  end
+  object bInternetTalkMozillaThunderbird: TButton
+    Left = 440
+    Height = 25
+    Top = 128
+    Width = 256
+    Caption = 'Mozilla Thunderbird - Почтовая программа'
+    OnClick = bInternetTalkMozillaThunderbirdClick
+    TabOrder = 169
+  end
+  object bInternetTalkMumble: TButton
+    Left = 21
+    Height = 25
+    Top = 168
+    Width = 203
+    Caption = 'Mumble - Передача голоса по IP'
+    OnClick = bInternetTalkMumbleClick
+    TabOrder = 170
+  end
+  object bInternetTalkBeeBEEP: TButton
+    Left = 237
+    Height = 25
+    Top = 168
+    Width = 259
+    Caption = 'BeeBEEP - Безопасный чат в локальной сети'
+    OnClick = bInternetTalkBeeBEEPClick
+    TabOrder = 171
+  end
+  object bInternetTalkLinphone: TButton
+    Left = 504
+    Height = 25
+    Top = 168
+    Width = 171
+    Caption = 'Linphone - sip программа'
+    OnClick = bInternetTalkLinphoneClick
+    TabOrder = 172
+  end
+  object bInternetDown: TButton
+    Left = 280
+    Height = 25
+    Top = 80
+    Width = 75
+    Caption = 'Загрузки'
+    OnClick = bInternetDownClick
+    TabOrder = 173
+  end
+  object bInternetDownClipGrab: TButton
+    Left = 24
+    Height = 25
+    Top = 128
+    Width = 328
+    Caption = 'ClipGrab - Загрузка видео с популярных видео-сервисов'
+    OnClick = bInternetDownClipGrabClick
+    TabOrder = 174
+  end
+  object bInternetDownFileZilla: TButton
+    Left = 360
+    Height = 25
+    Top = 128
+    Width = 128
+    Caption = 'FileZilla - FTP клиент'
+    OnClick = bInternetDownFileZillaClick
+    TabOrder = 175
+  end
+  object bInternetDownJDownloader: TButton
+    Left = 496
+    Height = 25
+    Top = 128
+    Width = 208
+    Caption = 'JDownloader - Менеджер загрузок'
+    OnClick = bInternetDownJDownloaderClick
+    TabOrder = 176
+  end
+  object bInternetDownFdm: TButton
+    Left = 24
+    Height = 25
+    Top = 168
+    Width = 267
+    Caption = 'Free Download Manager - Менеджер загрузок'
+    OnClick = bInternetDownFdmClick
+    TabOrder = 177
+  end
+  object bInternetDownqBittorrent: TButton
+    Left = 304
+    Height = 25
+    Top = 168
+    Width = 182
+    Caption = 'qBittorrent - Bittorrent-клиент'
+    OnClick = bInternetDownqBittorrentClick
+    TabOrder = 178
+  end
+  object bInternetSetut: TButton
+    Left = 368
+    Height = 25
+    Top = 80
+    Width = 117
+    Caption = 'Сетевые утилиты'
+    OnClick = bInternetSetutClick
+    TabOrder = 179
+  end
+  object bInternetSetutWireshark: TButton
+    Left = 24
+    Height = 25
+    Top = 128
+    Width = 155
+    Caption = 'Анализ сетевых пакетов'
+    OnClick = bInternetSetutWiresharkClick
+    TabOrder = 180
+  end
+  object bInternetSetutNmap: TButton
+    Left = 187
+    Height = 25
+    Top = 128
+    Width = 133
+    Caption = 'Сканирование портов'
+    OnClick = bInternetSetutNmapClick
+    TabOrder = 181
+  end
+  object bInternetSetutOpenVisualTraceroute: TButton
+    Left = 328
+    Height = 25
+    Top = 128
+    Width = 200
+    Caption = 'Визуальный маршрут IP пакетов'
+    OnClick = bInternetSetutOpenVisualTracerouteClick
+    TabOrder = 182
+  end
+  object bInternetSetutSecurepointSSLVPNClient: TButton
+    Left = 536
+    Height = 25
+    Top = 128
+    Width = 88
+    Caption = 'VPN клиент'
+    OnClick = bInternetSetutSecurepointSSLVPNClientClick
+    TabOrder = 183
+  end
+  object bInternetSetutruWinMTR: TButton
+    Left = 632
+    Height = 25
+    Top = 128
+    Width = 155
+    Caption = 'Диагностика маршрута'
+    OnClick = bInternetSetutruWinMTRClick
+    TabOrder = 184
+  end
+  object bInternetSetutLinkChecker: TButton
+    Left = 24
+    Height = 25
+    Top = 168
+    Width = 182
+    Caption = 'Поиск битых ссылок на сайте'
+    OnClick = bInternetSetutLinkCheckerClick
+    TabOrder = 185
+  end
+  object bInternetSetuthttpres: TButton
+    Left = 216
+    Height = 25
+    Top = 168
+    Width = 272
+    Caption = 'Отображение кода HTTP ответа веб-страницы'
+    OnClick = bInternetSetuthttpresClick
+    TabOrder = 186
+  end
+  object bInternetSetutSimpleSitemapCreator: TButton
+    Left = 501
+    Height = 25
+    Top = 168
+    Width = 139
+    Caption = 'Создание карты сайта'
+    OnClick = bInternetSetutSimpleSitemapCreatorClick
+    TabOrder = 187
+  end
+  object bInternetRss: TButton
+    Left = 496
+    Height = 25
+    Top = 80
+    Width = 112
+    Caption = 'Чтение RSS лент'
+    OnClick = bInternetRssClick
+    TabOrder = 188
+  end
+  object bInternetRssRSSBandit: TButton
+    Left = 24
+    Height = 25
+    Top = 128
+    Width = 75
+    Caption = 'RSS Bandit'
+    OnClick = bInternetRssRSSBanditClick
+    TabOrder = 189
+  end
+  object bInternetRssQuiteRSS: TButton
+    Left = 112
+    Height = 25
+    Top = 128
+    Width = 75
+    Caption = 'QuiteRSS'
+    OnClick = bInternetRssQuiteRSSClick
+    TabOrder = 190
+  end
+  object bInternetRssMozillaThunderbird: TButton
+    Left = 200
+    Height = 25
+    Top = 128
+    Width = 131
+    Caption = 'Mozilla Thunderbird'
+    OnClick = bInternetRssMozillaThunderbirdClick
+    TabOrder = 191
+  end
+  object bUtility: TButton
+    Left = 704
+    Height = 25
+    Top = 40
+    Width = 67
+    Caption = 'Утилиты'
+    OnClick = bUtilityClick
+    TabOrder = 192
+  end
+  object bUtilityRar: TButton
+    Left = 24
+    Height = 25
+    Top = 80
+    Width = 83
+    Caption = 'Архиваторы'
+    OnClick = bUtilityRarClick
+    TabOrder = 193
+  end
+  object bUtilityRarPeaZip: TButton
+    Left = 24
+    Height = 25
+    Top = 128
+    Width = 195
+    Caption = 'Дизайн и удобный интерфейс'
+    OnClick = bUtilityRarPeaZipClick
+    TabOrder = 194
+  end
+  object bUtilityRarFreeArc: TButton
+    Left = 232
+    Height = 25
+    Top = 128
+    Width = 254
+    Caption = 'Мощность сжатия и скорость распаковки'
+    OnClick = bUtilityRarFreeArcClick
+    TabOrder = 195
+  end
+  object bUtilityRar7Zip: TButton
+    Left = 496
+    Height = 25
+    Top = 128
+    Width = 248
+    Caption = 'Надежность каждой версии из года в год'
+    OnClick = bUtilityRar7ZipClick
+    TabOrder = 196
+  end
+  object bUtilitySystem: TButton
+    Left = 117
+    Height = 25
+    Top = 80
+    Width = 67
+    Caption = 'Система'
+    OnClick = bUtilitySystemClick
+    TabOrder = 197
+  end
+  object bUtilitySystemProcessHacker: TButton
+    Left = 24
+    Height = 25
+    Top = 128
+    Width = 141
+    Caption = 'Завершение процессов'
+    OnClick = bUtilitySystemProcessHackerClick
+    TabOrder = 198
+  end
+  object bUtilitySystemUltraDefrag: TButton
+    Left = 173
+    Height = 25
+    Top = 128
+    Width = 112
+    Caption = 'Дефрагментатор'
+    OnClick = bUtilitySystemUltraDefragClick
+    TabOrder = 199
+  end
+  object bUtilitySystemBulkCrapUninstaller: TButton
+    Left = 293
+    Height = 25
+    Top = 128
+    Width = 99
+    Caption = 'Деинсталлятор'
+    OnClick = bUtilitySystemBulkCrapUninstallerClick
+    TabOrder = 200
+  end
+  object bUtilitySystemSmartSystemRepiar: TButton
+    Left = 400
+    Height = 25
+    Top = 128
+    Width = 149
+    Caption = 'Обслуживание системы'
+    OnClick = bUtilitySystemSmartSystemRepiarClick
+    TabOrder = 201
+  end
+  object bUtilitySystemSysOptimizer: TButton
+    Left = 552
+    Height = 25
+    Top = 128
+    Width = 184
+    Caption = 'Удаление временных файлов'
+    OnClick = bUtilitySystemSysOptimizerClick
+    TabOrder = 202
+  end
+  object bUtilitySystemPerformanceMaintainer: TButton
+    Left = 24
+    Height = 25
+    Top = 168
+    Width = 144
+    Caption = 'Оптимизатор системы'
+    OnClick = bUtilitySystemPerformanceMaintainerClick
+    TabOrder = 203
+  end
+  object bUtilitySystemAspia: TButton
+    Left = 173
+    Height = 25
+    Top = 168
+    Width = 171
+    Caption = 'Информация о компьютере'
+    OnClick = bUtilitySystemAspiaClick
+    TabOrder = 204
+  end
+  object bUtilitySystemHDDGuardian: TButton
+    Left = 352
+    Height = 25
+    Top = 168
+    Width = 160
+    Caption = 'Контроль состояния HDD'
+    OnClick = bUtilitySystemHDDGuardianClick
+    TabOrder = 205
+  end
+  object bUtilitySystemDitto: TButton
+    Left = 520
+    Height = 25
+    Top = 168
+    Width = 168
+    Caption = 'Работа с буфером обмена'
+    OnClick = bUtilitySystemDittoClick
+    TabOrder = 206
+  end
+  object bUtilityFile: TButton
+    Left = 189
+    Height = 25
+    Top = 80
+    Width = 101
+    Caption = 'Файлы и папки'
+    OnClick = bUtilityFileClick
+    TabOrder = 207
+  end
+  object bUtilityFileFreeFileSync: TButton
+    Left = 24
+    Height = 25
+    Top = 128
+    Width = 222
+    Caption = 'Синхронизация и сравнение каталогов'
+    OnClick = bUtilityFileFreeFileSyncClick
+    TabOrder = 208
+  end
+  object bUtilityFileWinMerge: TButton
+    Left = 253
+    Height = 25
+    Top = 128
+    Width = 211
+    Caption = 'Сравнение и синхронизация файлов'
+    OnClick = bUtilityFileWinMergeClick
+    TabOrder = 209
+  end
+  object bUtilityFileKickassUndelete: TButton
+    Left = 472
+    Height = 25
+    Top = 128
+    Width = 144
+    Caption = 'Восстановление файлов'
+    OnClick = bUtilityFileKickassUndeleteClick
+    TabOrder = 210
+  end
+  object bUtilityFileDoubleCommander: TButton
+    Left = 624
+    Height = 25
+    Top = 128
+    Width = 152
+    Caption = 'Аналог Total Commander'
+    OnClick = bUtilityFileDoubleCommanderClick
+    TabOrder = 211
+  end
+  object bUtilityFileFileOptimizer: TButton
+    Left = 24
+    Height = 25
+    Top = 168
+    Width = 128
+    Caption = 'Оптимизация файлов'
+    OnClick = bUtilityFileFileOptimizerClick
+    TabOrder = 212
+  end
+  object bUtilityFileDUFF: TButton
+    Left = 160
+    Height = 25
+    Top = 168
+    Width = 163
+    Caption = 'Поиск дубликатов файлов'
+    OnClick = bUtilityFileDUFFClick
+    TabOrder = 213
+  end
+  object Label1: TLabel
+    Left = 176
+    Height = 23
+    Top = 8
+    Width = 401
+    Caption = 'Подбор свободно-распространяемой замены '
+    Font.CharSet = RUSSIAN_CHARSET
+    Font.Height = -21
+    Font.Name = 'Times New Roman'
+    Font.Pitch = fpVariable
+    Font.Quality = fqDraft
+    ParentColor = False
+    ParentFont = False
+  end
+  object bUtilityProch: TButton
+    Left = 304
+    Height = 25
+    Top = 80
+    Width = 64
+    Caption = 'Прочее'
+    OnClick = bUtilityProchClick
+    TabOrder = 214
+  end
+  object bUtilityProchCloseTheDoor: TButton
+    Left = 24
+    Height = 25
+    Top = 128
+    Width = 192
+    Caption = 'Прослушивание портов tcp/udp'
+    OnClick = bUtilityProchCloseTheDoorClick
+    TabOrder = 215
+  end
+  object bUtilityProchAngryIPScanner: TButton
+    Left = 224
+    Height = 25
+    Top = 128
+    Width = 99
+    Caption = 'Сетевой сканер'
+    OnClick = bUtilityProchAngryIPScannerClick
+    TabOrder = 216
+  end
+  object bUtilityProchiTALC: TButton
+    Left = 333
+    Height = 25
+    Top = 128
+    Width = 283
+    Caption = 'Удаленное управление компьютерным классом'
+    OnClick = bUtilityProchiTALCClick
+    TabOrder = 217
+  end
+  object bUtilityProchUltraVNC: TButton
+    Left = 624
+    Height = 25
+    Top = 128
+    Width = 144
+    Caption = 'Удаленное управление'
+    OnClick = bUtilityProchUltraVNCClick
+    TabOrder = 218
+  end
+  object bUtilityProchwxHexEditor: TButton
+    Left = 24
+    Height = 25
+    Top = 168
+    Width = 88
+    Caption = 'Hex редактор'
+    OnClick = bUtilityProchwxHexEditorClick
+    TabOrder = 219
+  end
+  object bUtilityProchFontForge: TButton
+    Left = 120
+    Height = 25
+    Top = 168
+    Width = 115
+    Caption = 'Редактор шрифтов'
+    OnClick = bUtilityProchFontForgeClick
+    TabOrder = 220
+  end
+  object bUtilityProchVirtualBox: TButton
+    Left = 240
+    Height = 25
+    Top = 168
+    Width = 187
+    Caption = 'Программа для виртуализации'
+    OnClick = bUtilityProchVirtualBoxClick
+    TabOrder = 221
+  end
+end

@@ -1,0 +1,262 @@
+object fInstalled: TfInstalled
+  Left = 335
+  Height = 388
+  Top = 556
+  Width = 673
+  BorderStyle = bsToolWindow
+  Caption = 'Установленное программное обеспечение на компьютере'
+  ClientHeight = 388
+  ClientWidth = 673
+  OnCreate = FormCreate
+  LCLVersion = '1.6.2.0'
+  object Panel1: TPanel
+    Left = 0
+    Height = 388
+    Top = 0
+    Width = 234
+    Align = alLeft
+    ClientHeight = 388
+    ClientWidth = 234
+    TabOrder = 0
+    object ListBox1: TListBox
+      Left = 1
+      Height = 386
+      Top = 1
+      Width = 232
+      Align = alClient
+      ItemHeight = 0
+      OnSelectionChange = ListBox1SelectionChange
+      TabOrder = 0
+    end
+  end
+  object Panel2: TPanel
+    Left = 234
+    Height = 388
+    Top = 0
+    Width = 439
+    Align = alClient
+    ClientHeight = 388
+    ClientWidth = 439
+    TabOrder = 1
+    object Splitter1: TSplitter
+      Left = 1
+      Height = 262
+      Top = 1
+      Width = 5
+    end
+    object bDeinstrall: TButton
+      Left = 304
+      Height = 25
+      Top = 16
+      Width = 115
+      Caption = 'Деинсталлировать'
+      OnClick = bDeinstrallClick
+      TabOrder = 1
+    end
+    object bRegedit: TButton
+      Left = 216
+      Height = 25
+      Top = 16
+      Width = 75
+      Caption = 'Regedit'
+      OnClick = bRegeditClick
+      TabOrder = 2
+    end
+    object rVetkaReestra: TRadioGroup
+      Left = 16
+      Height = 41
+      Top = 1
+      Width = 184
+      AutoFill = True
+      Caption = 'Ветка реестра'
+      ChildSizing.LeftRightSpacing = 6
+      ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+      ChildSizing.EnlargeVertical = crsHomogenousChildResize
+      ChildSizing.ShrinkHorizontal = crsScaleChilds
+      ChildSizing.ShrinkVertical = crsScaleChilds
+      ChildSizing.Layout = cclLeftToRightThenTopToBottom
+      ChildSizing.ControlsPerLine = 2
+      ClientHeight = 21
+      ClientWidth = 180
+      Columns = 2
+      ItemIndex = 0
+      Items.Strings = (
+        '32-бит'
+        '64-бит'
+      )
+      OnSelectionChanged = rVetkaReestraSelectionChanged
+      ParentBidiMode = False
+      TabOrder = 3
+    end
+    object leKeyName: TLabeledEdit
+      Left = 16
+      Height = 23
+      Top = 104
+      Width = 168
+      EditLabel.AnchorSideLeft.Control = leKeyName
+      EditLabel.AnchorSideRight.Control = leKeyName
+      EditLabel.AnchorSideRight.Side = asrBottom
+      EditLabel.AnchorSideBottom.Control = leKeyName
+      EditLabel.Left = 16
+      EditLabel.Height = 15
+      EditLabel.Top = 86
+      EditLabel.Width = 168
+      EditLabel.Caption = 'Название ключа'
+      EditLabel.ParentColor = False
+      TabOrder = 4
+    end
+    object leDisplayName: TLabeledEdit
+      Left = 216
+      Height = 23
+      Top = 104
+      Width = 208
+      EditLabel.AnchorSideLeft.Control = leDisplayName
+      EditLabel.AnchorSideRight.Control = leDisplayName
+      EditLabel.AnchorSideRight.Side = asrBottom
+      EditLabel.AnchorSideBottom.Control = leDisplayName
+      EditLabel.Left = 216
+      EditLabel.Height = 15
+      EditLabel.Top = 86
+      EditLabel.Width = 208
+      EditLabel.Caption = 'Название программы'
+      EditLabel.ParentColor = False
+      TabOrder = 5
+    end
+    object leVersionProg: TLabeledEdit
+      Left = 16
+      Height = 23
+      Top = 144
+      Width = 88
+      EditLabel.AnchorSideLeft.Control = leVersionProg
+      EditLabel.AnchorSideRight.Control = leVersionProg
+      EditLabel.AnchorSideRight.Side = asrBottom
+      EditLabel.AnchorSideBottom.Control = leVersionProg
+      EditLabel.Left = 16
+      EditLabel.Height = 15
+      EditLabel.Top = 126
+      EditLabel.Width = 88
+      EditLabel.Caption = 'Версия'
+      EditLabel.ParentColor = False
+      TabOrder = 6
+    end
+    object leKatalog: TLabeledEdit
+      Left = 16
+      Height = 23
+      Top = 192
+      Width = 408
+      EditLabel.AnchorSideLeft.Control = leKatalog
+      EditLabel.AnchorSideRight.Control = leKatalog
+      EditLabel.AnchorSideRight.Side = asrBottom
+      EditLabel.AnchorSideBottom.Control = leKatalog
+      EditLabel.Left = 16
+      EditLabel.Height = 15
+      EditLabel.Top = 174
+      EditLabel.Width = 408
+      EditLabel.Caption = 'Каталог'
+      EditLabel.ParentColor = False
+      TabOrder = 7
+    end
+    object leRazrab: TLabeledEdit
+      Left = 120
+      Height = 23
+      Top = 144
+      Width = 192
+      EditLabel.AnchorSideLeft.Control = leRazrab
+      EditLabel.AnchorSideRight.Control = leRazrab
+      EditLabel.AnchorSideRight.Side = asrBottom
+      EditLabel.AnchorSideBottom.Control = leRazrab
+      EditLabel.Left = 120
+      EditLabel.Height = 15
+      EditLabel.Top = 126
+      EditLabel.Width = 192
+      EditLabel.Caption = 'Разработчик'
+      EditLabel.ParentColor = False
+      TabOrder = 8
+    end
+    object leFullPathKey: TLabeledEdit
+      Left = 16
+      Height = 23
+      Top = 64
+      Width = 408
+      EditLabel.AnchorSideLeft.Control = leFullPathKey
+      EditLabel.AnchorSideRight.Control = leFullPathKey
+      EditLabel.AnchorSideRight.Side = asrBottom
+      EditLabel.AnchorSideBottom.Control = leFullPathKey
+      EditLabel.Left = 16
+      EditLabel.Height = 15
+      EditLabel.Top = 46
+      EditLabel.Width = 408
+      EditLabel.Caption = 'Полный путь ключа'
+      EditLabel.ParentColor = False
+      TabOrder = 9
+    end
+    object bExplorer: TButton
+      Left = 320
+      Height = 25
+      Top = 144
+      Width = 99
+      Caption = 'Открыть каталог'
+      OnClick = bExplorerClick
+      TabOrder = 10
+    end
+    object DBGrid1: TDBGrid
+      Left = 1
+      Height = 124
+      Top = 263
+      Width = 437
+      Align = alBottom
+      Color = clWindow
+      Columns = <>
+      DataSource = DataSource4
+      TabOrder = 11
+    end
+    object leInstallDate: TLabeledEdit
+      Left = 16
+      Height = 23
+      Top = 235
+      Width = 88
+      EditLabel.AnchorSideLeft.Control = leInstallDate
+      EditLabel.AnchorSideRight.Control = leInstallDate
+      EditLabel.AnchorSideRight.Side = asrBottom
+      EditLabel.AnchorSideBottom.Control = leInstallDate
+      EditLabel.Left = 16
+      EditLabel.Height = 15
+      EditLabel.Top = 217
+      EditLabel.Width = 88
+      EditLabel.Caption = 'Дата установки'
+      EditLabel.ParentColor = False
+      TabOrder = 12
+    end
+  end
+  object SQLite3Connection1: TSQLite3Connection
+    Connected = False
+    LoginPrompt = False
+    DatabaseName = 'Lpro.db'
+    KeepConnection = False
+    CharSet = 'UTF8'
+    Options = []
+    left = 64
+    top = 16
+  end
+  object SQLTransaction4: TSQLTransaction
+    Active = False
+    Database = fMian.SQLite3Connection1
+    Options = []
+    left = 64
+    top = 88
+  end
+  object DataSource4: TDataSource
+    DataSet = SQLQuery4
+    left = 64
+    top = 152
+  end
+  object SQLQuery4: TSQLQuery
+    FieldDefs = <>
+    Database = fMian.SQLite3Connection1
+    Transaction = fMian.SQLTransaction1
+    Options = []
+    Params = <>
+    left = 64
+    top = 224
+  end
+end

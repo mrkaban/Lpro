@@ -2,17 +2,15 @@
 <CONFIG>
   <ProjectSession>
     <PathDelim Value="\"/>
-    <Version Value="9"/>
+    <Version Value="10"/>
     <BuildModes Active="Default"/>
-    <Units Count="4">
+    <Units Count="51">
       <Unit0>
         <Filename Value="LegalProgram.lpr"/>
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
-        <WindowIndex Value="-1"/>
-        <TopLine Value="-1"/>
-        <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="32"/>
+        <CursorPos Y="29"/>
+        <UsageCount Value="200"/>
       </Unit0>
       <Unit1>
         <Filename Value="main.pas"/>
@@ -21,10 +19,9 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Main"/>
-        <IsVisibleTab Value="True"/>
-        <TopLine Value="212"/>
-        <CursorPos X="41" Y="225"/>
-        <UsageCount Value="32"/>
+        <TopLine Value="4354"/>
+        <CursorPos Y="4510"/>
+        <UsageCount Value="200"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit1>
@@ -35,21 +32,535 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="About"/>
-        <EditorIndex Value="1"/>
-        <CursorPos X="78" Y="15"/>
-        <UsageCount Value="32"/>
+        <EditorIndex Value="3"/>
+        <TopLine Value="18"/>
+        <CursorPos X="75" Y="32"/>
+        <UsageCount Value="200"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit2>
       <Unit3>
+        <Filename Value="poiskvbaze.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="fPoiskVBaze"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="PoiskVBaze"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="44" Y="13"/>
+        <UsageCount Value="202"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="ruchpoisk.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="fRuchPoisk"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="RuchPoisk"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="70"/>
+        <CursorPos X="35" Y="96"/>
+        <UsageCount Value="200"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="podborzameni.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="fPodborZameni"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="PodborZameni"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="-1"/>
+        <TopLine Value="4140"/>
+        <CursorPos X="37" Y="4151"/>
+        <UsageCount Value="200"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="installed.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="fInstalled"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="616"/>
+        <CursorPos X="38" Y="417"/>
+        <UsageCount Value="135"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="help.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="fHelp"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="19"/>
+        <CursorPos X="106" Y="34"/>
+        <UsageCount Value="94"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="settings.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="fSettings"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="1"/>
+        <TopLine Value="594"/>
+        <CursorPos X="41" Y="608"/>
+        <UsageCount Value="53"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="prosmotrreestra.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="fProsmotrReestra"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ProsmotrReestra"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="168"/>
+        <CursorPos Y="91"/>
+        <UsageCount Value="30"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="findfirst.pas"/>
+        <ComponentName Value="fFindFirst"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="FindFirst"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="13"/>
+        <CursorPos X="6" Y="42"/>
+        <UsageCount Value="13"/>
+      </Unit10>
+      <Unit11>
         <Filename Value="C:\lazarus\lcl\grids.pas"/>
         <UnitName Value="Grids"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="3540"/>
         <CursorPos X="60" Y="3548"/>
         <UsageCount Value="10"/>
-      </Unit3>
+      </Unit11>
+      <Unit12>
+        <Filename Value="KAZip.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="127"/>
+        <CursorPos X="24" Y="144"/>
+        <UsageCount Value="10"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="BDSInetUpdater.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="20"/>
+        <CursorPos X="31" Y="37"/>
+        <UsageCount Value="10"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="C:\lazarus\components\indy\IdAboutVCL.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="57"/>
+        <CursorPos X="3" Y="75"/>
+        <UsageCount Value="10"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="httpsend.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="58"/>
+        <CursorPos X="71" Y="71"/>
+        <UsageCount Value="10"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="C:\lazarus\components\sqlite\sqlitecomponenteditor.pas"/>
+        <ComponentName Value="SqliteTableEditorForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="SqliteComponentEditor"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="300"/>
+        <CursorPos Y="332"/>
+        <UsageCount Value="10"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="ulazautoupdate.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="27"/>
+        <CursorPos X="68" Y="36"/>
+        <UsageCount Value="10"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="aboutlazautoupdateunit.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="13"/>
+        <CursorPos X="51" Y="27"/>
+        <UsageCount Value="10"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="propedits.pp"/>
+        <UnitName Value="PropEdits"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="18"/>
+        <CursorPos X="17" Y="32"/>
+        <UsageCount Value="10"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="frmselectprops.pas"/>
+        <UnitName Value="frmSelectProps"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="233"/>
+        <CursorPos X="35" Y="242"/>
+        <UsageCount Value="10"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="idewindowintf.pas"/>
+        <UnitName Value="IDEWindowIntf"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="500"/>
+        <CursorPos X="13" Y="514"/>
+        <UsageCount Value="10"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="ideoptionsintf.pas"/>
+        <UnitName Value="IDEWindowIntf"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="6" Y="12"/>
+        <UsageCount Value="10"/>
+      </Unit22>
+      <Unit23>
+        <Filename Value="lconvencoding.pas"/>
+        <UnitName Value="LConvEncoding"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="2" Y="14"/>
+        <UsageCount Value="10"/>
+      </Unit23>
+      <Unit24>
+        <Filename Value="about.lfm"/>
+        <EditorIndex Value="-1"/>
+        <UsageCount Value="2"/>
+        <DefaultSyntaxHighlighter Value="LFM"/>
+      </Unit24>
+      <Unit25>
+        <Filename Value="C:\lazarus\fpc\3.0.0\source\packages\fcl-db\src\base\bufdataset.pas"/>
+        <UnitName Value="BufDataset"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="692"/>
+        <CursorPos X="39" Y="702"/>
+        <UsageCount Value="1"/>
+      </Unit25>
+      <Unit26>
+        <Filename Value="C:\lazarus\lcl\dbgrids.pas"/>
+        <UnitName Value="DBGrids"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="468"/>
+        <CursorPos X="27" Y="2501"/>
+        <UsageCount Value="1"/>
+      </Unit26>
+      <Unit27>
+        <Filename Value="..\REAKTIV\zurnaR.lpr"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="59" Y="8"/>
+        <UsageCount Value="1"/>
+      </Unit27>
+      <Unit28>
+        <Filename Value="\\MRKABAN-PC\Users\mrKaban\AppData\Local\Temp\Temp1_Lpro-source.zip\main.pas"/>
+        <UnitName Value="Main"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="288"/>
+        <UsageCount Value="2"/>
+      </Unit28>
+      <Unit29>
+        <Filename Value="main.lfm"/>
+        <EditorIndex Value="-1"/>
+        <UsageCount Value="2"/>
+        <DefaultSyntaxHighlighter Value="LFM"/>
+      </Unit29>
+      <Unit30>
+        <Filename Value="find.pas"/>
+        <ComponentName Value="findfirst"/>
+        <ResourceBaseClass Value="Form"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="8"/>
+        <CursorPos X="3" Y="36"/>
+        <UsageCount Value="12"/>
+      </Unit30>
+      <Unit31>
+        <Filename Value="ruchpoisk.lfm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <EditorIndex Value="-1"/>
+        <UsageCount Value="2"/>
+        <DefaultSyntaxHighlighter Value="LFM"/>
+      </Unit31>
+      <Unit32>
+        <Filename Value="C:\lazarus\source\demo\http\Unit1.pas"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="50"/>
+        <UsageCount Value="2"/>
+      </Unit32>
+      <Unit33>
+        <Filename Value="C:\lazarus\fpc\3.0.0\source\rtl\objpas\sysutils\filutilh.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="72"/>
+        <CursorPos X="3" Y="89"/>
+        <UsageCount Value="2"/>
+      </Unit33>
+      <Unit34>
+        <Filename Value="C:\lazarus\fpc\3.0.0\source\rtl\inc\objpash.inc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="174"/>
+        <CursorPos X="8" Y="188"/>
+        <UsageCount Value="4"/>
+      </Unit34>
+      <Unit35>
+        <Filename Value="C:\lazarus\components\lazutils\fileutil.pas"/>
+        <UnitName Value="FileUtil"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="262"/>
+        <CursorPos X="51" Y="297"/>
+        <UsageCount Value="6"/>
+      </Unit35>
+      <Unit36>
+        <Filename Value="C:\lazarus\fpc\3.0.0\source\rtl\objpas\sysutils\osutilsh.inc"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="10" Y="26"/>
+        <UsageCount Value="7"/>
+      </Unit36>
+      <Unit37>
+        <Filename Value="C:\lazarus\lcl\lazhelphtml.pas"/>
+        <UnitName Value="LazHelpHTML"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="70"/>
+        <CursorPos X="25" Y="85"/>
+        <UsageCount Value="7"/>
+      </Unit37>
+      <Unit38>
+        <Filename Value="htmlhelp2viewer.pas"/>
+        <ComponentName Value="HelpViewerForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="HtmlHelp2Viewer"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="43"/>
+        <CursorPos X="3" Y="63"/>
+        <UsageCount Value="11"/>
+      </Unit38>
+      <Unit39>
+        <Filename Value="iphtml.pas"/>
+        <UnitName Value="IpHtml"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="31"/>
+        <CursorPos X="3" Y="79"/>
+        <UsageCount Value="7"/>
+      </Unit39>
+      <Unit40>
+        <Filename Value="poiskvbaze.lfm"/>
+        <EditorIndex Value="-1"/>
+        <UsageCount Value="9"/>
+        <DefaultSyntaxHighlighter Value="LFM"/>
+      </Unit40>
+      <Unit41>
+        <Filename Value="C:\MrKaban\Desktop\Поиск лиц согл\unit1.pas"/>
+        <ComponentName Value="Form1"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="Unit1"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="92"/>
+        <CursorPos X="58" Y="110"/>
+        <UsageCount Value="9"/>
+      </Unit41>
+      <Unit42>
+        <Filename Value="..\Lpro 1.4.0\main.pas"/>
+        <UnitName Value="Main"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="817"/>
+        <CursorPos Y="826"/>
+        <UsageCount Value="8"/>
+      </Unit42>
+      <Unit43>
+        <Filename Value="..\Lpro 1.4.1.4\main.pas"/>
+        <UnitName Value="Main"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="873"/>
+        <CursorPos X="69" Y="1254"/>
+        <UsageCount Value="8"/>
+      </Unit43>
+      <Unit44>
+        <Filename Value="D:\Downloads\UberRegedit\UberRegeditSrc\Main.pas"/>
+        <EditorIndex Value="-1"/>
+        <WindowIndex Value="-1"/>
+        <TopLine Value="49"/>
+        <CursorPos X="72" Y="29"/>
+        <UsageCount Value="8"/>
+      </Unit44>
+      <Unit45>
+        <Filename Value="E:\lazarus\components\codetools\basiccodetools.pas"/>
+        <UnitName Value="BasicCodeTools"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="25"/>
+        <CursorPos X="22" Y="43"/>
+        <UsageCount Value="9"/>
+      </Unit45>
+      <Unit46>
+        <Filename Value="OOTable.pas"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="126" Y="14"/>
+        <UsageCount Value="10"/>
+      </Unit46>
+      <Unit47>
+        <Filename Value="OOObject.pas"/>
+        <EditorIndex Value="-1"/>
+        <CursorPos X="4" Y="17"/>
+        <UsageCount Value="10"/>
+      </Unit47>
+      <Unit48>
+        <Filename Value="C:\Users\MrKaban\Desktop\просмотр реестра\unit1.pas"/>
+        <ComponentName Value="Form1"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="Unit1"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="24"/>
+        <CursorPos X="5" Y="213"/>
+        <UsageCount Value="10"/>
+      </Unit48>
+      <Unit49>
+        <Filename Value="C:\Users\MrKaban\Desktop\просмотр реестра\unit1.lfm"/>
+        <EditorIndex Value="-1"/>
+        <UsageCount Value="10"/>
+        <DefaultSyntaxHighlighter Value="LFM"/>
+      </Unit49>
+      <Unit50>
+        <Filename Value="C:\lazarus\lcl\lclproc.pas"/>
+        <UnitName Value="LCLProc"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="320"/>
+        <CursorPos X="10" Y="339"/>
+        <UsageCount Value="10"/>
+      </Unit50>
     </Units>
-    <JumpHistory HistoryIndex="-1"/>
+    <JumpHistory Count="30" HistoryIndex="29">
+      <Position1>
+        <Filename Value="main.pas"/>
+        <Caret Line="1388" Column="39" TopLine="1360"/>
+      </Position1>
+      <Position2>
+        <Filename Value="main.pas"/>
+        <Caret Line="4139" Column="40" TopLine="4119"/>
+      </Position2>
+      <Position3>
+        <Filename Value="prosmotrreestra.pas"/>
+        <Caret Line="167" Column="64" TopLine="158"/>
+      </Position3>
+      <Position4>
+        <Filename Value="main.pas"/>
+        <Caret Line="17" Column="30"/>
+      </Position4>
+      <Position5>
+        <Filename Value="main.pas"/>
+        <Caret Line="1037" Column="56" TopLine="1002"/>
+      </Position5>
+      <Position6>
+        <Filename Value="prosmotrreestra.pas"/>
+        <Caret Line="9" Column="78"/>
+      </Position6>
+      <Position7>
+        <Filename Value="prosmotrreestra.pas"/>
+        <Caret Line="207" Column="52" TopLine="182"/>
+      </Position7>
+      <Position8>
+        <Filename Value="prosmotrreestra.pas"/>
+        <Caret Line="202" Column="80" TopLine="197"/>
+      </Position8>
+      <Position9>
+        <Filename Value="prosmotrreestra.pas"/>
+        <Caret Line="88" Column="6" TopLine="86"/>
+      </Position9>
+      <Position10>
+        <Filename Value="prosmotrreestra.pas"/>
+        <Caret Line="89" Column="7" TopLine="71"/>
+      </Position10>
+      <Position11>
+        <Filename Value="prosmotrreestra.pas"/>
+        <Caret Line="95" Column="28" TopLine="69"/>
+      </Position11>
+      <Position12>
+        <Filename Value="prosmotrreestra.pas"/>
+        <Caret Line="94" Column="15" TopLine="74"/>
+      </Position12>
+      <Position13>
+        <Filename Value="prosmotrreestra.pas"/>
+        <Caret Line="228" Column="31" TopLine="205"/>
+      </Position13>
+      <Position14>
+        <Filename Value="prosmotrreestra.pas"/>
+        <Caret Line="220" Column="6" TopLine="196"/>
+      </Position14>
+      <Position15>
+        <Filename Value="prosmotrreestra.pas"/>
+        <Caret Line="202" Column="53" TopLine="180"/>
+      </Position15>
+      <Position16>
+        <Filename Value="prosmotrreestra.pas"/>
+        <Caret Line="216" Column="32" TopLine="185"/>
+      </Position16>
+      <Position17>
+        <Filename Value="prosmotrreestra.pas"/>
+        <Caret Line="255" Column="71" TopLine="235"/>
+      </Position17>
+      <Position18>
+        <Filename Value="prosmotrreestra.pas"/>
+        <Caret Line="177" Column="21" TopLine="157"/>
+      </Position18>
+      <Position19>
+        <Filename Value="prosmotrreestra.pas"/>
+        <Caret Line="176" Column="39" TopLine="157"/>
+      </Position19>
+      <Position20>
+        <Filename Value="prosmotrreestra.pas"/>
+        <Caret Line="175" Column="17" TopLine="156"/>
+      </Position20>
+      <Position21>
+        <Filename Value="prosmotrreestra.pas"/>
+        <Caret Line="176" Column="25" TopLine="165"/>
+      </Position21>
+      <Position22>
+        <Filename Value="main.pas"/>
+        <Caret Line="5862" Column="39" TopLine="5841"/>
+      </Position22>
+      <Position23>
+        <Filename Value="main.pas"/>
+        <Caret Line="53" Column="36" TopLine="34"/>
+      </Position23>
+      <Position24>
+        <Filename Value="main.pas"/>
+        <Caret Line="61" Column="43" TopLine="40"/>
+      </Position24>
+      <Position25>
+        <Filename Value="main.pas"/>
+        <Caret Line="177" Column="22" TopLine="145"/>
+      </Position25>
+      <Position26>
+        <Filename Value="main.pas"/>
+        <Caret Line="220" Column="23" TopLine="189"/>
+      </Position26>
+      <Position27>
+        <Filename Value="main.pas"/>
+        <Caret Line="3753" Column="25" TopLine="3721"/>
+      </Position27>
+      <Position28>
+        <Filename Value="main.pas"/>
+        <Caret Line="4268" Column="6" TopLine="4260"/>
+      </Position28>
+      <Position29>
+        <Filename Value="main.pas"/>
+        <Caret Line="5159" Column="277" TopLine="5140"/>
+      </Position29>
+      <Position30>
+        <Filename Value="settings.pas"/>
+        <Caret Line="358" Column="11" TopLine="331"/>
+      </Position30>
+    </JumpHistory>
   </ProjectSession>
 </CONFIG>

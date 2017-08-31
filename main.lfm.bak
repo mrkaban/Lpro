@@ -1,93 +1,3461 @@
 object fMian: TfMian
-  Left = 273
-  Height = 380
-  Top = 233
-  Width = 728
-  Caption = 'Lpro - Проверка лицензий установленных программ'
-  ClientHeight = 360
-  ClientWidth = 728
+  Left = 275
+  Height = 445
+  Top = 174
+  Width = 853
+  Caption = 'Lpro 1.4.1 - Проверка лицензий установленных программ'
+  ClientHeight = 425
+  ClientWidth = 853
   Menu = MainMenu1
+  OnClose = FormClose
   OnCreate = FormCreate
+  PopupMenu = PopupMenu1
+  Position = poDesktopCenter
   LCLVersion = '1.6.0.4'
-  object StringGrid1: TStringGrid
+  object ToolBar1: TToolBar
     Left = 0
-    Height = 360
+    Height = 26
     Top = 0
-    Width = 728
-    Color = clDefault
-    FixedCols = 0
-    Font.CharSet = ANSI_CHARSET
+    Width = 853
+    AutoSize = True
+    Caption = 'ToolBar1'
+    EdgeBorders = [ebLeft, ebTop, ebRight, ebBottom]
+    Images = ImageList1
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 0
+    object panExit: TToolButton
+      Left = 3
+      Hint = 'Выход из программы'
+      Top = 2
+      Caption = 'Выход'
+      ImageIndex = 15
+      MenuItem = mExit
+    end
+    object panExportCSV: TToolButton
+      Left = 34
+      Hint = 'Экспорт в CSV'
+      Top = 2
+      Caption = 'Экспорт в CSV'
+      ImageIndex = 17
+      MenuItem = mExport
+    end
+    object panExportHTML: TToolButton
+      Left = 57
+      Hint = 'Экспорт в HTML'
+      Top = 2
+      Caption = 'Экспорт в HTML'
+      ImageIndex = 18
+      MenuItem = mExportHTML
+    end
+    object panPeredatExcel: TToolButton
+      Left = 80
+      Hint = 'Передать в  Excel'
+      Top = 2
+      Caption = 'Передать в  Excel'
+      ImageIndex = 16
+      MenuItem = mPeredatExcel
+    end
+    object ToolButton1: TToolButton
+      Left = 26
+      Height = 22
+      Top = 2
+      Width = 8
+      Caption = 'ToolButton1'
+      Style = tbsSeparator
+    end
+    object ToolButton2: TToolButton
+      Left = 103
+      Height = 22
+      Top = 2
+      Width = 8
+      Caption = 'ToolButton2'
+      Style = tbsSeparator
+    end
+    object panBeginSerch: TToolButton
+      Left = 111
+      Hint = 'Начать поиск'
+      Top = 2
+      Caption = 'Начать поиск'
+      ImageIndex = 7
+      MenuItem = mBeginSerch
+    end
+    object panOchistit: TToolButton
+      Left = 134
+      Hint = 'Очистить таблицу'
+      Top = 2
+      Caption = 'Очистить'
+      ImageIndex = 9
+      MenuItem = mOchistit
+    end
+    object panPoiskVBaze: TToolButton
+      Left = 157
+      Hint = 'Поиск в базе'
+      Top = 2
+      Caption = 'Поиск в базе'
+      ImageIndex = 19
+      MenuItem = mPoiskVBaze
+    end
+    object panPodborZameni: TToolButton
+      Left = 180
+      Hint = 'Подобрать замену'
+      Top = 2
+      Caption = 'Подобрать замену'
+      ImageIndex = 23
+      MenuItem = mPodborZameni
+    end
+    object ToolButton3: TToolButton
+      Left = 203
+      Height = 22
+      Top = 2
+      Width = 8
+      Caption = 'ToolButton3'
+      Style = tbsSeparator
+    end
+    object panSort00: TToolButton
+      Left = 211
+      Hint = 'Сортировать по названию'
+      Top = 2
+      Caption = 'Сортировать по названию'
+      ImageIndex = 2
+      MenuItem = mSort00
+    end
+    object panSort01: TToolButton
+      Left = 234
+      Hint = 'Сортировать по типу'
+      Top = 2
+      Caption = 'Сортировать по типу'
+      ImageIndex = 3
+      MenuItem = mSort01
+    end
+    object panSort02: TToolButton
+      Left = 257
+      Hint = 'Сортировать по лицензии'
+      Top = 2
+      Caption = 'Сортировать по лицензии'
+      ImageIndex = 1
+      MenuItem = mSort02
+    end
+    object panSort03: TToolButton
+      Left = 280
+      Hint = 'Сортировать по стоимости'
+      Top = 2
+      Caption = 'Сортировать по стоимости'
+      ImageIndex = 5
+      MenuItem = mSort03
+    end
+    object panSort04: TToolButton
+      Left = 303
+      Hint = 'Сортировать по замене'
+      Top = 2
+      Caption = 'Сортировать по замене'
+      ImageIndex = 4
+      MenuItem = mSort04
+    end
+    object ToolButton4: TToolButton
+      Left = 326
+      Height = 22
+      Top = 2
+      Width = 8
+      Caption = 'ToolButton4'
+      Style = tbsSeparator
+    end
+    object panAbout: TToolButton
+      Left = 357
+      Hint = 'О программе'
+      Top = 2
+      Caption = 'О программе'
+      ImageIndex = 24
+      MenuItem = mAbout
+    end
+    object panUpdateCheck: TToolButton
+      Left = 380
+      Hint = 'Проверить обновление'
+      Top = 2
+      Caption = 'Проверить обновление'
+      ImageIndex = 21
+      MenuItem = mUpdateCheck
+    end
+    object panHelp: TToolButton
+      Left = 334
+      Hint = 'Справка'
+      Top = 2
+      Caption = 'Справка'
+      ImageIndex = 0
+      MenuItem = mHelp
+    end
+  end
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 399
+    Top = 26
+    Width = 853
+    ActivePage = RuchPoiskPage
+    Align = alClient
+    Images = ImageList1
+    ParentBiDiMode = False
+    TabIndex = 1
+    TabOrder = 1
+    TabPosition = tpBottom
+    OnChange = PageControl1Change
+    object AvtoPoiskPage: TTabSheet
+      Caption = 'Автопоиск'
+      ClientHeight = 371
+      ClientWidth = 845
+      ImageIndex = 7
+      OnContextPopup = AvtoPoiskPageContextPopup
+      object DBGrid1: TDBGrid
+        Left = 0
+        Height = 219
+        Top = 0
+        Width = 845
+        Align = alClient
+        Color = clWindow
+        Columns = <>
+        DataSource = DataSource1
+        Options = [dgTitles, dgIndicator, dgColumnResize, dgColumnMove, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit, dgAutoSizeColumns]
+        ReadOnly = True
+        TabOrder = 0
+        OnCellClick = DBGrid1CellClick
+        OnDrawColumnCell = DBGrid1DrawColumnCell
+      end
+      object Memo1: TMemo
+        Left = 200
+        Height = 80
+        Top = 8
+        Width = 118
+        Lines.Strings = (
+          'Memo1'
+        )
+        TabOrder = 1
+        Visible = False
+      end
+      object bSearch: TButton
+        Left = 232
+        Height = 72
+        Hint = 'Начать поиск программ'
+        Top = 72
+        Width = 346
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        Caption = 'Начать поиск'
+        Font.Height = -17
+        Font.Name = 'Times New Roman'
+        OnClick = mBeginSerchClick
+        ParentFont = False
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 2
+      end
+      object PageControl2: TPageControl
+        Left = 0
+        Height = 152
+        Top = 219
+        Width = 845
+        ActivePage = tsPodrobnosti
+        Align = alBottom
+        TabIndex = 0
+        TabOrder = 3
+        object tsPodrobnosti: TTabSheet
+          Caption = 'Основное'
+          ClientHeight = 124
+          ClientWidth = 837
+          object leNamePodrob: TLabeledEdit
+            Left = 0
+            Height = 23
+            Top = 16
+            Width = 184
+            EditLabel.AnchorSideLeft.Control = leNamePodrob
+            EditLabel.AnchorSideRight.Control = leNamePodrob
+            EditLabel.AnchorSideRight.Side = asrBottom
+            EditLabel.AnchorSideBottom.Control = leNamePodrob
+            EditLabel.Left = 0
+            EditLabel.Height = 15
+            EditLabel.Top = -2
+            EditLabel.Width = 184
+            EditLabel.Caption = 'Название из БД'
+            EditLabel.ParentColor = False
+            ReadOnly = True
+            TabOrder = 0
+          end
+          object leIshName: TLabeledEdit
+            Left = 192
+            Height = 23
+            Top = 16
+            Width = 256
+            EditLabel.AnchorSideLeft.Control = leIshName
+            EditLabel.AnchorSideRight.Control = leIshName
+            EditLabel.AnchorSideRight.Side = asrBottom
+            EditLabel.AnchorSideBottom.Control = leIshName
+            EditLabel.Left = 192
+            EditLabel.Height = 15
+            EditLabel.Top = -2
+            EditLabel.Width = 256
+            EditLabel.Caption = 'Исходное название'
+            EditLabel.ParentColor = False
+            ReadOnly = True
+            TabOrder = 1
+          end
+          object leKluchPodrob: TLabeledEdit
+            Left = 0
+            Height = 23
+            Top = 56
+            Width = 584
+            EditLabel.AnchorSideLeft.Control = leKluchPodrob
+            EditLabel.AnchorSideRight.Control = leKluchPodrob
+            EditLabel.AnchorSideRight.Side = asrBottom
+            EditLabel.AnchorSideBottom.Control = leKluchPodrob
+            EditLabel.Left = 0
+            EditLabel.Height = 15
+            EditLabel.Top = 38
+            EditLabel.Width = 584
+            EditLabel.Caption = 'Ключ реестра'
+            EditLabel.ParentColor = False
+            ReadOnly = True
+            TabOrder = 2
+          end
+          object leKatalogPodrob: TLabeledEdit
+            Left = 0
+            Height = 23
+            Top = 96
+            Width = 264
+            EditLabel.AnchorSideLeft.Control = leKatalogPodrob
+            EditLabel.AnchorSideRight.Control = leKatalogPodrob
+            EditLabel.AnchorSideRight.Side = asrBottom
+            EditLabel.AnchorSideBottom.Control = leKatalogPodrob
+            EditLabel.Left = 0
+            EditLabel.Height = 15
+            EditLabel.Top = 78
+            EditLabel.Width = 264
+            EditLabel.Caption = 'Каталог'
+            EditLabel.ParentColor = False
+            ReadOnly = True
+            TabOrder = 3
+          end
+          object bOpenKatPodrob: TButton
+            Left = 272
+            Height = 25
+            Top = 94
+            Width = 107
+            Caption = 'Открыть каталог'
+            Enabled = False
+            OnClick = bOpenKatPodrobClick
+            TabOrder = 4
+          end
+          object leVersionPodrob: TLabeledEdit
+            Left = 456
+            Height = 23
+            Top = 16
+            Width = 72
+            EditLabel.AnchorSideLeft.Control = leVersionPodrob
+            EditLabel.AnchorSideRight.Control = leVersionPodrob
+            EditLabel.AnchorSideRight.Side = asrBottom
+            EditLabel.AnchorSideBottom.Control = leVersionPodrob
+            EditLabel.Left = 456
+            EditLabel.Height = 15
+            EditLabel.Top = -2
+            EditLabel.Width = 72
+            EditLabel.Caption = 'Версия'
+            EditLabel.ParentColor = False
+            ReadOnly = True
+            TabOrder = 5
+          end
+          object leRazrabPodrob: TLabeledEdit
+            Left = 392
+            Height = 23
+            Top = 96
+            Width = 136
+            EditLabel.AnchorSideLeft.Control = leRazrabPodrob
+            EditLabel.AnchorSideRight.Control = leRazrabPodrob
+            EditLabel.AnchorSideRight.Side = asrBottom
+            EditLabel.AnchorSideBottom.Control = leRazrabPodrob
+            EditLabel.Left = 392
+            EditLabel.Height = 15
+            EditLabel.Top = 78
+            EditLabel.Width = 136
+            EditLabel.Caption = 'Разработчик'
+            EditLabel.ParentColor = False
+            ReadOnly = True
+            TabOrder = 6
+          end
+          object leInstallDatePodrob: TLabeledEdit
+            Left = 536
+            Height = 23
+            Top = 16
+            Width = 88
+            EditLabel.AnchorSideLeft.Control = leInstallDatePodrob
+            EditLabel.AnchorSideRight.Control = leInstallDatePodrob
+            EditLabel.AnchorSideRight.Side = asrBottom
+            EditLabel.AnchorSideBottom.Control = leInstallDatePodrob
+            EditLabel.Left = 536
+            EditLabel.Height = 15
+            EditLabel.Top = -2
+            EditLabel.Width = 88
+            EditLabel.Caption = 'Дата установки'
+            EditLabel.ParentColor = False
+            ReadOnly = True
+            TabOrder = 7
+          end
+          object leTypePoPodrob: TLabeledEdit
+            Left = 592
+            Height = 23
+            Top = 56
+            Width = 152
+            EditLabel.AnchorSideLeft.Control = leTypePoPodrob
+            EditLabel.AnchorSideRight.Control = leTypePoPodrob
+            EditLabel.AnchorSideRight.Side = asrBottom
+            EditLabel.AnchorSideBottom.Control = leTypePoPodrob
+            EditLabel.Left = 592
+            EditLabel.Height = 15
+            EditLabel.Top = 38
+            EditLabel.Width = 152
+            EditLabel.Caption = 'Тип ПО'
+            EditLabel.ParentColor = False
+            ReadOnly = True
+            TabOrder = 8
+          end
+          object leLicensePodrob: TLabeledEdit
+            Left = 632
+            Height = 23
+            Top = 16
+            Width = 112
+            EditLabel.AnchorSideLeft.Control = leLicensePodrob
+            EditLabel.AnchorSideRight.Control = leLicensePodrob
+            EditLabel.AnchorSideRight.Side = asrBottom
+            EditLabel.AnchorSideBottom.Control = leLicensePodrob
+            EditLabel.Left = 632
+            EditLabel.Height = 15
+            EditLabel.Top = -2
+            EditLabel.Width = 112
+            EditLabel.Caption = 'Лицензия'
+            EditLabel.ParentColor = False
+            ReadOnly = True
+            TabOrder = 9
+          end
+          object leStoimostPodrob: TLabeledEdit
+            Left = 752
+            Height = 23
+            Top = 16
+            Width = 80
+            EditLabel.AnchorSideLeft.Control = leStoimostPodrob
+            EditLabel.AnchorSideRight.Control = leStoimostPodrob
+            EditLabel.AnchorSideRight.Side = asrBottom
+            EditLabel.AnchorSideBottom.Control = leStoimostPodrob
+            EditLabel.Left = 752
+            EditLabel.Height = 15
+            EditLabel.Top = -2
+            EditLabel.Width = 80
+            EditLabel.Caption = 'Стоимость'
+            EditLabel.ParentColor = False
+            ReadOnly = True
+            TabOrder = 10
+          end
+          object cbZamenaPodrob: TComboBox
+            Left = 536
+            Height = 23
+            Top = 96
+            Width = 116
+            Enabled = False
+            ItemHeight = 15
+            Style = csDropDownList
+            TabOrder = 11
+          end
+          object bViewZamPodrob: TButton
+            Left = 664
+            Height = 25
+            Top = 94
+            Width = 120
+            Caption = 'Посмотреть замену'
+            Enabled = False
+            OnClick = bViewZamPodrobClick
+            TabOrder = 12
+          end
+        end
+        object tsLicenseSogl: TTabSheet
+          Caption = 'Лицензионное соглашение (0)'
+          ClientHeight = 124
+          ClientWidth = 837
+          object ComboBox1: TComboBox
+            Left = 0
+            Height = 23
+            Top = 0
+            Width = 837
+            Align = alTop
+            ItemHeight = 15
+            OnChange = ComboBox1Change
+            TabOrder = 0
+          end
+          object RichMemo1: TRichMemo
+            Left = 0
+            Height = 101
+            Top = 23
+            Width = 837
+            Align = alClient
+            HideSelection = False
+            ReadOnly = True
+            ScrollBars = ssAutoVertical
+            TabOrder = 1
+            ZoomFactor = 1
+          end
+        end
+        object tsVseVarianti: TTabSheet
+          Caption = 'Все варианты (0)'
+          ClientHeight = 124
+          ClientWidth = 837
+          object DBGridAllVar: TDBGrid
+            Left = 0
+            Height = 124
+            Top = 0
+            Width = 837
+            Align = alClient
+            Color = clWindow
+            Columns = <>
+            DataSource = DataSourceAllVar
+            ReadOnly = True
+            TabOrder = 0
+          end
+        end
+      end
+    end
+    object RuchPoiskPage: TTabSheet
+      Caption = 'Ручной поиск'
+      ClientHeight = 371
+      ClientWidth = 845
+      ImageIndex = 22
+      object DBGrid2: TDBGrid
+        Left = 0
+        Height = 339
+        Top = 32
+        Width = 845
+        Align = alClient
+        Color = clWindow
+        Columns = <>
+        DataSource = DataSource3
+        TabOrder = 0
+      end
+      object Panel1: TPanel
+        Left = 0
+        Height = 32
+        Top = 0
+        Width = 845
+        Align = alTop
+        ClientHeight = 32
+        ClientWidth = 845
+        TabOrder = 1
+        object leKatalogSearch: TLabeledEdit
+          Left = 120
+          Height = 23
+          Top = 0
+          Width = 320
+          EditLabel.AnchorSideTop.Control = leKatalogSearch
+          EditLabel.AnchorSideTop.Side = asrCenter
+          EditLabel.AnchorSideRight.Control = leKatalogSearch
+          EditLabel.AnchorSideBottom.Control = leKatalogSearch
+          EditLabel.AnchorSideBottom.Side = asrBottom
+          EditLabel.Left = 10
+          EditLabel.Height = 15
+          EditLabel.Top = 4
+          EditLabel.Width = 107
+          EditLabel.Caption = 'Каталог для поиска'
+          EditLabel.ParentColor = False
+          LabelPosition = lpLeft
+          ParentBidiMode = False
+          TabOrder = 0
+        end
+        object bRuchPoisk: TButton
+          Left = 456
+          Height = 25
+          Top = 0
+          Width = 75
+          Caption = 'Поиск'
+          OnClick = bRuchPoiskClick
+          TabOrder = 1
+        end
+        object bUkazKatalog: TButton
+          Left = 544
+          Height = 25
+          Top = 0
+          Width = 104
+          Caption = 'Указать каталог'
+          OnClick = bUkazKatalogClick
+          TabOrder = 2
+        end
+      end
+    end
+    object InstallPoPage: TTabSheet
+      Caption = 'Установленное ПО'
+      ClientHeight = 371
+      ClientWidth = 845
+      ImageIndex = 25
+      object ListBox1: TListBox
+        Left = 0
+        Height = 371
+        Top = 0
+        Width = 232
+        Align = alLeft
+        ItemHeight = 0
+        OnSelectionChange = ListBox1SelectionChange
+        TabOrder = 0
+      end
+      object PanelInstalled: TPanel
+        Left = 240
+        Height = 240
+        Top = 8
+        Width = 607
+        Anchors = [akTop, akLeft, akRight, akBottom]
+        ClientHeight = 240
+        ClientWidth = 607
+        TabOrder = 1
+        object rVetkaReestra: TRadioGroup
+          Left = 0
+          Height = 41
+          Top = 0
+          Width = 184
+          AutoFill = True
+          Caption = 'Ветка реестра'
+          ChildSizing.LeftRightSpacing = 6
+          ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+          ChildSizing.EnlargeVertical = crsHomogenousChildResize
+          ChildSizing.ShrinkHorizontal = crsScaleChilds
+          ChildSizing.ShrinkVertical = crsScaleChilds
+          ChildSizing.Layout = cclLeftToRightThenTopToBottom
+          ChildSizing.ControlsPerLine = 2
+          ClientHeight = 21
+          ClientWidth = 180
+          Columns = 2
+          ItemIndex = 0
+          Items.Strings = (
+            '32-бит'
+            '64-бит'
+          )
+          OnSelectionChanged = rVetkaReestraSelectionChanged
+          ParentBidiMode = False
+          TabOrder = 0
+        end
+        object leFullPathKey: TLabeledEdit
+          Left = 0
+          Height = 23
+          Top = 64
+          Width = 544
+          EditLabel.AnchorSideLeft.Control = leFullPathKey
+          EditLabel.AnchorSideRight.Control = leFullPathKey
+          EditLabel.AnchorSideRight.Side = asrBottom
+          EditLabel.AnchorSideBottom.Control = leFullPathKey
+          EditLabel.Left = 0
+          EditLabel.Height = 15
+          EditLabel.Top = 46
+          EditLabel.Width = 544
+          EditLabel.Caption = 'Полный путь ключа'
+          EditLabel.ParentColor = False
+          ReadOnly = True
+          TabOrder = 1
+        end
+        object leKeyName: TLabeledEdit
+          Left = 0
+          Height = 23
+          Top = 104
+          Width = 168
+          EditLabel.AnchorSideLeft.Control = leKeyName
+          EditLabel.AnchorSideRight.Control = leKeyName
+          EditLabel.AnchorSideRight.Side = asrBottom
+          EditLabel.AnchorSideBottom.Control = leKeyName
+          EditLabel.Left = 0
+          EditLabel.Height = 15
+          EditLabel.Top = 86
+          EditLabel.Width = 168
+          EditLabel.Caption = 'Название ключа'
+          EditLabel.ParentColor = False
+          ReadOnly = True
+          TabOrder = 2
+        end
+        object leDisplayName: TLabeledEdit
+          Left = 176
+          Height = 23
+          Top = 104
+          Width = 208
+          EditLabel.AnchorSideLeft.Control = leDisplayName
+          EditLabel.AnchorSideRight.Control = leDisplayName
+          EditLabel.AnchorSideRight.Side = asrBottom
+          EditLabel.AnchorSideBottom.Control = leDisplayName
+          EditLabel.Left = 176
+          EditLabel.Height = 15
+          EditLabel.Top = 86
+          EditLabel.Width = 208
+          EditLabel.Caption = 'Название программы'
+          EditLabel.ParentColor = False
+          ReadOnly = True
+          TabOrder = 3
+        end
+        object leVersionProg: TLabeledEdit
+          Left = 400
+          Height = 23
+          Top = 104
+          Width = 88
+          EditLabel.AnchorSideLeft.Control = leVersionProg
+          EditLabel.AnchorSideRight.Control = leVersionProg
+          EditLabel.AnchorSideRight.Side = asrBottom
+          EditLabel.AnchorSideBottom.Control = leVersionProg
+          EditLabel.Left = 400
+          EditLabel.Height = 15
+          EditLabel.Top = 86
+          EditLabel.Width = 88
+          EditLabel.Caption = 'Версия'
+          EditLabel.ParentColor = False
+          ReadOnly = True
+          TabOrder = 4
+        end
+        object leRazrab: TLabeledEdit
+          Left = 0
+          Height = 23
+          Top = 144
+          Width = 192
+          EditLabel.AnchorSideLeft.Control = leRazrab
+          EditLabel.AnchorSideRight.Control = leRazrab
+          EditLabel.AnchorSideRight.Side = asrBottom
+          EditLabel.AnchorSideBottom.Control = leRazrab
+          EditLabel.Left = 0
+          EditLabel.Height = 15
+          EditLabel.Top = 126
+          EditLabel.Width = 192
+          EditLabel.Caption = 'Разработчик'
+          EditLabel.ParentColor = False
+          ReadOnly = True
+          TabOrder = 5
+        end
+        object leKatalog: TLabeledEdit
+          Left = 0
+          Height = 23
+          Top = 192
+          Width = 408
+          EditLabel.AnchorSideLeft.Control = leKatalog
+          EditLabel.AnchorSideRight.Control = leKatalog
+          EditLabel.AnchorSideRight.Side = asrBottom
+          EditLabel.AnchorSideBottom.Control = leKatalog
+          EditLabel.Left = 0
+          EditLabel.Height = 15
+          EditLabel.Top = 174
+          EditLabel.Width = 408
+          EditLabel.Caption = 'Каталог'
+          EditLabel.ParentColor = False
+          ReadOnly = True
+          TabOrder = 6
+        end
+        object bExplorer: TButton
+          Left = 424
+          Height = 25
+          Top = 192
+          Width = 99
+          Caption = 'Открыть каталог'
+          OnClick = bExplorerClick
+          TabOrder = 7
+        end
+        object leInstallDate: TLabeledEdit
+          Left = 200
+          Height = 23
+          Top = 144
+          Width = 88
+          EditLabel.AnchorSideLeft.Control = leInstallDate
+          EditLabel.AnchorSideRight.Control = leInstallDate
+          EditLabel.AnchorSideRight.Side = asrBottom
+          EditLabel.AnchorSideBottom.Control = leInstallDate
+          EditLabel.Left = 200
+          EditLabel.Height = 15
+          EditLabel.Top = 126
+          EditLabel.Width = 88
+          EditLabel.Caption = 'Дата установки'
+          EditLabel.ParentColor = False
+          ReadOnly = True
+          TabOrder = 8
+        end
+        object bRegedit: TButton
+          Left = 200
+          Height = 25
+          Top = 8
+          Width = 75
+          Caption = 'Regedit'
+          OnClick = bRegeditClick
+          TabOrder = 9
+        end
+        object bDeinstrall: TButton
+          Left = 288
+          Height = 25
+          Top = 8
+          Width = 115
+          Caption = 'Деинсталлировать'
+          OnClick = bDeinstrallClick
+          TabOrder = 10
+        end
+      end
+      object DBGrid3: TDBGrid
+        Left = 232
+        Height = 137
+        Top = 231
+        Width = 615
+        Anchors = [akTop, akLeft, akRight]
+        Color = clWindow
+        Columns = <>
+        DataSource = DataSource4
+        ReadOnly = True
+        TabOrder = 2
+      end
+    end
+  end
+  object ProgressBar1: TProgressBar
+    Left = 576
+    Height = 24
+    Top = 400
+    Width = 133
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    TabOrder = 2
+  end
+  object lProgress: TLabel
+    Left = 712
+    Height = 1
+    Top = 405
+    Width = 1
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    Font.CharSet = RUSSIAN_CHARSET
     Font.Height = -13
     Font.Name = 'Times New Roman'
     Font.Pitch = fpVariable
     Font.Quality = fqDraft
-    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goThumbTracking, goSmoothScroll]
+    ParentColor = False
     ParentFont = False
-    RowCount = 1
-    TabOrder = 0
-    TitleFont.CharSet = ANSI_CHARSET
-    TitleFont.Height = -13
-    TitleFont.Name = 'Times New Roman'
-    TitleFont.Pitch = fpVariable
-    TitleFont.Quality = fqDraft
-    OnDrawCell = StringGrid1DrawCell
   end
   object MainMenu1: TMainMenu
-    left = 488
-    top = 200
+    Images = ImageList1
+    left = 112
+    top = 48
     object mFile: TMenuItem
       Caption = 'Файл'
+      Bitmap.Data = {
+        36040000424D3604000000000000360000002800000010000000100000000100
+        2000000000000004000064000000640000000000000000000000000000004949
+        490E474747125555551255555512555555125555551255555512555555124747
+        47124949490E0000000000000000000000000000000000000000505050105352
+        50A5A88474E7A88575E8A88575E8A88575E8A88575E8A88575E8A88575E8A884
+        74E7B18A78D4D19F884D000000000000000000000000000000004D4D4D145853
+        52CBE8AC90FFE8AC90FFE8AC90FFE8AC90FFE8AC90FFE8AC90FFE8AC90FFE8AC
+        90FFE8AC90FFDDA48C87000000000000000000000000000000004D4D4D145853
+        52CDE8AC90FFBE8D76FFD19B82FFBF8E77FFB1846EFFC08E77FFD09A81FFE8AC
+        90FFE8AC90FFDDA48C87000000000000000000000000000000004D4D4D145853
+        52CDE8AC90FFBE8D76FFB1846EFFC6937BFFC3917AFFAE816CFFBF8E77FFD09A
+        81FFE8AC90FFDDA48C87000000000000000000000000000000004D4D4D145853
+        52CDE8AC90FFD39C83FFCD987FFFD49D84FFDAA287FFC9957DFFD39C83FFDBA3
+        88FFE8AC90FFDDA48C87000000000000000000000000000000004D4D4D145853
+        52CDE8AC90FFD39C83FFCD987FFFD49D84FFDAA287FFC9957DFFD39C83FFDBA3
+        88FFE8AC90FFDDA48C87000000000000000000000000000000004D4D4D145853
+        52CDE8AC90FFBE8D76FFCC977FFFAD806BFFC29078FFAB7F6AFFE8AC90FFE8AC
+        90FFE8AC90FFDDA48C87000000000000000000000000000000004D4D4D145853
+        52CDE8AC90FFB48670FFA57A66FFC08E77FFC08E77FFE8AC90FFE8AC90FFE8AC
+        90FFE8AC90FFDDA48C87000000000000000000000000000000004D4D4D145853
+        52CDE8AC90FFBE8D76FFD09A81FFAC7F6BFFC49179FFB0826DFFC7947CFFC08E
+        77FFE8AC90FFDDA48C87000000000000000000000000000000004D4D4D145853
+        52CDE8AC90FFC9957DFFBF8E77FFC18F78FFD19B82FFBA8A73FFD39C83FFE8AC
+        90FFE8AC90FFDDA48C87000000000000000000000000000000004D4D4D145853
+        52CDE8AC90FFDEA58AFFDAA288FFDBA388FFE0A68BFFD9A186FFE1A78BFFE8AC
+        90FFE8AC90FFDDA48C87000000000000000000000000000000004D4D4D145853
+        52CDE8AC90FFBE8D76FFC8947CFFAA7E6AFFC08F77FFB98973FFBD8C75FFD29C
+        82FFE8AC90FFDDA48C87000000000000000000000000000000004D4D4D145853
+        52CBE8AC90FFBE8D76FFD19B82FFBB8B74FFC6937BFFAA7E6AFFBF8D76FFBF8E
+        77FFE8AC90FFDDA48C8700000000000000000000000000000000505050105954
+        53A6E0A78CFCE0A78CFCE0A78CFCE0A78CFCE0A78CFCE0A78CFCE0A78CFCE0A7
+        8CFCE1A88CF9DEA78C7C00000000000000000000000000000000000000004949
+        490E474747125555551255555512555555125555551255555512555555124747
+        47124949490E0000000000000000000000000000000000000000
+      }
+      ImageIndex = 11
+      object mCopy: TMenuItem
+        Caption = 'Копировать выделение'
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000000000000000
+          00000000000000000000000000004646461D4D4D4D354D4D4D354D4D4D354D4D
+          4D354D4D4D354D4D4D354D4D4D0A000000000000000000000000000000000000
+          00000000000000000000000000014E4E4E8DDEA68BFFDEA68BFFDEA68BFFDEA6
+          8BFFDEA68BFFDEA68BFFD5A188AE000000000000000000000000000000000000
+          00000000000000000002555555034D4D4D8FE7AB8FFFD29C82FFD49D84FFD39D
+          84FFD9A186FFE8AC90FFD8A389B6000000000000000000000000000000000000
+          00008080800270635CAFA08171DA6F625CEFE7AB8FFFC9957DFFD59E84FFD29B
+          82FFD29B82FFE3A88DFFD8A389B6000000000000000000000000000000000000
+          000240404004846E64E8E2A78CFF907569FFE6AB8FFFBA8A73FFCA967EFFCD98
+          7FFFC6937AFFDFA58AFFD8A389B60000000000000000000000004A4A4A1F7D6A
+          61AD93786CBB856F64F9CD977FFF7F695FFFE6AB8FFFC8947CFFC6937BFFBE8D
+          76FFDEA58AFFE8AC90FFD8A389B60000000000000000000000004C4C4C36B18B
+          78FEE7AC90FF8D7368FFD69E84FF836C62FFE5AA8EFFA97E69FFB68772FFCD98
+          7EFFD39D83FFDDA489FFD8A389B60000000000000000000000004C4C4C36B18B
+          78FEB68771FF8A7166FFD69E84FF856E63FFE5AA8EFFB1846EFFB98A73FFC08D
+          77FFC6947BFFE3A88DFFD8A389B60000000000000000000000004C4C4C36B18B
+          78FEBF8E77FF897166FFD69E84FF836C62FFE6AB8FFFC8947CFFBB8A74FFC692
+          7BFFCB977EFFE1A78BFFD8A389B60000000000000000000000004C4C4C36B18B
+          78FEC7947CFF8A7266FFDCA388FF8C7367FFE6AB8FFFC8947CFFC9957DFFC895
+          7CFFC5927AFFD79F85FFD8A389B60000000000000000000000004C4C4C36B18B
+          78FEC7947CFF8B7267FFD79F85FF9C7B6BFFBE927DFFBB907BFFC1947FFFC395
+          80FFBF937EE3BC917DD5CF9D85750000000000000000000000004C4C4C36B18B
+          78FEC7947CFF8B7267FFCD987FFFBF8D77FFB0826DFFAC7F6AFFB1836DFFE4AA
+          8EFFE4AA8F5400000002000000000000000000000000000000004C4C4C36B18B
+          78FED29C83FF8B7267FFE3A88DFFE3A88DFFDDA489FFD9A187FFDCA489FFE7AB
+          8FFFE9AC905300000000000000000000000000000000000000004C4C4C36B18B
+          78FEC8947CFFC1927AFFC3917BFFC8967EFFCB987FFFDEA58BFFB48C7833BA8F
+          7A30E6B3990A00000000000000000000000000000000000000004C4C4C36B18B
+          78FEC8947CFFD7A086FFC9967DFFC49179FFC6937BFFE7AB8FFF000000010000
+          00000000000000000000000000000000000000000000000000004D4D4D0A9578
+          6A57AE88756BAE88756BAE88756BAE88756BAE88756BC1957E57000000000000
+          0000000000000000000000000000000000000000000000000000
+        }
+        ImageIndex = 8
+        Visible = False
+        OnClick = pCopyClick
+      end
+      object mExport: TMenuItem
+        Caption = 'Экспорт в CSV'
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000000000000000
+          0000666666054B4B4B1155555512555555125555551255555512555555125555
+          5512555555124B4B4B1133333305000000000000000000000000000000004040
+          400479685E4CB58D7AE6B28B78EBB28B78EBB28B78EBB28B78EBB28B78EBB28B
+          78EBB28B78EBB58D7AE6806D6246404040040000000000000000FF000008FB02
+          027AF10E0CD7FA221DFFFA221DFFFA221DFFFA221DFFFA221DFFFA221DFFFA22
+          1DFFFA221DFFFA221DFFF30D0CD5FB020279FF00000800000000FF0000A2FF00
+          00FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF00
+          00FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000A000000000FF0000F7FF00
+          00FFFF6363FDFFBFBFFFFFA6A6FFFF2424FFFFAEAEFFFFB9B9FFFF8181FFFF00
+          00FFFFA3A3FFFFC2C2FFFF0000FFFF0000FFFF0000F700000000FF0000FFFF00
+          00FFFFE9E9FFFF1111FFFF0000FFFF0000FFFF5050FFFFB5B5FFFF9595FFFF16
+          16FFFFD4D4FFFFB9B9FFFF3131FFFF0000FFFF0000FF00000000FF0000FFFF00
+          00FFFFC5C5FFFF5757FFFF3030FFFF1717FFFFE5E5FFFF4646FFFF2424FFFF74
+          74FFFF7979FFFF5858FFFF9595FFFF0000FFFF0000FF00000000FF0000E0FF00
+          00FFFD0E0EFAFF7575FFFF7777FFFF0A0AFFFF5858FFFF8686FFFF3939FFFF58
+          58FFFF1717FFFF0808FFFC5A5AEFFF0000FFFF0000DF00000000FF000049FF00
+          00EFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF00
+          00FFFF0000FFFF0000FFFF0000FFFF0000EEFF0000480000000000000000DB18
+          1815C13B348FE06756FFBC4D40FFDC6554FFC25143FFF07360FFF07360FFF073
+          60FFF07360FFF07360FFC83B348ACC0D0D140000000000000000000000006666
+          660588726565D59E84FFBA8A73FFC39079FFAD806BFFC8947CFFC6937CFFAA7E
+          6AFFE5AA8EFFE8AC90FF8E76695F333333050000000000000000000000006666
+          660588726565D59E84FFAA7E6AFFBF8D76FFC49179FFAF826CFFB48670FFE8AC
+          90FFE8AC90FFE8AC90FF8E76695F333333050000000000000000000000006666
+          660588726565D59E84FFBA8A73FFB78872FFB98973FFB0836EFFCD987FFFBA8A
+          73FFE8AC90FFE8AC90FF8E76695F333333050000000000000000000000006666
+          66058A736664DAA288FFC5927BFFD9A186FFC7947CFFC08E77FFC8947CFFBB8A
+          74FFE5AA8EFFE8AC90FF90776A5E333333050000000000000000000000004040
+          400487726853D09C84F7C2917BF9CE9A83F8C2917BF9BD8E79F9C3927CF9BA8C
+          77F9D5A088F8D8A289F78972694E404040040000000000000000000000000000
+          0000666666054B4B4B1155555512555555125555551255555512555555125555
+          5512555555124B4B4B1133333305000000000000000000000000
+        }
+        Hint = 'Экспорт в CSV'
+        ImageIndex = 17
+        OnClick = mExportClick
+      end
+      object mExportHTML: TMenuItem
+        Caption = 'Экспорт в HTML'
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000000000004949
+          490E474747125555551255555512555555125555551255555512555555124747
+          47124949490E000000000000000000000000000000000000000050505010997B
+          6EC5B28A78EAB28B78EBB28B78EBB28B78EBB28B78EBB28B78EBB28B78EBB28A
+          78EAB28A78D450505010000000000000000000000000000000004D4D4D149E7A
+          6AEEB0836EFF926D5BFFAF826CFFCC977EFF9B7360FF946E5CFF97705EFF5F46
+          3BFF9D7664FB4D4D4D14000000000000000000000000000000004D4D4D149473
+          63EF735547FF664C3FFF9A725FFFC29078FF62493DFF543E34FF7C5C4DFF7456
+          48FFDAA38AFA4D4D4D14000000000000000000000000000000004D4D4D149473
+          63EF694E41FF62493DFF9A725FFFC29078FF3B2C25FF7E5E4EFF7C5C4DFF7456
+          48FFDAA38AFA4D4D4D14000000000000000000000000000000004D4D4D14A07C
+          6BEEB68771FF9A725FFF5A4338FF745648FF7A5A4CFFC8947CFF9B7360FF9A72
+          5FFFDAA38AFA4D4D4D14000000000000000000000000000000004D4D4D14B88F
+          7BECE8AC90FFE8AC90FFE8AC90FFE8AC90FFE8AC90FFE8AC90FFE8AC90FFE8AC
+          90FFDAA38AFA4D4D4D14000000000000000000000000000000004D4D4D14B88F
+          7BECE8AC90FFE8AC90FFD7947CFFE6A58AFFE8AC90FFE8AC90FFE8AC90FFE8AC
+          90FFDAA38AFA4D4D4D14000000000000000000000000000000004D4D4D14B88F
+          7BECE8AC90FFDBA287FF94463AFFE70201FFDEA388FFC6806DFFD0967EFFE8AC
+          90FFDAA38AFA4D4D4D14000000000000000000000000000000004D4D4D14B089
+          76ED9C5346FFDE2A29FFD84E45FFD10202FFAF5042FFD9685AFFE62A29FF9D42
+          39FFC9967EFA4D4D4D14000000000000000000000000000000004D4D4D146448
+          3EF5F22B2AFFF15F53FFE8AC90FFA82720FFB6110EFFE8AC90FFF07C6AFFF12C
+          2BFF71352EFD4D4D4D14000000000000000000000000000000004D4D4D14B48B
+          79EC9E5C4EFFD42928FFD94A42FFBD7965FFEF0000FFCB554AFFE02A29FF9B4A
+          40FFCF9B83FA4D4D4D14000000000000000000000000000000004D4D4D14B88F
+          7BECE8AC90FFE0A68BFFC1806CFFE8AC90FFC70706FF943129FFD69D83FFE8AC
+          90FFDAA38AFA4D4D4D14000000000000000000000000000000004D4D4D14B88F
+          7CEBE8AC90FFE8AC90FFE8AC90FFE8AC90FFC4715EFFA6473BFFE8AC90FFE8AC
+          90FFDBA48AF94D4D4D140000000000000000000000000000000050505010B28B
+          79D5D7A189F8D7A189F8D7A189F8D7A189F8D7A189F8D7A189F8D7A189F8D7A1
+          89F8CF9D85EA5050501000000000000000000000000000000000000000004949
+          490E474747125555551255555512555555125555551255555512555555124747
+          47124949490E0000000000000000000000000000000000000000
+        }
+        Hint = 'Экспорт в HTML'
+        ImageIndex = 18
+        OnClick = mExportHTMLClick
+      end
+      object mPeredatExcel: TMenuItem
+        Caption = 'Передать в  Excel'
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000D18A5A00CE81
+          4CEED08453F0D08453F0D08453F0D08453F0D08453F0D08453F0D08453F0D084
+          53F0D08453F0D08453F0D08453F0CF814DEDD08C5B7E00000000D89D75FAE0AF
+          8EFFE0B08FFFE0B08FFFE0B08FFFE0B08FFFE0B08FFFE0B08FFFE0B08FFFE0B0
+          8FFFE0B08FFFE0B08FFFE0B08FFFE0AF8FFFDCA47EF100000000DEAA88FEDEAA
+          87FFDEAA87FFDEAA87FFDEAA87FFDEAA87FFE2AB88FFE0AC8AFFDEAA87FFDEAA
+          87FFDEAA87FFDEAA87FFDEAA87FFDEAA87FFE1AF8FFD00000000DEAB88FEEABA
+          9AFFF1C4A8FFF5CCB2FFF9D4BDFFFDDCC8FFFFE5D5FFECC4AAFFE3B495FFE3B4
+          95FFE3B495FFE3B495FFE3B495FFE1B191FFE0AF8FFE00000000DEAB88FEFDE0
+          D0FFFFE5D5FFFFE5D5FFFFE5D5FFFFE5D5FFFFE5D5FFFB968BFFF9736AFFF39C
+          8DFFF27165FFF27165FFF27165FFF1C0ADFFE0AF8FFE00000000DEAB88FEFCDF
+          CDFFF5BCACFFFCDDCCFFF49185FFEB6C60FFFFE5D5FFFF635EFFFF2A2AFFF37D
+          71FFFF2A2AFFFF2A2AFFFF2A2AFFF1B5A2FFE0AF8FFE00000000DEAB88FEFCE1
+          CEFFF4302BFFED6D61FFF71411FFF7BAABFFFFE5D5FFF78E82FFF4695EFFF090
+          84FFF4695EFFF4695EFFF4695EFFF2BEAAFFE0AF8FFE00000000DEAB88FEFDE2
+          D1FFF39387FFFE0000FFF3685DFFFFE5D5FFFFE5D5FFFF625DFFFF2A2AFFF37D
+          71FFFF2A2AFFFF2A2AFFFF2A2AFFF1B5A2FFE0AF8FFE00000000DEAB88FEFDE1
+          D0FFF4A899FFFE0000FFF49589FFFFE5D5FFFFE5D5FFF79387FFF47167FFF196
+          87FFF47167FFF47167FFF47167FFF2BEABFFE0AF8FFE00000000DEAB88FEFADC
+          CCFFF5302AFFF12F29FFF62E28FFFDE2D2FFFFE5D5FFFF615DFFFF2A2AFFF37D
+          71FFFF2A2AFFFF2A2AFFFF2A2AFFF1B5A2FFE0AF8FFE00000000DEAB88FEF0A2
+          93FFF51813FFF5C3B2FFF7221EFFF49387FFFFE5D5FFF79186FFF47167FFF195
+          86FFF47167FFF47167FFF47167FFF2BEABFFE0AF8FFE00000000DEAB88FEFCE1
+          D0FFFCE0D0FFFFE5D5FFF7B8AAFFEC796CFFFEE4D4FFFF605AFFFF2A2AFFF37D
+          71FFFF2A2AFFFF2A2AFFFF2A2AFFF1B5A2FFE0AF8FFE00000000DEAB88FEF5D3
+          BDFFFEE1D0FFFFE5D5FFFFE5D5FFFFE5D5FFFFE5D5FFF2B7A2FFEDA58FFFECB5
+          9DFFECAF98FFECAF98FFECAF98FFE9BEA6FFE0AF8FFE00000000DEAB88FEDEAA
+          87FFDFAA87FFE7B694FFF1C6ABFFF8D9C5FFFFE4D4FFE7BB9BFFDEAA87FFDEAA
+          87FFDEAA87FFDEAA87FFDEAA87FFDEAA87FFE0AF8FFE00000000E0AE8DF1DEAA
+          87FFDEAA87FFDEAA87FFDEAA87FFDEAA87FFE1AF8EFFE1AF8CFFDEAA87FFDEAA
+          87FFDEAA87FFDEAA87FFDEAA87FFDEAA87FFE1B090F900000000E3BA9C81E1B2
+          90EDE0B091F0E0B091F0E0B091F0E0B091F0E0B091F0E0B091F0E0B091F0E0B0
+          91F0E0B091F0E0B091F0E0B091F0E0B191EEE4BA9B9700000000
+        }
+        Hint = 'Передать в  Excel'
+        ImageIndex = 16
+        OnClick = mPeredatExcelClick
+      end
       object mExit: TMenuItem
         Caption = 'Выход'
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000000000000000
+          003B080808441717174D1717174D1717174D1717174D1717174D1717174D1717
+          174D1717174D1818184A30303025606060100000000000000000000000090000
+          00B52E2E2ED7666666FF666666FF666666FF666666FF666666FF666666FF6666
+          66FF666666FF666666FF666666FF666666F40000000000000000000000090000
+          00B22C2C2CD6AB6638FFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFFF66
+          00FFFF6600FFFF6600FFF26609FF666666F50000000000000000000000090000
+          00AF2A2A2AD4A96639FFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFFF66
+          00FFFF6600FFFF6600FFF46608FF666666F60000000100000000000000080000
+          00AB282828D3A6663BFFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFFF66
+          00FFFF6600FFFF6600FFF46607FF666666F70000000500000000000000080000
+          00A8252525D1A3663DFFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFFF66
+          00FFFF6600FFFF6600FFF56607FF666666F80000001400000001000000080000
+          00A3222222D0A06640FFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFFF66
+          00FFFF6600FFFF6600FFF56606FF666666F90000002A00000004000000080000
+          00A0202020CF9D6642FF933B00FF1E0C00FFAA4400FFFF6600FFFF6600FFFF66
+          00FFFF6600FFFF6600FFF66606FF666666FA000000410000000A000000070000
+          009D1E1E1ECD9A6644FFE75C00FFA94400FFF06000FFFF6600FFFF6600FFFF66
+          00FFFF6600FFFF6600FFF66606FF666666FB0000004A0000000D000000070000
+          009A1C1C1CCC976646FFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFFF66
+          00FFFF6600FFFF6600FFF76606FF666666FC000000410000000A000000070000
+          008E171717C98B664EFFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFFF66
+          00FFFF6600FFFF6600FFEB660EFF666666F70000002B00000004000000000000
+          0065030303BC686360FCF76606FFFF6600FFFF6600FFFF6600FFFF6600FFFF66
+          00FFFF6600FFFF6600FFB66630FF666666B40000001500000001000000010000
+          0028000000B6494949E8B66630FFFF6600FFFF6600FFFF6600FFFF6600FFFF66
+          00FFFF6600FFEE660BFF73665EFF656565490000000500000000000000000000
+          000000000061121212C564625FFBB8662FFFFC6602FFFF6600FFFF6600FFFF66
+          00FFD1661EFF75665CFF6565659C000000000000000100000000000000000000
+          000000000003000000411A1A1AB0565656F176665BFFA06640FFA6663CFF8466
+          52FF666666EF6767676D00000001000000000000000000000000000000000000
+          0000000000000000000000000002000000233B3B3B675757578F646464856565
+          655B6262620D0000000000000000000000000000000000000000
+        }
+        Hint = 'Выход из программы'
+        ImageIndex = 15
         OnClick = mExitClick
       end
     end
     object mSearch: TMenuItem
       Caption = 'Поиск'
+      Bitmap.Data = {
+        36040000424D3604000000000000360000002800000010000000100000000100
+        2000000000000004000064000000640000000000000000000000AA450000AA44
+        00E7AC4500340000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000AA4400F3AA44
+        00FFAA4400E1A640001400000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000AB430079AA44
+        00FFAA4400FFB36735D9CCCCCCB8CBCBCB9ECBCBCB94CCCCCC88CBCBCB7BCCCC
+        CC72CDCDCD66CBCBCB5800000000000000000000000000000000FF000001A944
+        00B5AA4400FFAE561BFFCBCBCAFFC3A896FFBB8D6EFFBB8E70FFBEAB9EFFC6C6
+        C6FFC4C4C4FFC3C3C3F70000000000000000000000000000000000000000AA39
+        0009B46B3BA9AA4706FFAB5014FFB25517FFC58459FFC48358FFAD4C0BFFB36F
+        42FFCAC6C3FFC2C2C2F300000000000000000000000000000000000000000000
+        0000C9BEB88DAD5113FFCA895FFFEDE3DCFFE1DCD9FFE1DCD9FFE2D9D2FFBD72
+        3FFFAB6536FFC7C7C7E700000000000000000000000000000000000000000000
+        0000B8815CD5BE703CFFE9E0D9FFF7EDE6FFF5ECE5FFEFE7E1FFE4DFDAFFE5DC
+        D6FFAF4E0EFFC3A796E000000000000000000000000000000000000000000000
+        0000B26531F6D7AB8DFFAAA49FFFC2BAB4FFE9E0D9FFB6AFAAFFF4EBE4FFE2DD
+        D9FFC8895EFFB47A54E60000000000000000000000000000000000000000CCCC
+        CC0AAF5E28FFDBB59CFF9E9793FFE7DED8FFE5DBD5FFC7BFB9FFEAE1DAFF8A87
+        85FFBB8B6CFFB6754AE40000000000000000000000000000000000000000CECE
+        CE34AC6A3EFFD39E7BFFF7EDE6FFF7EDE6FFC9C0BBFFF3E9E2FFD6CEC8FF8885
+        82FFB87344FFB88663D50000000000000000000000000000000000000000CCCC
+        CC5FB99F8DFFB15416FFEDD8CAFFF7EDE6FFF7EDE6FFF7EDE6FFF4EAE4FFDCC0
+        ADFFAC4B0BFFC6BAB2B20000000000000000000000000000000000000000CBCB
+        CB8AB9B9B9FFA76D46FFB3571AFFDCB296FFF1DFD4FFEFDCCFFFD39E7BFFAE4D
+        0DFFB5927AFFCCCCCC9F0000000000000000000000000000000000000000CCCC
+        CCB5B2B2B2FFBDBDBDFFBA9278FFAE581FFFAA4400FFAA4401FFAE5F2BFFB298
+        87FFB4B4B4FFCBCBCB940000000000000000000000000000000000000000CCCC
+        CCE0BABABAFFBABABAFFA7A7A7FFABABABFFADA9A6FFAEABA9FFBEBEBEFFC7C7
+        C7FFBEBEBEFFCDCDCD8900000000000000000000000000000000FFFFFF01CCCC
+        CCA0CCCCCCCECCCCCCFBCCCCCCFFCCCCCCFFC8C8C8FFBDBDBDFFBBBBBBFFCCCC
+        CCE6CCCCCCBECDCDCD6600000000000000000000000000000000000000000000
+        000000000000AAAAAA03CBCBCB27CBCBCB54CCCCCC81CBCBCBADCCCCCCDBCCCC
+        CC79000000000000000000000000000000000000000000000000
+      }
+      ImageIndex = 6
       object mBeginSerch: TMenuItem
         Caption = 'Начать поиск'
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000666666006666
+          660F000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000666666FC6666
+          66E16767673E0000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000666666F97166
+          5EFF666666FD6666669155555506000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000666666F7BF66
+          2BFFBD662CFF6A6663FF666666CA676767250000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000666666F4BE66
+          2CFFFF6600FFE56611FF826654FF666666F56565656F00000000000000000000
+          0000000000000000000000000000000000000000000000000000666666F1BC66
+          2CFFFF6600FFFF6600FFFA6603FFA9663AFF676666FF666666AD6B6B6B130000
+          0000000000000000000000000000000000000000000000000000666666EFBB66
+          2EFFFF6600FFFF6600FFFF6600FFFF6600FFD5661CFF75665CFF666666E76767
+          6748000000000000000000000000000000000000000000000000666666EBB966
+          2FFFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFF16609FF8C664DFF6666
+          66FD656565830000000000000000000000000000000000000000666666E9B866
+          30FFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFD1661FFF71665FFF6666
+          66E26565653A0000000000000000000000000000000000000000666666E7B666
+          31FFFF6600FFFF6600FFFF6600FFFD6602FFB36633FF676665FF676767B36363
+          6312000000000000000000000000000000000000000000000000666666E4B566
+          32FFFF6600FFFF6600FFEE660BFF89664EFF666666FB66666680808080020000
+          0000000000000000000000000000000000000000000000000000666666E2B366
+          33FFFF6600FFD6661BFF74665DFF666666E46666663C00000000000000000000
+          0000000000000000000000000000000000000000000000000000666666DFAF66
+          35FFB36633FF676665FF676767BD6A6A6A180000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000666666DC6B66
+          63FF666666FC6666668080808002000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000666666DA6666
+          66E9676767450000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000656565976666
+          6619000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000
+        }
+        Hint = 'Начать поиск'
+        ImageIndex = 7
         OnClick = mBeginSerchClick
+      end
+      object mOchistit: TMenuItem
+        Caption = 'Очистить'
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000000000000000
+          0000000000006767674A666666AC666666E3666666F0666666D6666666946969
+          6922000000000000000000000000000000000000000000000000000000006D6D
+          6D07656565A69E6640FFDD6617FFF86605FFF96604FFD7661BFF926649FF6666
+          66F66666665A0000000000000000000000000000000000000000000000006966
+          64A5CB6623FFEC660DFF9E6641FF74665DEE6D6661D58E664BF7D7661BFFB566
+          31FF666666FC6565653A0000000000000000000000000000000064646438AF66
+          35FFE66611FF72675FF56666665A00000001000000006D6D6D0E67676786B966
+          2FFF956647FF666666B1000000000000000000000000000000006E6761ABF766
+          05FF88664FFF6565655600000000000000000000000000000000000000006765
+          6572B76630FF666666E300000000000000000000000000000000956546E5E966
+          0EFF666666E00000000100000000000000000000000000000000000000000000
+          0001A06640E3686665F5000000000000000000000000000000009D6642FCD766
+          1AFF676767BD00000000000000006868681B0000000000000000000000000000
+          00007C6657A86E6661E100000000000000000000000000000000916548EDE566
+          12FF666666DD0000000000000000666666DD6464643800000000000000000000
+          0000676767436666667A000000000000000000000000000000006E655FA7F866
+          05FF7C6657FF6767674D6666660FA9663AFF88664FF36565653A000000000000
+          000000000000000000000000000000000000000000000000000066666632B066
+          35FFD6661CFF6B6664EF6666666EC76625FFF66606FF8B674FF6646464420000
+          0000000000000000000000000000000000000000000000000000000000006D66
+          6291CA6623FFD8661AFF826654FFDC6618FFFF6600FFF86604FF8F664BF86565
+          6544000000000000000000000000000000000000000000000000000000008080
+          8002686665939E6540FEDF6616FFFD6601FFFF6600FFFF6600FFF96604FF9066
+          49FA6767674D0000000000000000000000000000000000000000000000000000
+          000000000000686868366E6762DDFE6600FFFF6600FFFF6600FFFF6600FFF666
+          06FF7C6658FA6767674F00000000000000000000000000000000000000000000
+          0000000000000000000087664FC6FF6600FFFE6601FFDC6618FFA9663AFF7466
+          5EF5676767A46767674300000000000000000000000000000000000000000000
+          0000000000000000000088654FE3AE6636FF78665AFD656565C4676767666262
+          620D000000000000000000000000000000000000000000000000000000000000
+          00000000000080808004666666D0676767776666661900000000000000000000
+          0000000000000000000000000000000000000000000000000000
+        }
+        Hint = 'Очистить таблицу'
+        ImageIndex = 9
+        OnClick = mOchistitClick
+      end
+      object mPoiskVBaze: TMenuItem
+        Caption = 'Поиск в базе'
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000004949
+          49076A6862C6716F68EC51515113000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000016866
+          60CAA8A390FF838175F94D4D4D14000000000000000000000000000000000000
+          0000711C1C12802424326538385B54383876553232665C181840543B3B7A938F
+          80FF949081FE6546446D8421211F000000000000000000000000000000000000
+          0000764745A67B746DFF938F80FF9C9887FF938F80FF7E7169FF5E4D4CFF6653
+          51FFA53F3EFFC83737FFB64C4EC3C64444310000000000000000000000005A5A
+          5688969282FF8E8A7CFF7A756EFF857F78FF7C7771FF8C897BFF969283FF8B4B
+          49FFC83737FFC83737FFB07579D5BC9EA6BBC3535837000000004E4E4E3B8C89
+          7BFE838075FFB8A89FFFDCBEB0FFE1C5B8FFD8BFB5FFBCAFA8FF7F7D72FF8C89
+          7CFFAC3C3CFFC83737FFAC7C81D1B8BFC8BBC16C6FAEC23D3D2A676662BC9E9A
+          88FFA89B93FFD9BBAEFFCEAB9FFFD8B8ACFFD0AFA3FFD1BFB8FFB1A8A2FF9C97
+          87FF7F5855FFC83737FFAD7B82D4B7BFC8BFB7BFC9670000000079776DF08380
+          75FFE5CFC1FFD7B7AAFFCAA499FFD3B2A6FFD4B3A7FFC9ACA4FFD2C0B9FF7F7C
+          71FF7B766DFD9C5455DEA37073DAB3BBC5C3B9BCC950000000007E7B71FA7D7A
+          71FFEED7C8FFEBD4C5FFD9B9ACFFD6B5A9FFD8B7AAFFCFB2A8FFCCB6AFFF7B77
+          6FFF7F7D73FF93A7ACFF95A4A9FFC2A9AEEEB3B1BA6F0000000077756CEC8481
+          75FFC29F95FFCAA499FFC7A196FFCBA59AFFCCA79BFFBA9790FFB99992FF807E
+          73FF7A7A71FF93A7ACFFA0A5AAFFD5ADB0FFC6B0B5EE9A9D9F605F5F5AAC9F9A
+          89FF928780FFDFC2B4FFD6B4A8FFDBBEB0FFD6C1B9FFCEB8B1FF988D85FF9E9A
+          89FF707675FF93A7ACFF9EAFB4F1D6D9E0C3D8DBE1B9A3AEB1454E4E4E278380
+          75F9888478FF9E938AFFE9D2C4FFE3D4C9FFDBCDC4FF9F968EFF878377FF817D
+          73FFBD6262EED16465EBB8777CE3C5BEC3C0DBDEE4B300000000000000005050
+          5060888578FD959182FF737169FF76746CFF74726AFF969383FF878276FFC053
+          52FFFF5555FFFF5555FFB1959CFFB79DA5FBBA969ACF9CAAAA12000000000000
+          0000A94C4C918A6764FF868275FF8D897CFF868175FF88625DFFDA5252FFFF55
+          55FFFF5555FFFF5555FFB6989CDCB3BBC4CEC38389A79D9DA149000000000000
+          0000C6444431F25556B5F85C63D1DC5252D1F15353CBF65252C7F65252C6F753
+          53C5F95353C5F65353C7E76C6DC0C2B0B7BBB3BAC12500000000000000000000
+          000000000000FF555509FF55558DFF5555FDFF5555F5FF5555EEFF5555EEFF55
+          55EEFF5555EEFF5555EEFF5555EEFD5858D6FD5C5C6C00000000
+        }
+        Hint = 'Поиск в базе'
+        ImageIndex = 19
+        OnClick = mPoiskVBazeClick
+      end
+      object mPodborZameni: TMenuItem
+        Caption = 'Подобрать замену'
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          00000000000000000000FF292925FF2929B9FF2B2BF0FF2B2B72000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000FF000002FF292975FF2B2BF6FF2A2AFFFF2A2AFFFF2A2AF100000000FF99
+          5641FF9F60080000000000000000808080020000000000000000000000000000
+          0000FF292971FF2A2AFFFF2A2AFFFF2A2AFFFF2A2AFFFF29299A00000000FF98
+          55D3FA9654D4EE9455BEF19354F0F39454F8EF9254D4E58E5581AF705010FF00
+          002AFF1717E0FF2A2AFFFF2A2AFFFF2A2AEDFF2B2B5F00000000F5975831FF99
+          55FFFF9955FFF49555C0DF8C5368DF8B5267E98F5396F99654F2F4894FE9F714
+          0DFAFF0101EBFF1E1EB0FF2A2A8CFF2B2B180000000000000000F09355B8FF99
+          55FFFF9955FFFF9955F4FF9A532B0000000000000000C57C5723F4884DE8F381
+          4AEDE4241B1C0000000000000000000000000000000000000000F79555B9FF9A
+          55BAFF98549AFF99557BFF99553C000000000000000000000000C580512CFB97
+          55F9DF8C56680000000000000000000000000000000000000000000000000000
+          000000000000000000000000000000000000000000000000000000000000E18C
+          5390DD8B54880000000000000000000000000000000000000000D413135ECF15
+          1530000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000ED0707BCED08
+          08BA00000000000000000000000000000000FF24240EFF29292CFF2C2C4CFF2B
+          2B6BEE2D2D660000000000000000000000000000000000000000D6101050FC01
+          01FDDD0F0F69000000000000000000000000FF2A2A43FF2B2BFCFF2A2AFFFF2A
+          2AFFEF2828B1000000000000000000000000000000000000000000000000E10E
+          0E91FC0101FAE90A0A98BE191933924949079B2E2E1CF52424AAFF2A2AFFFF2A
+          2AFFF72929630000000000000000000000000000000000000000000000000000
+          0001DD10106FF50404E6FF0000FFF70404F9FD0101FFF90303F6FB2323E6FF2A
+          2AFFFF2828260000000000000000000000000000000000000000000000000000
+          0000000000009933330ACE131344DC0D0D60D510104EA6262614FF2B2B0CFF2A
+          2A9FFF0000020000000000000000000000000000000000000000
+        }
+        Hint = 'Подобрать замену'
+        ImageIndex = 23
+        OnClick = mPodborZameniClick
       end
     end
     object mVid: TMenuItem
       Caption = 'Вид'
+      Bitmap.Data = {
+        36040000424D3604000000000000360000002800000010000000100000000100
+        2000000000000004000064000000640000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0003000000080000000B00000009000000060000000200000000000000000000
+        0002000000060000000700000007000000040000000200000000000000020000
+        00120D0D0D3D1111114D121212481A1A1A310000000800000000000000000000
+        000B0000002E0000003A000000390000002C0000001100000002000000030000
+        00232B2B2BA67B5339FFCD5F15FF524E4BFF4141415300000003000000040000
+        0023202020A16A5141FFD06015FFCD5F16FE624E41E82E2E2E0B000000020000
+        00190202026A4B433FF3F06407FF79543AFD1111113B00000026000000270000
+        00471A1A1ABEA65926FFFF6600FFF26406FF4B4846B700000003000000000000
+        00090000003A222222BAA05929FFBB5C1CFD955123E3965123E2965123E2934F
+        22E78E4E23F5E3620CFFFF6600FFBB5D1EFF4141416600000000000000000000
+        000200000019000000694A433EF1E4620BFF8C532BF18A4E26D8884E27DF834B
+        25E8945429FCFF6600FFFF6600FF825536FA2121211700000000000000000000
+        000000000008000000361F1F1FB3A05929FF9C5729F81111113B0000003C0000
+        008F94542AFBFF6600FFF66504FF4E4843BD0000000400000000000000000000
+        000000000002000000170000006448403CEBE1620DFF51443997000000381818
+        18B3CA5F17FFFF6600FFBF5D1BFF4141416A0000000000000000000000000000
+        00000000000000000007000000341B1B1BAA9F5829FFAB5A23FA0C0C0C6C3632
+        2EDCF76504FFFF6600FF865434FC2727271A0000000000000000000000000000
+        000000000000000000020000001600000060473F3BE9EA6309FF503929D27A4E
+        30F9FF6600FFF86503FF514843C2000000050000000000000000000000000000
+        0000000000000000000000000007000000311A1A1AA69F592AFFBE5C1BFEB25B
+        21FFFF6600FFC45D19FF4141416E000000020000000000000000000000000000
+        0000000000000000000000000002000000140000005D443C38E8EE6307FFEB64
+        09FFFF6600FF8A5531FD2B2B2B1E000000000000000000000000000000000000
+        0000000000000000000000000000000000060000002B18181893604F44FE9056
+        30FF885533FF534A45C400000005000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000C0000002C2323235E2727
+        2761232323482C2C2C1D00000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000200000007000000090000
+        0007000000050000000200000000000000000000000000000000
+      }
+      ImageIndex = 13
       object mShrift: TMenuItem
         Caption = 'Шрифт'
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0003000000080000000B00000009000000060000000200000000000000000000
+          0002000000060000000700000007000000040000000200000000000000020000
+          00120D0D0D3D1111114D121212481A1A1A310000000800000000000000000000
+          000B0000002E0000003A000000390000002C0000001100000002000000030000
+          00232B2B2BA67B5339FFCD5F15FF524E4BFF4141415300000003000000040000
+          0023202020A16A5141FFD06015FFCD5F16FE624E41E82E2E2E0B000000020000
+          00190202026A4B433FF3F06407FF79543AFD1111113B00000026000000270000
+          00471A1A1ABEA65926FFFF6600FFF26406FF4B4846B700000003000000000000
+          00090000003A222222BAA05929FFBB5C1CFD955123E3965123E2965123E2934F
+          22E78E4E23F5E3620CFFFF6600FFBB5D1EFF4141416600000000000000000000
+          000200000019000000694A433EF1E4620BFF8C532BF18A4E26D8884E27DF834B
+          25E8945429FCFF6600FFFF6600FF825536FA2121211700000000000000000000
+          000000000008000000361F1F1FB3A05929FF9C5729F81111113B0000003C0000
+          008F94542AFBFF6600FFF66504FF4E4843BD0000000400000000000000000000
+          000000000002000000170000006448403CEBE1620DFF51443997000000381818
+          18B3CA5F17FFFF6600FFBF5D1BFF4141416A0000000000000000000000000000
+          00000000000000000007000000341B1B1BAA9F5829FFAB5A23FA0C0C0C6C3632
+          2EDCF76504FFFF6600FF865434FC2727271A0000000000000000000000000000
+          000000000000000000020000001600000060473F3BE9EA6309FF503929D27A4E
+          30F9FF6600FFF86503FF514843C2000000050000000000000000000000000000
+          0000000000000000000000000007000000311A1A1AA69F592AFFBE5C1BFEB25B
+          21FFFF6600FFC45D19FF4141416E000000020000000000000000000000000000
+          0000000000000000000000000002000000140000005D443C38E8EE6307FFEB64
+          09FFFF6600FF8A5531FD2B2B2B1E000000000000000000000000000000000000
+          0000000000000000000000000000000000060000002B18181893604F44FE9056
+          30FF885533FF534A45C400000005000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000C0000002C2323235E2727
+          2761232323482C2C2C1D00000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000200000007000000090000
+          0007000000050000000200000000000000000000000000000000
+        }
+        Hint = 'Шрифт'
+        ImageIndex = 13
         OnClick = mShriftClick
       end
       object mSort00: TMenuItem
         Caption = 'Сортировать по названию'
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          000000000000000000000000000000000000000000000000000081665400A165
+          3DD0666666059466479B95654797000000000000000000000000000000006A6A
+          6A0C666666B6656565470000000000000000000000000000000069696911A566
+          3CED89664F8A9B6744BF9A6542B60000000000000000000000005D5D5D0B6865
+          64BFC56627FF8C664EFA67676754000000000000000000000000000000006863
+          6367B46633FB976646F09B6542B500000000000000006666660F666666C6BC66
+          2CFFFF6600FFF86604FF8B664DFD6565656200000000000000008165545BC166
+          29F6A6643A84B06634DC9C6643B4000000006666660F676767C7B66631FFFF66
+          00FFFF6600FFFF6600FFF76606FF886650FE6666667000000000A4663DC19966
+          46AC000000009E6540BFA06741B46D6D6D07666666C0936648FFC96624FFCD66
+          21FFFF6600FFFB6602FFCF6620FFD2661EFF77665AFF656565797D62512FA665
+          3AE09766459BBB662ED9A06740B30000000080808002666666236666665AA966
+          39FFFF6600FFFE6600FF6F6760CC6565657E6666664B6A6A6A18000000006666
+          66059267494D8D664A677169613F0000000000000000000000006767672AB866
+          2FFFFF6600FFFF6600FF956646A800000000000000000000000090664AC86464
+          6442000000009E66429B996543D48080800200000000000000006767674AC766
+          26FFFF6600FFFF6600FFA5663CE8000000000000000000000000B26635B6AF66
+          34DDC1672AC9D96619F8A0663FD50000000000000000000000006565656AD666
+          1CFFFF6600FFFF6600FFB9662FFF6363632400000000000000008A654D4CA966
+          39E18B674E5CD5661CFF856853960000000000000000000000006666668AE566
+          12FFFF6600FFFF6600FFD3661EFF6666666C000000000000000055555503A366
+          3DE96767673EE26613FF66666650000000000000000000000000666666AAF366
+          08FFFF6600FFFF6600FFEC660CFF666666B4000000000000000000000000A865
+          39BB886851B6D1661EFF6A6A6A180000000000000000000000006B6663CBFE66
+          00FFFF6600FFFF6600FFFE6600FF6E6660F66060600800000000000000007B65
+          5953B86630FEB8662FEE0000000000000000000000000000000072665EEBB066
+          34FF73665EFF73665EFFB56631FF7D6656FF6767674500000000000000006D6D
+          6D07A5663DF4996745AD00000000000000000000000055555503666666B66666
+          66A7666666996767679F666666BB666666D66666667800000000
+        }
+        Hint = 'Сортировать по названию'
+        ImageIndex = 2
         OnClick = mSort00Click
       end
       object mSort01: TMenuItem
         Caption = 'Сортировать по типу'
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000006666
+          6605676767A967676754000000000000000000000000000000006A6A6A186969
+          6922646464170000000000000000000000000000000000000000555555036666
+          66A7BB662EFF916649FD6666665F00000000000000000000000090664AE7A366
+          3DFF90674BE40000000000000000000000000000000055555503666666A7AF66
+          35FFFF6600FFFA6604FF8D654BFE67676763000000000000000091674AE7A366
+          3DFF90664AE400000000000000000000000055555503656565A69D6641FFFE66
+          00FFFF6600FFFF6600FFF96604FF8C664DFE6565656F00000000636363556666
+          666C68686865666666556767672F000000006767679F866651FFCE6620FFCA66
+          24FFFF6600FFFE6600FFD3661EFFD7661BFF7A6659FE66666673896650EACC66
+          22FFCC6622FFCA6623FF76675BB3000000008080800267676725676767549A65
+          43F9FF6600FFFF6600FF78675BD86666668A6565655669696922706661C08765
+          4EE487654EE4866550E36965638D0000000000000000000000005D5D5D0BA866
+          3AFFFF6600FFFF6600FF9D6640B70000000000000000000000006666666B6565
+          6588656565886565658865656588666666826A6A6A18000000006767672AB666
+          31FFFF6600FFFF6600FFAB6637F00000000100000000000000009B6542F4E066
+          14FFE06614FFE06614FFE06614FFC46628FF67676748000000006767674AC466
+          27FFFF6600FFFF6600FFC0662AFF6565652B0000000000000000666666946666
+          66AA666666AA666666AA666666AA676767A9656565260000000066666669D366
+          1EFFFF6600FFFF6600FFD96619FF666666710000000000000000666666766565
+          65886565658865656588656565886565658865656588666666806565658EE166
+          14FFFF6600FFFF6600FFF26608FF676767B800000000000000009E6641FFE066
+          14FFE06614FFE06614FFE06614FFE06614FFE06614FFB36632FF666666B7EF66
+          0AFFFF6600FFFF6600FFFF6600FF72665EF87171710900000000666666916666
+          66AA666666AA666666AA666666AA666666AA666666AA6666669D686767CBC166
+          29FF826653FF7B6658FFBE662BFF856651FF6666664600000000000000000000
+          0000000000000000000000000000000000000000000000000000666666B26767
+          67C2666666BB666666BB666666D2666666EE6565658800000000
+        }
+        Hint = 'Сортировать по типу'
+        ImageIndex = 3
         OnClick = mSort01Click
       end
       object mSort02: TMenuItem
         Caption = 'Сортировать по лицензии'
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000004646
+          460B4646460B4646460B4646460B4646460B4646460B4646460B4646460B0000
+          0000000000006666660500000000000000000000000000000000595959147B69
+          60F1C09480FCC09480FCC09480FCC09480FCC09480FCC09480FCC19480FADDA6
+          8C6A6868683B70655EE36868683B000000000000000000000000515151168A73
+          67F9E8AC90FFE8AC90FFE8AC90FFE8AC90FFE8AC90FFE8AC90FFE8AC90FFB591
+          7FA989664FF5F46607FF956646F8676767480000000000000000515151168A73
+          67F9D9A187FFC18F78FFC5927BFFBB8B74FFB2846FFFE8AC90FFC89B86FF8467
+          54FBF56607FFFF6600FFFB6602FF956747FB6565655600000000515151168A73
+          67F9DDA489FFBA8A73FFCF9A81FFCA967EFFCA967DFFAA8574FF7D685BFFD366
+          1DFFE06615FFFF6600FFF0660AFFE46612FF8A664EFD66666664515151168A73
+          67F9D9A187FFAA7E6AFFC39079FFC8947DFFBC8C75FFB58671FFD5A28AFFA689
+          7BB5B26633FFFF6600FFC56626FD666666916666665F6868682C515151168A73
+          67F9DDA489FFCB967EFFC08E77FFC7947CFFCA967DFFE8AC90FFE8AC90FFC799
+          849EC16629FFFF6600FFDF6616FF6363631F0000000000000000515151168A73
+          67F9D9A187FFAA7E6AFFCA967DFFCF9980FFE8AC90FFE8AC90FFE8AC90FFB28E
+          7EACD0661FFFFF6600FFF86605FF676565680000000000000000515151168A73
+          67F9D9A187FFC18F78FFB58670FFC6937BFFBA8A73FFB3856FFFE8AC90FFA085
+          79BADF6615FFFF6600FFFF6600FF806554BA0000000000000000515151168A73
+          67F9DDA489FFBA8A73FFC5927AFFCD987EFFBA8A73FFE7AB8FFFE8AC90FF917D
+          74C8EE660BFFFF6600FFFF6600FF956647F76D6D6D0700000000515151168A73
+          67F9D9A187FFC18F78FFAB7F6AFFBE8E76FFC6937BFFB98973FFE8AC90FF8475
+          6FD7FC6602FFFF6600FFFF6600FFAD6636FF6767674300000000515151168A73
+          67F9DDA489FFCB967EFFCC977EFFCB967EFFBE8D76FFC18F78FFE7AB8FFF7D6E
+          67E79E6640FF6A6663FF826653FF986644FF6666668C00000000595959148C73
+          68F3E8AC90FFE8AC90FFE8AC90FFE8AC90FFE8AC90FFE8AC90FFE8AC90FFA788
+          7AB46666665F6666665567676761666666806666667000000000000000007869
+          5A11AA847B1BAA847B1BAA847B1BAA847B1BAA847B1BAA847B1BAA847B1BC68E
+          8E09000000000000000000000000000000000000000000000000
+        }
+        Hint = 'Сортировать по лицензии'
+        ImageIndex = 1
         OnClick = mSort02Click
       end
       object mSort03: TMenuItem
         Caption = 'Сортировать по стоимости'
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000626262006464
+          643D696969226868681B00000001000000000000000000000000000000000000
+          000066666641676564BD6B6B6B13000000000000000000000000696969118C66
+          4CFFD6661CFF696665EF55555503000000000000000000000000000000006565
+          65498A664DF8E26614FF7A675ADA6A6A6A1D0000000000000000606060109E66
+          40F2FF6600FF696765D0686868406868682C60606010000000006767674D8866
+          50F9F76605FFFF6600FFE9660FFF78665AE36969692700000000946647E5CB66
+          22FCFF6600FFAF6634FAB06735F6B16634F16866668065656558836753FBEF66
+          0AFFF66606FFFF6600FFFF6600FFE9660EFF79665BEF64646438A06640C3D066
+          1FFFFF6600FF976646D1966647707066661900000001666666418566527D6A67
+          64B0CE6621FFFF6600FFAD6636FD776659D07B6658A26565655B77655B49AC68
+          38F0FF6600FF856651FFAD6636FFD6661CFFB46631D56761612A000000006767
+          6754DD6617FFFF6600FFC76625F855555503000000000000000000000000AF66
+          35EBFF6600FF69666396676767346F67609FD1661EFFB26633F96868682C6666
+          6675EC660CFFFF6600FFDF6615FF64646438000000000000000000000000B266
+          33EEFF6600FF6B67638600000000000000007A665ACFF66606FF666666966866
+          6696FA6603FFFF6600FFF96604FF69676583000000000000000000000000B666
+          31EFFF6600FF6A666280000000000000000067656583F56606FF676767957667
+          5CBCFF6600FFFF6600FFFF6600FF806756D3000000000000000000000000B667
+          32F2FF6600FF6A66617600000000606060089D6743DAD3661EFF656565628466
+          51DFFF6600FFFF6600FFFF6600FF966646FE6262621A0000000000000000A567
+          3CF1FF6600FF74665DAA6666667F936649E1D5661CFF806756A4404040048D66
+          4DF9CD6622FF9B6642FFC56627FFAC6638FF6565656200000000000000009566
+          47BED5671CF59F6641DCA4663CCDA2653DA46964643300000000696969116666
+          66D0656565C4666666BB666666CE676665E9676767A900000000
+        }
+        Hint = 'Сортировать по стоимости'
+        ImageIndex = 5
         OnClick = mSort03Click
       end
       object mSort04: TMenuItem
         Caption = 'Сортировать по замене'
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000008080
+          80026565659C6565656200000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000016666
+          6696B16634FF9A6644FE6666666B000000000000000000000000666666E16666
+          66FF666666FF666666FF666666FF666666EB555555060000000166666694A166
+          3EFFFF6600FFFC6602FF956648FE6666666E0000000000000000666666FFDD66
+          17FFF56607FFF56607FFE66611FF666666FF606060106666668A926648FFFD66
+          02FFFF6600FFFF6600FFFA6604FF8E664CFE6666667000000000666666FFEB66
+          0DFFFF6600FFFF6600FFF56607FF666666FF656565867C6657FFCE6621FFC466
+          27FFFF6600FFFF6600FFD4661DFFD8661AFF7C6658FF66666675666666FFDD66
+          16FFF56607FFF56607FFE66611FF666666FF60606010686868206767674F8F66
+          4BEEFF6600FFFF6600FF806554DE6666668C6767675769696922666666E26666
+          66FF666666FF666666FF666666FF666666EC5555550600000000000000009B66
+          41F6FF6600FFFF6600FFA3663CC3000000000000000000000000000000007171
+          710965656530646464336767672A55555503000000000000000069696911A966
+          3AFFFF6600FFFF6600FFB16533F5808080020000000000000000656565306666
+          66EA7A6658FF856652FF74665DFF666666D3606060100000000068686831B666
+          30FFFF6600FFFF6600FFC76625FF656565350000000000000000666666A88966
+          4FFFFE6601FFFF6600FFF66606FF71665FFF676767720000000066666650C566
+          27FFFF6600FFFF6600FFE06615FF6666667B0000000000000000666666AD8E66
+          4CFFFF6600FFFF6600FFFA6604FF73665EFF67676777000000006565656FD366
+          1DFFFF6600FFFF6600FFF86605FF686666C000000000000000006565653A6666
+          66F2856652FF8F664BFF7C6658FF666666DF64646417000000006666668EE266
+          14FFFF6600FFFF6600FFFF6600FF78665AFA6A6A6A0C00000000000000006666
+          661466666641656565446666663C6666660A0000000000000000666666ADBB66
+          2DFF866650FF79665AFFBB662EFF89664EFF6565654C00000000000000000000
+          00000000000000000000000000000000000000000000000000006666669D6565
+          65C4666666BB666666BB666666D0666666ED6666668E00000000
+        }
+        Hint = 'Сортировать по замене'
+        ImageIndex = 4
         OnClick = mSort04Click
       end
     end
     object mSpravka: TMenuItem
       Caption = 'Справка'
+      Bitmap.Data = {
+        36040000424D3604000000000000360000002800000010000000100000000100
+        2000000000000004000064000000640000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        00000000000000000000B565315D996643CE836653F575665CFE73665DFE7D66
+        56FA996644CFBC6A303500000000000000000000000000000000000000000000
+        0000BA60292590664BE5676666FF666666FF666666FF666666FF666666FF6666
+        66FF666666FF6D6560FEA866399800000000000000000000000000000000BA65
+        30307B6658FB666666FF666666FF806655FFBD662CFFD3661DD3CC6522B3BC66
+        2DFC7F6655FF666666FF676666FFA0663EB40000000000000000AA5500038565
+        51F2666666FF666666FFAB6638FFFD6601FFFF6600FFFF66005000000000FF66
+        00DAFD6601FFA96639FF666666FF676666FFA866398A00000000A7663B8E6666
+        66FF666666FF9A6643FFFF6600FFFF6600FFFF6600FFFF6600EEFF6600DFFF66
+        00FFFF6600FFFF6600FF996644FF666666FF72665EFEB6642E1C8C664DE66666
+        66FF676665FFEC660CFFFF6600FFFF6600FFFF6600FFFF66009EFF680031FF66
+        00FFFF6600FFFF6600FFEB660EFF676666FF666666FF9D6742B975665DFD6666
+        66FF826653FFFF6600FFFF6600FFFF6600FFFF6600FFFF6600ADFF630012FF66
+        00FBFF6600FFFF6600FFFF6600FF816654FF666666FF836652F26A6664FF6666
+        66FF926649FFFF6600FFFF6600FFFF6600FFFF6600FFFF6600F4FF680031FF65
+        005DFF6600FBFF6600FFFF6600FF91664AFF666666FF6F6660FE74665CFC6666
+        66FF846652FFFF6600FFFF6600FFFF6600FFFF6600F9FF6600FFFF6600E9FF66
+        002DFF650062FF6600FFFF6600FF846652FF666666FF6F655FFE8A664EE36666
+        66FF686665FFEF660AFFFF6600F8FF670048FF660078FF6600FFFF6600FFFF67
+        00C700000000FF6600DCEF660BFF686665FF666666FF856652EDA2673F7E6666
+        66FF666666FFA0663FFFFF6600FFFF650060FF6B0013FF6600B7FF6600F4FF65
+        007EFF660005FF6600E9A0663FFF666666FF666666FF9F664094000000008565
+        51EA666666FF666666FFB56632FFFE6600EAFF6800360000000000000000FF6A
+        0018FE6600AAB46632FF666666FF666666FF806755F1AA55550300000000AA6C
+        3E217A6659F7666666FF666666FF88664FFFC56626FDDE6616CFE06514D4C666
+        26FC886650FF666666FF666666FF77655AFAA7683E3100000000000000000000
+        00009D623B1A89664EDF666666FF666666FF666666FF666666FF666666FF6666
+        66FF666666FF666666FF876751E4A3623B270000000000000000000000000000
+        00000000000000000000A0643F5990664ACE7A6658F66C6662FE6A6562FE7867
+        5AF88E664CD49F633E6200000000000000000000000000000000
+      }
+      ImageIndex = 0
+      object mHelp: TMenuItem
+        Caption = 'Справка'
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          00000000000000000000B565315D996643CE836653F575665CFE73665DFE7D66
+          56FA996644CFBC6A303500000000000000000000000000000000000000000000
+          0000BA60292590664BE5676666FF666666FF666666FF666666FF666666FF6666
+          66FF666666FF6D6560FEA866399800000000000000000000000000000000BA65
+          30307B6658FB666666FF666666FF806655FFBD662CFFD3661DD3CC6522B3BC66
+          2DFC7F6655FF666666FF676666FFA0663EB40000000000000000AA5500038565
+          51F2666666FF666666FFAB6638FFFD6601FFFF6600FFFF66005000000000FF66
+          00DAFD6601FFA96639FF666666FF676666FFA866398A00000000A7663B8E6666
+          66FF666666FF9A6643FFFF6600FFFF6600FFFF6600FFFF6600EEFF6600DFFF66
+          00FFFF6600FFFF6600FF996644FF666666FF72665EFEB6642E1C8C664DE66666
+          66FF676665FFEC660CFFFF6600FFFF6600FFFF6600FFFF66009EFF680031FF66
+          00FFFF6600FFFF6600FFEB660EFF676666FF666666FF9D6742B975665DFD6666
+          66FF826653FFFF6600FFFF6600FFFF6600FFFF6600FFFF6600ADFF630012FF66
+          00FBFF6600FFFF6600FFFF6600FF816654FF666666FF836652F26A6664FF6666
+          66FF926649FFFF6600FFFF6600FFFF6600FFFF6600FFFF6600F4FF680031FF65
+          005DFF6600FBFF6600FFFF6600FF91664AFF666666FF6F6660FE74665CFC6666
+          66FF846652FFFF6600FFFF6600FFFF6600FFFF6600F9FF6600FFFF6600E9FF66
+          002DFF650062FF6600FFFF6600FF846652FF666666FF6F655FFE8A664EE36666
+          66FF686665FFEF660AFFFF6600F8FF670048FF660078FF6600FFFF6600FFFF67
+          00C700000000FF6600DCEF660BFF686665FF666666FF856652EDA2673F7E6666
+          66FF666666FFA0663FFFFF6600FFFF650060FF6B0013FF6600B7FF6600F4FF65
+          007EFF660005FF6600E9A0663FFF666666FF666666FF9F664094000000008565
+          51EA666666FF666666FFB56632FFFE6600EAFF6800360000000000000000FF6A
+          0018FE6600AAB46632FF666666FF666666FF806755F1AA55550300000000AA6C
+          3E217A6659F7666666FF666666FF88664FFFC56626FDDE6616CFE06514D4C666
+          26FC886650FF666666FF666666FF77655AFAA7683E3100000000000000000000
+          00009D623B1A89664EDF666666FF666666FF666666FF666666FF666666FF6666
+          66FF666666FF666666FF876751E4A3623B270000000000000000000000000000
+          00000000000000000000A0643F5990664ACE7A6658F66C6662FE6A6562FE7867
+          5AF88E664CD49F633E6200000000000000000000000000000000
+        }
+        Hint = 'Справка'
+        ImageIndex = 0
+        OnClick = mHelpClick
+      end
       object mAbout: TMenuItem
         Caption = 'О программе'
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000000000000000
+          000000000000000000006565652B6C67639A6C6562EA686665FB686665FB6C65
+          62EA6C67639A6767672A00000000000000000000000000000000000000000000
+          0000666666056D6560A26A6765FB686665FF666666FF666666FF666666FF6666
+          66FF686664FF696765FB6D6561A1555555060000000000000000000000005555
+          55066D6661CE6B6662FE666666FF6D6661FF6E6660FF886650FF87664FFF6E66
+          60FF6D6661FF666666FF6B6562FE6C6661D05555550600000000000000006E66
+          61A36B6662FE686664FF706660FFCD6621FFFE6501BBFF650044FF650044FE65
+          01BBCD6622FF706660FF686664FF6B6663FE6C6661A0000000006868682C6A67
+          65FB666666FF706660FFEC660DFFFF6600FFFF6600D80000000000000000FF66
+          00D9FF6600FFEC660CFF706660FF666666FF696765FB646464296C67639A6866
+          65FF6D6661FFCD6621FFFF6600FFFF6600FFFF6600EB0000000000000000FF66
+          00EBFF6600FFFF6600FFCC6622FF6D6661FF686665FF6C6662996D6662EB6666
+          66FF6E6660FFFE6601FFFF6600FFFF6600FFFF6600EC0000000000000000FF66
+          00ECFF6600FFFF6600FFFE6601FF6E6660FF666666FF6C6561EA696765FB6666
+          66FF876650FFFF6600FFFF6600FFFF6600FFFF6600EC0000000000000000FF66
+          00ECFF6600FFFF6600FFFF6600FF866650FF666666FF686765FB686765FB6666
+          66FF866650FFFF6600FFFF6600FFFF6600FFFF6600E50000000000000000FF66
+          00E5FF6600FFFF6600FFFF6600FF866650FF666666FF696765FB6B6662EB6666
+          66FF6E6660FFFE6601FFFF6600FFFF6600FFFF6600B2FF690011FF690011FF66
+          00B2FF6600FFFF6600FFFE6601FF6F6661FF666666FF6C6662EA6D66639D6866
+          65FF6D6661FFCE6621FFFF6600FFFF6600FFFF6600FFFF6700C2FF6700C2FF66
+          00FFFF6600FFFF6600FFCD6622FF6E6662FF686664FF6B6561986868682C6A66
+          64FB666666FF70665FFFED660CFFFF6600FFFF6500AB0000000000000000FF65
+          00B0FF6600FFEC660CFF706660FF666666FF6A6765FB6565652B000000006E66
+          61A56A6562FE686665FF70665FFFCF6620FFFE6600E8FF65005BFF67005EFE66
+          01EBCE6621FF70665FFF686664FF6B6662FE6E6661A300000000000000005555
+          55066D6662D16B6662FE666666FF6D6661FF6F6660FF89664FFF89664FFF6F66
+          60FF6D6661FF666666FF6B6662FE6D6661CE5555550600000000000000000000
+          00006D6D6D076D6561A66A6664FB686665FF666666FF666666FF666666FF6666
+          66FF686665FF696664FB6E6661A3666666050000000000000000000000000000
+          000000000000000000006666662D6D66639D6C6661EC686665FC696665FA6C66
+          61E96C65629C6868682C00000000000000000000000000000000
+        }
+        Hint = 'О программе'
+        ImageIndex = 24
         OnClick = mAboutClick
+      end
+      object mWebStranica: TMenuItem
+        Caption = 'Посетить веб-страницу'
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000000000000000
+          000000000000000000000000000100000002000000050000000A0000000D0000
+          000A000000050000000200000001000000000000000000000000000000000000
+          000000000000000000020000000A0000001C000000305A2B0E58773A136D532A
+          0F560000002F0000001B0000000A000000020000000000000000000000000000
+          000000000003000000141F100441AB551CB3EC7627F3FF7F2AFFFF7F2AFFFF7F
+          2AFFEA7526F0A3511BAB1008043E000000130000000300000000000000000000
+          000200000015391D0959E1742AEEFF802AFFFF7F2AFFFF7F2AFFFF7F2AFFFF7F
+          2AFFF48135FFFC802DFFE47226EB3A1D09580000001500000002000000000000
+          000C0400003FCD7B44EFAD9585FFE48648FFFF7F2AFFFF7F2AFFFF7F2AFFFF7F
+          2AFFF28339FFA5968CFFAA9485FFD38551FA32190B480000000C000000020000
+          001E8341159ED18A5CFFA4968DFFBD8F72FFFF7F2AFFFF7F2AFFFF7F2AFFFF7F
+          2AFFFF7F2AFFC68D68FFA4968DFFA5958BFFB1612ABE0000001E000000060000
+          0031C56221DBCD8B60FFA4968DFFA4968DFFEA8642FFFF7F2AFFFF7F2AFFFF7F
+          2AFFFF7F2AFFFA8131FFAF9481FFA4968DFFC88557F6000000310000000A0000
+          003FD4814BF9A89588FFA4968DFFA4968DFFC88D66FFFF7F2AFFFF7F2AFFFF7F
+          2AFFFF7F2AFFFF7F2AFFF48236FFC88E67FFC28257F60000003F0000000A0404
+          0440AA9283FDA4968DFFA4968DFFA4968DFFB6927AFFFF7F2AFFFF7F2AFFFF7F
+          2AFFFF7F2BFFFF7F2AFFFF7F2AFFFF7F2AFFD36A23E80000003F000000060000
+          0032BC6D38E1BB8C6DFFC8875DFFC7865AFFC4875EFFE07F3FFFEA7F38FFCA7F
+          4EFFD58047FFFF7F2AFFFF7F2AFFFF7F2AFFB65B1ED300000031000000020000
+          001F7D3E159DBE8057FF938073FF938073FF938073FF938073FF938073FF9380
+          73FFC07F54FFFF7F2AFFFF7F2AFFFF7F2AFF683312910000001E000000000000
+          000C0000003FC96A2BE299806FFF938073FF938073FF938073FF938073FF9380
+          73FFB27F5EFFFF7F2AFFFF7F2AFFC46220D80000003E0000000C000000000000
+          0002000000152F170957BC7546EE978071FF938073FF938073FF938073FF9380
+          73FF9F7F6AFFFF7F2AFFD06822DF1C0D03510000001500000002000000000000
+          000000000003000000151408043FA0501BACDD742DEFD98045FFAB8063FF9380
+          73FFB77B53F9974B18A70804003D000000140000000300000000000000000000
+          000000000000000000020000000A0000001C0000003040200A5060300F654A31
+          245D050505320000001C0000000A000000020000000000000000000000000000
+          000000000000000000000000000100000002000000050000000A0000000D0000
+          000A000000050000000200000001000000000000000000000000
+        }
+        Hint = 'Посетить веб-страницу'
+        ImageIndex = 14
+        OnClick = mWebStranicaClick
+      end
+      object mSupport: TMenuItem
+        Caption = 'Служба поддержки'
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          00000000000000000000C2C2B615C7BEB5370000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          000000000000C8BCBC17C8BEB8C1D1B9B90B0000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000CAC1B91DC8BDB6DAC8BEB786000000000000000000000000C5BDB6230000
+          000000000000000000000000000000000000C9BCB526C9BDB868C8BFB88FC7BE
+          B7A0C8BEB7E2C8BEB7FFC7BEB74E000000000000000000000000C9BDB751C7BE
+          B76E0000000000000000C8B6B60EC8BEB6ACC8BEB7FEC8BEB7FFC8BEB7FFC8BE
+          B7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB8CFC9BFB5340000000000000000C8BE
+          B7BFC7BFB693BFBFBF04C6BFB824C9BCB526CBB9B42CCCBDB623C9BEB82FC7BE
+          B856C8BEB89DC8BEB7F3C8BEB7FFC8BEB7FFC8BEB7F9C9BCB73900000000CABF
+          B530C8BEB7FCC9BEB7C5C8BEB7C4C8BEB7F6C8BEB7FFC8BEB7FEC8BDB6DAC8BE
+          B795CABEB82BC8BCBC17C8BEB7B4C8BEB7FFC8BEB7FFC8BFB7C600000000C8BF
+          B73CC8BEB7F2C8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BE
+          B7FFC8BEB7FCC7BDB77CCCCCCC05C9BEB7C5C8BEB7FFC8BEB7F2CABFB518C8BE
+          B7EEC8BEB7FFC8BEB7F9C8BEB7FFC8BEB7FFC8BEB7F9C8BEB7FFC8BEB7FFC8BE
+          B7F9C8BEB7FFC8BEB7FFC7BFB65BC8BEB853C8BEB7FFC9BEB7C0C8BFB86BC8BE
+          B7FFC9BEB7B7CCCCCC05C9BEB771C9BEB7C0B6B6B607C8BEB766C8BEB7C9C6C6
+          AA09C7BFB65BC8BEB7FFC8BEB7BFC9BCB83DC8BEB7FAC9BCB83DC9BFB767C8BE
+          B7FFC7BEB6A500000000C9BDB759C8BEB7B000000000C7BEB74EC8BFB6BAFFFF
+          FF01C7BFB844C8BEB7FFC7BEB7BCC8BFB758C8BEB84F00000000C9BCBC13C8BE
+          B7EBC8BEB7FFC8BEB7D9C8BEB7F9C8BEB7FFC8BDB6DAC8BEB7F7C8BEB7FFC9BE
+          B7DCC8BEB7F6C8BEB7FFC8BEB853FFFFFF01000000000000000000000000C9BF
+          B534C8BEB7E0C8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BE
+          B7FFC9BEB7F8C7BEB76E00000000000000000000000000000000000000000000
+          0000C6C6AA09C7BDB669C8BFB6BAC8BEB7E9C8BEB7FDC8BEB7F1C8BEB7CCC8BF
+          B787C7BFB7200000000000000000000000000000000000000000
+        }
+        ImageIndex = 26
+        OnClick = mSupportClick
+      end
+      object mUpdateCheck: TMenuItem
+        Caption = 'Проверить обновление'
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          000000000000000000000000000000000000000000000000000000000000AA0B
+          0B5DDC0505A2BD090955661A1A0A000000000000000000000000000000000000
+          0000FF000001FF000004FF00000300000000000000000000000000000000800C
+          0C16F20101F4FF0000FFEC0202EED20404AEB10808656611110F00000000FF00
+          0003FF000019FF00001CFF00001100000002000000080000000B0000000B0000
+          0009D90303A6FF0000F2FF0000F3FF0000F3F30101E3A908084100000000EE00
+          002CFF000034EA0000254D00000A0000002549250C7DAA6332CBC57846DAD7AE
+          93D79E3A288CF30000DAFE0000DAFF0000DACE06067E00000000D608081FFF00
+          004CEF00003E3300000A0000003F93532BD7E98A4BFEFF8F43FFFFA569FFFB97
+          55FFF3A775FECE6237EBC904048EF60101BCF70101BDA0070723E803034CFF00
+          0062C60707240000001A4B250DB5B18567FFB58E72FFFF944DFFFF812DFFFF7F
+          2AFFDC8B54FFD78F5FFFD1875495CD050560FF0000A9DA050566EB020273F900
+          007A4B0F0F1100000043AD5A21E6B9A292FF988B83FFE88B4DFFFF7F2AFFFF7F
+          2AFFF88030FFD48A5AFFE08D56EB9251512FFB000091E402027DEB02028BEB02
+          028D000000070000004EB17953FABCB4AFFF968981FFC98151FFFF7F2AFFFE7F
+          2AFFFE802CFFFE8A3DFFDC7B3CDAB3B3B325EC020278E9020275E804048FFC00
+          00A48009091E0000002EB26531E4CC9B7AFFAA866FFFA9846DFFB3805EFFA380
+          69FFE2803EFFFFA264FFD57A3DB8B9A8A82CF7000061E803035ADB050571FF00
+          00B9D60505630000000D714933A0F2904CFE9D8778FFA8988EFF948175FF9380
+          73FFD68046FFFC893BFDCD916851DF808030FF000046E3050536AA070727F901
+          01CAF60101C7D6040490D72121C7954A19A3E6894BFDD2956CFFAD8469FF937F
+          72FFD17D47FCD7824A78F1ECEC37E4000026FF00002DCC0D0D1400000000CD06
+          0685FF0000E2FF0000E0FE0E0EE0C4434367B88B6D44D17A3E97E29056B7E290
+          5DA7E1BEAD3BEEE9E92EF19C9C24FF000013E100001100000000AB0B0B43F201
+          01E9FF0000F8FF0000F6FF0000F3DC0303A600000001DEDEDE17E8E8E821F1F1
+          F124FFFFFF1EFFFFFF15FFFFFF0F000000000000000000000000551C1C09A309
+          0956CE0505A0E90202E9FF0000FFF10101F57A0B0B1700000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          000000000000661A1A0ABD090955DC0505A2AA0B0B5D00000000000000000000
+          0000000000000000000000000000000000000000000000000000
+        }
+        Hint = 'Проверить обновление'
+        ImageIndex = 21
+        OnClick = mUpdateCheckClick
       end
     end
   end
   object FD: TFontDialog
     MinFontSize = 0
     MaxFontSize = 0
-    left = 245
-    top = 113
+    left = 80
+    top = 96
+  end
+  object PopupMenu1: TPopupMenu
+    Images = ImageList1
+    left = 160
+    top = 32
+    object pCopy: TMenuItem
+      Caption = 'Копировать выделение'
+      Bitmap.Data = {
+        36040000424D3604000000000000360000002800000010000000100000000100
+        2000000000000004000064000000640000000000000000000000000000000000
+        00000000000000000000000000004646461D4D4D4D354D4D4D354D4D4D354D4D
+        4D354D4D4D354D4D4D354D4D4D0A000000000000000000000000000000000000
+        00000000000000000000000000014E4E4E8DDEA68BFFDEA68BFFDEA68BFFDEA6
+        8BFFDEA68BFFDEA68BFFD5A188AE000000000000000000000000000000000000
+        00000000000000000002555555034D4D4D8FE7AB8FFFD29C82FFD49D84FFD39D
+        84FFD9A186FFE8AC90FFD8A389B6000000000000000000000000000000000000
+        00008080800270635CAFA08171DA6F625CEFE7AB8FFFC9957DFFD59E84FFD29B
+        82FFD29B82FFE3A88DFFD8A389B6000000000000000000000000000000000000
+        000240404004846E64E8E2A78CFF907569FFE6AB8FFFBA8A73FFCA967EFFCD98
+        7FFFC6937AFFDFA58AFFD8A389B60000000000000000000000004A4A4A1F7D6A
+        61AD93786CBB856F64F9CD977FFF7F695FFFE6AB8FFFC8947CFFC6937BFFBE8D
+        76FFDEA58AFFE8AC90FFD8A389B60000000000000000000000004C4C4C36B18B
+        78FEE7AC90FF8D7368FFD69E84FF836C62FFE5AA8EFFA97E69FFB68772FFCD98
+        7EFFD39D83FFDDA489FFD8A389B60000000000000000000000004C4C4C36B18B
+        78FEB68771FF8A7166FFD69E84FF856E63FFE5AA8EFFB1846EFFB98A73FFC08D
+        77FFC6947BFFE3A88DFFD8A389B60000000000000000000000004C4C4C36B18B
+        78FEBF8E77FF897166FFD69E84FF836C62FFE6AB8FFFC8947CFFBB8A74FFC692
+        7BFFCB977EFFE1A78BFFD8A389B60000000000000000000000004C4C4C36B18B
+        78FEC7947CFF8A7266FFDCA388FF8C7367FFE6AB8FFFC8947CFFC9957DFFC895
+        7CFFC5927AFFD79F85FFD8A389B60000000000000000000000004C4C4C36B18B
+        78FEC7947CFF8B7267FFD79F85FF9C7B6BFFBE927DFFBB907BFFC1947FFFC395
+        80FFBF937EE3BC917DD5CF9D85750000000000000000000000004C4C4C36B18B
+        78FEC7947CFF8B7267FFCD987FFFBF8D77FFB0826DFFAC7F6AFFB1836DFFE4AA
+        8EFFE4AA8F5400000002000000000000000000000000000000004C4C4C36B18B
+        78FED29C83FF8B7267FFE3A88DFFE3A88DFFDDA489FFD9A187FFDCA489FFE7AB
+        8FFFE9AC905300000000000000000000000000000000000000004C4C4C36B18B
+        78FEC8947CFFC1927AFFC3917BFFC8967EFFCB987FFFDEA58BFFB48C7833BA8F
+        7A30E6B3990A00000000000000000000000000000000000000004C4C4C36B18B
+        78FEC8947CFFD7A086FFC9967DFFC49179FFC6937BFFE7AB8FFF000000010000
+        00000000000000000000000000000000000000000000000000004D4D4D0A9578
+        6A57AE88756BAE88756BAE88756BAE88756BAE88756BC1957E57000000000000
+        0000000000000000000000000000000000000000000000000000
+      }
+      ImageIndex = 8
+      Visible = False
+      OnClick = pCopyClick
+    end
+    object pExport: TMenuItem
+      Caption = 'Экспорт'
+      Bitmap.Data = {
+        36040000424D3604000000000000360000002800000010000000100000000100
+        2000000000000004000064000000640000000000000000000000333333003333
+        33FF4D3A2DFF5C3D29FF5C3D29FF5C3D29FF5C3D29FF5C3D29FF5C3D29FF5C3D
+        29FF5C3D29FF49382DFF333333FF333333B40000000000000000333333FF3734
+        32FFED6002FFBF4C00FFBB4B00FFBB4B00FFBB4B00FFBB4B00FFBB4B00FFBB4B
+        00FFC24E00FFE96005FF333333FF333333DC0000000000000000333333FF3934
+        31FFEA5E00FF9E3F00FF993D00FF993D00FF993D00FF993D00FF993D00FF993D
+        00FFA24100FFEC6002FF333333FF333333E00000000000000000333333FF3934
+        31FFEA5E00FF612700FF552200FF552200FF552200FF552200FF552200FF5522
+        00FF602600FFE05B02FF333333FF333333E30000000000000000333333FF3934
+        31FFF96400FFD15400FFCC5200FFCC5200FFCC5200FFCC5200FFCC5200FFCC52
+        00FFD95700FFF66402FF333333FF333333E60000000000000000333333FF3934
+        31FFDB5800FF8A3700FF883600FF883600FF883600FF883600FF883600FF8836
+        00FF903A00FFEF6102FF333333FF333333E90000000000000000333333FF3934
+        31FFD55500FF5C2500FF552200FF552200FF552200FF552200FF552200FF5522
+        00FF6A2A00FFF06202FF333333FF333333EC0000000000000000333333FF3433
+        33FFC05610FFD65C0AFFD65C0AFFD65C0AFFD65C0AFFD65C0AFFD65C0AFFD65C
+        0AFFD65C0AFFB55413FF333333FF333333EF0000000000000000333333FF3333
+        33FF333333FF333333FF333333FF333333FF333333FF333333FF333333FF3333
+        33FF333333FF333333FF333333FF333333F30000000000000000333333FF3333
+        33FF333333FF333333FF333333FF333333FF333333FF333333FF333333FF3333
+        33FF333333FF333333FF333333FF333333F60000000000000000333333FF3333
+        33FF333333FF794421FFAD5114FFB45313FFBB5511FFBC5511FFC9590EFF984C
+        1AFF343333FF333333FF333333FF333333F90000000000000000333333FF3333
+        33FF704224FFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFF56200FF7F33
+        00FF7B4521FF333333FF333333FF333333FC0000000000000000333333FF3333
+        33FF914B1CFFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFEE5F00FF692A
+        00FF85481FFF333333FF333333FF323232C50000000000000000333333FF3333
+        33FF914B1CFFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFED5F00FF6A2A
+        00FF814720FF333333FF333333AF3333330A0000000000000000333333FF3333
+        33FF914B1CFFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFEC5E00FF6B2B
+        00FF7D4520FF3333339255555503000000000000000000000000333333A53333
+        33C89E4D17DAFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFFE6600FFDA57
+        00FFA651179B0000000000000000000000000000000000000000
+      }
+      ImageIndex = 12
+      object pExportCSV: TMenuItem
+        Caption = 'Экспорт в CSV'
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000000000000000
+          0000666666054B4B4B1155555512555555125555551255555512555555125555
+          5512555555124B4B4B1133333305000000000000000000000000000000004040
+          400479685E4CB58D7AE6B28B78EBB28B78EBB28B78EBB28B78EBB28B78EBB28B
+          78EBB28B78EBB58D7AE6806D6246404040040000000000000000FF000008FB02
+          027AF10E0CD7FA221DFFFA221DFFFA221DFFFA221DFFFA221DFFFA221DFFFA22
+          1DFFFA221DFFFA221DFFF30D0CD5FB020279FF00000800000000FF0000A2FF00
+          00FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF00
+          00FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000A000000000FF0000F7FF00
+          00FFFF6363FDFFBFBFFFFFA6A6FFFF2424FFFFAEAEFFFFB9B9FFFF8181FFFF00
+          00FFFFA3A3FFFFC2C2FFFF0000FFFF0000FFFF0000F700000000FF0000FFFF00
+          00FFFFE9E9FFFF1111FFFF0000FFFF0000FFFF5050FFFFB5B5FFFF9595FFFF16
+          16FFFFD4D4FFFFB9B9FFFF3131FFFF0000FFFF0000FF00000000FF0000FFFF00
+          00FFFFC5C5FFFF5757FFFF3030FFFF1717FFFFE5E5FFFF4646FFFF2424FFFF74
+          74FFFF7979FFFF5858FFFF9595FFFF0000FFFF0000FF00000000FF0000E0FF00
+          00FFFD0E0EFAFF7575FFFF7777FFFF0A0AFFFF5858FFFF8686FFFF3939FFFF58
+          58FFFF1717FFFF0808FFFC5A5AEFFF0000FFFF0000DF00000000FF000049FF00
+          00EFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF00
+          00FFFF0000FFFF0000FFFF0000FFFF0000EEFF0000480000000000000000DB18
+          1815C13B348FE06756FFBC4D40FFDC6554FFC25143FFF07360FFF07360FFF073
+          60FFF07360FFF07360FFC83B348ACC0D0D140000000000000000000000006666
+          660588726565D59E84FFBA8A73FFC39079FFAD806BFFC8947CFFC6937CFFAA7E
+          6AFFE5AA8EFFE8AC90FF8E76695F333333050000000000000000000000006666
+          660588726565D59E84FFAA7E6AFFBF8D76FFC49179FFAF826CFFB48670FFE8AC
+          90FFE8AC90FFE8AC90FF8E76695F333333050000000000000000000000006666
+          660588726565D59E84FFBA8A73FFB78872FFB98973FFB0836EFFCD987FFFBA8A
+          73FFE8AC90FFE8AC90FF8E76695F333333050000000000000000000000006666
+          66058A736664DAA288FFC5927BFFD9A186FFC7947CFFC08E77FFC8947CFFBB8A
+          74FFE5AA8EFFE8AC90FF90776A5E333333050000000000000000000000004040
+          400487726853D09C84F7C2917BF9CE9A83F8C2917BF9BD8E79F9C3927CF9BA8C
+          77F9D5A088F8D8A289F78972694E404040040000000000000000000000000000
+          0000666666054B4B4B1155555512555555125555551255555512555555125555
+          5512555555124B4B4B1133333305000000000000000000000000
+        }
+        ImageIndex = 17
+        OnClick = mExportClick
+      end
+      object pExportHTML: TMenuItem
+        Caption = 'Экспорт в HTML'
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000000000005555
+          5509505050105555551255555512555555125555551255555512555555125555
+          5512555555125555551255555512505050105555550900000000515151137263
+          5C74B58C79E3B28B78EBB28B78EBB28B78EBB28B78EBB28B78EBB28B78EBB28B
+          78EBB28B78EBB28B78EBB28B78EBB58C79E3A2817294515151134E4E4E17816D
+          6494876454FFD8A086FF755749FFE8AC90FF765849FFE8AC90FF816050FF8865
+          55FFBF8E77FF936D5BFF5A4338FF6C5043FFB78E7AC24E4E4E174E4E4E17806C
+          6395644A3EFF9A725FFF3A2B24FFE8AC90FF4D3930FFE8AC90FF60473BFF4C39
+          2FFF6A4F42FF805F50FF4D3930FFE8AC90FFBA907CC14E4E4E174E4E4E17806C
+          6395644A3EFF8B6756FF362821FFE8AC90FF4D3930FFE8AC90FF4E3A31FF7F5E
+          4FFF423129FF8E6958FF4D3930FFE8AC90FFBA907CC14E4E4E174E4E4E17806C
+          6395906B59FFD9A186FF805F50FF8F6A59FF533D33FF7F5E4FFF765849FFC794
+          7CFF8A6756FFB48670FF805F50FFE8AC90FFBA907CC14E4E4E174E4E4E17806C
+          6395E8AC90FFE8AC90FFE8AC90FFE8AC90FFE8AC90FFE8AC90FFE8AC90FFE8AC
+          90FFE8AC90FFE8AC90FFE8AC90FFE8AC90FFBA907CC14E4E4E174E4E4E17806C
+          6395E8AC90FFE8AC90FFE8AC90FFE3A98DFFD38873FFE8AB8FFFE8AC90FFE8AC
+          90FFE8AC90FFE8AC90FFE8AC90FFE8AC90FFBA907CC14E4E4E174E4E4E17806C
+          6395E8AC90FFE8AC90FFE4A98EFFAE6B5AFF9E100FFFE10302FFDB9F85FFE8AC
+          90FFAE6557FFDBA388FFE8AC90FFE8AC90FFBA907CC14E4E4E174E4E4E17806C
+          6395C9947DFF9A473EFFD52828FFEC2E2CFFAE6656FFF70000FFA8382EFFE8AC
+          90FFE33734FFE32928FFA03832FFB7826DFFBA907CC14E4E4E174E4E4E17806C
+          6395621313FFF42B2BFFF54E46FFE9A88DFFE8AC90FFAF100DFFD80201FFD9A0
+          86FFE8AC90FFF26E5FFFF62E2DFF9B1A1AFF8D6D5FCD4E4E4E174E4E4E17806C
+          6395D29C82FF9A5044FFC82826FFED2D2CFFE09C83FFB26B59FFFB0000FFA13D
+          33FFE43431FFD92828FF9A4038FFC28E77FFBA907CC14E4E4E174E4E4E17806C
+          6395E8AC90FFE8AC90FFE7AB8FFFB47664FFDDA086FFE8AC90FFB80D0BFFCC02
+          02FFA86959FFE1A78BFFE8AC90FFE8AC90FFBA907CC14E4E4E174E4E4E17816D
+          6494E8AC90FFE8AC90FFE8AC90FFE8AC90FFE8AC90FFE8AC90FFCC836DFFB336
+          2DFFB57864FFE8AC90FFE8AC90FFE8AC90FFBA907CC14E4E4E17515151137C6A
+          617BD8A289F6D7A189F8D7A189F8D7A189F8D7A189F8D7A189F8D7A189F8D7A1
+          89F8D7A189F8D7A189F8D7A189F8D8A289F6B78E7AA951515113000000005555
+          5509505050105555551255555512555555125555551255555512555555125555
+          5512555555125555551255555512505050105555550900000000
+        }
+        ImageIndex = 18
+        OnClick = mExportHTMLClick
+      end
+      object pPeredatExcel: TMenuItem
+        Caption = 'Передать в  Excel'
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000D18A5A00CE81
+          4CEED08453F0D08453F0D08453F0D08453F0D08453F0D08453F0D08453F0D084
+          53F0D08453F0D08453F0D08453F0CF814DEDD08C5B7E00000000D89D75FAE0AF
+          8EFFE0B08FFFE0B08FFFE0B08FFFE0B08FFFE0B08FFFE0B08FFFE0B08FFFE0B0
+          8FFFE0B08FFFE0B08FFFE0B08FFFE0AF8FFFDCA47EF100000000DEAA88FEDEAA
+          87FFDEAA87FFDEAA87FFDEAA87FFDEAA87FFE2AB88FFE0AC8AFFDEAA87FFDEAA
+          87FFDEAA87FFDEAA87FFDEAA87FFDEAA87FFE1AF8FFD00000000DEAB88FEEABA
+          9AFFF1C4A8FFF5CCB2FFF9D4BDFFFDDCC8FFFFE5D5FFECC4AAFFE3B495FFE3B4
+          95FFE3B495FFE3B495FFE3B495FFE1B191FFE0AF8FFE00000000DEAB88FEFDE0
+          D0FFFFE5D5FFFFE5D5FFFFE5D5FFFFE5D5FFFFE5D5FFFB968BFFF9736AFFF39C
+          8DFFF27165FFF27165FFF27165FFF1C0ADFFE0AF8FFE00000000DEAB88FEFCDF
+          CDFFF5BCACFFFCDDCCFFF49185FFEB6C60FFFFE5D5FFFF635EFFFF2A2AFFF37D
+          71FFFF2A2AFFFF2A2AFFFF2A2AFFF1B5A2FFE0AF8FFE00000000DEAB88FEFCE1
+          CEFFF4302BFFED6D61FFF71411FFF7BAABFFFFE5D5FFF78E82FFF4695EFFF090
+          84FFF4695EFFF4695EFFF4695EFFF2BEAAFFE0AF8FFE00000000DEAB88FEFDE2
+          D1FFF39387FFFE0000FFF3685DFFFFE5D5FFFFE5D5FFFF625DFFFF2A2AFFF37D
+          71FFFF2A2AFFFF2A2AFFFF2A2AFFF1B5A2FFE0AF8FFE00000000DEAB88FEFDE1
+          D0FFF4A899FFFE0000FFF49589FFFFE5D5FFFFE5D5FFF79387FFF47167FFF196
+          87FFF47167FFF47167FFF47167FFF2BEABFFE0AF8FFE00000000DEAB88FEFADC
+          CCFFF5302AFFF12F29FFF62E28FFFDE2D2FFFFE5D5FFFF615DFFFF2A2AFFF37D
+          71FFFF2A2AFFFF2A2AFFFF2A2AFFF1B5A2FFE0AF8FFE00000000DEAB88FEF0A2
+          93FFF51813FFF5C3B2FFF7221EFFF49387FFFFE5D5FFF79186FFF47167FFF195
+          86FFF47167FFF47167FFF47167FFF2BEABFFE0AF8FFE00000000DEAB88FEFCE1
+          D0FFFCE0D0FFFFE5D5FFF7B8AAFFEC796CFFFEE4D4FFFF605AFFFF2A2AFFF37D
+          71FFFF2A2AFFFF2A2AFFFF2A2AFFF1B5A2FFE0AF8FFE00000000DEAB88FEF5D3
+          BDFFFEE1D0FFFFE5D5FFFFE5D5FFFFE5D5FFFFE5D5FFF2B7A2FFEDA58FFFECB5
+          9DFFECAF98FFECAF98FFECAF98FFE9BEA6FFE0AF8FFE00000000DEAB88FEDEAA
+          87FFDFAA87FFE7B694FFF1C6ABFFF8D9C5FFFFE4D4FFE7BB9BFFDEAA87FFDEAA
+          87FFDEAA87FFDEAA87FFDEAA87FFDEAA87FFE0AF8FFE00000000E0AE8DF1DEAA
+          87FFDEAA87FFDEAA87FFDEAA87FFDEAA87FFE1AF8EFFE1AF8CFFDEAA87FFDEAA
+          87FFDEAA87FFDEAA87FFDEAA87FFDEAA87FFE1B090F900000000E3BA9C81E1B2
+          90EDE0B091F0E0B091F0E0B091F0E0B091F0E0B091F0E0B091F0E0B091F0E0B0
+          91F0E0B091F0E0B091F0E0B091F0E0B191EEE4BA9B9700000000
+        }
+        ImageIndex = 16
+        OnClick = mPeredatExcelClick
+      end
+    end
+    object pSearchMenu: TMenuItem
+      Caption = 'Поиск'
+      Bitmap.Data = {
+        36040000424D3604000000000000360000002800000010000000100000000100
+        2000000000000004000064000000640000000000000000000000AA450000AA44
+        00E7AC4500340000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000AA4400F3AA44
+        00FFAA4400E1A640001400000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000AB430079AA44
+        00FFAA4400FFB36735D9CCCCCCB8CBCBCB9ECBCBCB94CCCCCC88CBCBCB7BCCCC
+        CC72CDCDCD66CBCBCB5800000000000000000000000000000000FF000001A944
+        00B5AA4400FFAE561BFFCBCBCAFFC3A896FFBB8D6EFFBB8E70FFBEAB9EFFC6C6
+        C6FFC4C4C4FFC3C3C3F70000000000000000000000000000000000000000AA39
+        0009B46B3BA9AA4706FFAB5014FFB25517FFC58459FFC48358FFAD4C0BFFB36F
+        42FFCAC6C3FFC2C2C2F300000000000000000000000000000000000000000000
+        0000C9BEB88DAD5113FFCA895FFFEDE3DCFFE1DCD9FFE1DCD9FFE2D9D2FFBD72
+        3FFFAB6536FFC7C7C7E700000000000000000000000000000000000000000000
+        0000B8815CD5BE703CFFE9E0D9FFF7EDE6FFF5ECE5FFEFE7E1FFE4DFDAFFE5DC
+        D6FFAF4E0EFFC3A796E000000000000000000000000000000000000000000000
+        0000B26531F6D7AB8DFFAAA49FFFC2BAB4FFE9E0D9FFB6AFAAFFF4EBE4FFE2DD
+        D9FFC8895EFFB47A54E60000000000000000000000000000000000000000CCCC
+        CC0AAF5E28FFDBB59CFF9E9793FFE7DED8FFE5DBD5FFC7BFB9FFEAE1DAFF8A87
+        85FFBB8B6CFFB6754AE40000000000000000000000000000000000000000CECE
+        CE34AC6A3EFFD39E7BFFF7EDE6FFF7EDE6FFC9C0BBFFF3E9E2FFD6CEC8FF8885
+        82FFB87344FFB88663D50000000000000000000000000000000000000000CCCC
+        CC5FB99F8DFFB15416FFEDD8CAFFF7EDE6FFF7EDE6FFF7EDE6FFF4EAE4FFDCC0
+        ADFFAC4B0BFFC6BAB2B20000000000000000000000000000000000000000CBCB
+        CB8AB9B9B9FFA76D46FFB3571AFFDCB296FFF1DFD4FFEFDCCFFFD39E7BFFAE4D
+        0DFFB5927AFFCCCCCC9F0000000000000000000000000000000000000000CCCC
+        CCB5B2B2B2FFBDBDBDFFBA9278FFAE581FFFAA4400FFAA4401FFAE5F2BFFB298
+        87FFB4B4B4FFCBCBCB940000000000000000000000000000000000000000CCCC
+        CCE0BABABAFFBABABAFFA7A7A7FFABABABFFADA9A6FFAEABA9FFBEBEBEFFC7C7
+        C7FFBEBEBEFFCDCDCD8900000000000000000000000000000000FFFFFF01CCCC
+        CCA0CCCCCCCECCCCCCFBCCCCCCFFCCCCCCFFC8C8C8FFBDBDBDFFBBBBBBFFCCCC
+        CCE6CCCCCCBECDCDCD6600000000000000000000000000000000000000000000
+        000000000000AAAAAA03CBCBCB27CBCBCB54CCCCCC81CBCBCBADCCCCCCDBCCCC
+        CC79000000000000000000000000000000000000000000000000
+      }
+      ImageIndex = 6
+      object pBeginSearch: TMenuItem
+        Caption = 'Начать поиск'
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000666666006666
+          660F000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000666666FC6666
+          66E16767673E0000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000666666F97166
+          5EFF666666FD6666669155555506000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000666666F7BF66
+          2BFFBD662CFF6A6663FF666666CA676767250000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000666666F4BE66
+          2CFFFF6600FFE56611FF826654FF666666F56565656F00000000000000000000
+          0000000000000000000000000000000000000000000000000000666666F1BC66
+          2CFFFF6600FFFF6600FFFA6603FFA9663AFF676666FF666666AD6B6B6B130000
+          0000000000000000000000000000000000000000000000000000666666EFBB66
+          2EFFFF6600FFFF6600FFFF6600FFFF6600FFD5661CFF75665CFF666666E76767
+          6748000000000000000000000000000000000000000000000000666666EBB966
+          2FFFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFF16609FF8C664DFF6666
+          66FD656565830000000000000000000000000000000000000000666666E9B866
+          30FFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFD1661FFF71665FFF6666
+          66E26565653A0000000000000000000000000000000000000000666666E7B666
+          31FFFF6600FFFF6600FFFF6600FFFD6602FFB36633FF676665FF676767B36363
+          6312000000000000000000000000000000000000000000000000666666E4B566
+          32FFFF6600FFFF6600FFEE660BFF89664EFF666666FB66666680808080020000
+          0000000000000000000000000000000000000000000000000000666666E2B366
+          33FFFF6600FFD6661BFF74665DFF666666E46666663C00000000000000000000
+          0000000000000000000000000000000000000000000000000000666666DFAF66
+          35FFB36633FF676665FF676767BD6A6A6A180000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000666666DC6B66
+          63FF666666FC6666668080808002000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000666666DA6666
+          66E9676767450000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000656565976666
+          6619000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000
+        }
+        ImageIndex = 7
+        OnClick = mBeginSerchClick
+      end
+      object pOchistka: TMenuItem
+        Caption = 'Очистить'
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000000000000000
+          0000000000006767674A666666AC666666E3666666F0666666D6666666946969
+          6922000000000000000000000000000000000000000000000000000000006D6D
+          6D07656565A69E6640FFDD6617FFF86605FFF96604FFD7661BFF926649FF6666
+          66F66666665A0000000000000000000000000000000000000000000000006966
+          64A5CB6623FFEC660DFF9E6641FF74665DEE6D6661D58E664BF7D7661BFFB566
+          31FF666666FC6565653A0000000000000000000000000000000064646438AF66
+          35FFE66611FF72675FF56666665A00000001000000006D6D6D0E67676786B966
+          2FFF956647FF666666B1000000000000000000000000000000006E6761ABF766
+          05FF88664FFF6565655600000000000000000000000000000000000000006765
+          6572B76630FF666666E300000000000000000000000000000000956546E5E966
+          0EFF666666E00000000100000000000000000000000000000000000000000000
+          0001A06640E3686665F5000000000000000000000000000000009D6642FCD766
+          1AFF676767BD00000000000000006868681B0000000000000000000000000000
+          00007C6657A86E6661E100000000000000000000000000000000916548EDE566
+          12FF666666DD0000000000000000666666DD6464643800000000000000000000
+          0000676767436666667A000000000000000000000000000000006E655FA7F866
+          05FF7C6657FF6767674D6666660FA9663AFF88664FF36565653A000000000000
+          000000000000000000000000000000000000000000000000000066666632B066
+          35FFD6661CFF6B6664EF6666666EC76625FFF66606FF8B674FF6646464420000
+          0000000000000000000000000000000000000000000000000000000000006D66
+          6291CA6623FFD8661AFF826654FFDC6618FFFF6600FFF86604FF8F664BF86565
+          6544000000000000000000000000000000000000000000000000000000008080
+          8002686665939E6540FEDF6616FFFD6601FFFF6600FFFF6600FFF96604FF9066
+          49FA6767674D0000000000000000000000000000000000000000000000000000
+          000000000000686868366E6762DDFE6600FFFF6600FFFF6600FFFF6600FFF666
+          06FF7C6658FA6767674F00000000000000000000000000000000000000000000
+          0000000000000000000087664FC6FF6600FFFE6601FFDC6618FFA9663AFF7466
+          5EF5676767A46767674300000000000000000000000000000000000000000000
+          0000000000000000000088654FE3AE6636FF78665AFD656565C4676767666262
+          620D000000000000000000000000000000000000000000000000000000000000
+          00000000000080808004666666D0676767776666661900000000000000000000
+          0000000000000000000000000000000000000000000000000000
+        }
+        ImageIndex = 9
+        OnClick = mOchistitClick
+      end
+    end
+    object pVidMenu: TMenuItem
+      Caption = 'Вид'
+      Bitmap.Data = {
+        36040000424D3604000000000000360000002800000010000000100000000100
+        2000000000000004000064000000640000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000000000000000000000000
+        0003000000080000000B00000009000000060000000200000000000000000000
+        0002000000060000000700000007000000040000000200000000000000020000
+        00120D0D0D3D1111114D121212481A1A1A310000000800000000000000000000
+        000B0000002E0000003A000000390000002C0000001100000002000000030000
+        00232B2B2BA67B5339FFCD5F15FF524E4BFF4141415300000003000000040000
+        0023202020A16A5141FFD06015FFCD5F16FE624E41E82E2E2E0B000000020000
+        00190202026A4B433FF3F06407FF79543AFD1111113B00000026000000270000
+        00471A1A1ABEA65926FFFF6600FFF26406FF4B4846B700000003000000000000
+        00090000003A222222BAA05929FFBB5C1CFD955123E3965123E2965123E2934F
+        22E78E4E23F5E3620CFFFF6600FFBB5D1EFF4141416600000000000000000000
+        000200000019000000694A433EF1E4620BFF8C532BF18A4E26D8884E27DF834B
+        25E8945429FCFF6600FFFF6600FF825536FA2121211700000000000000000000
+        000000000008000000361F1F1FB3A05929FF9C5729F81111113B0000003C0000
+        008F94542AFBFF6600FFF66504FF4E4843BD0000000400000000000000000000
+        000000000002000000170000006448403CEBE1620DFF51443997000000381818
+        18B3CA5F17FFFF6600FFBF5D1BFF4141416A0000000000000000000000000000
+        00000000000000000007000000341B1B1BAA9F5829FFAB5A23FA0C0C0C6C3632
+        2EDCF76504FFFF6600FF865434FC2727271A0000000000000000000000000000
+        000000000000000000020000001600000060473F3BE9EA6309FF503929D27A4E
+        30F9FF6600FFF86503FF514843C2000000050000000000000000000000000000
+        0000000000000000000000000007000000311A1A1AA69F592AFFBE5C1BFEB25B
+        21FFFF6600FFC45D19FF4141416E000000020000000000000000000000000000
+        0000000000000000000000000002000000140000005D443C38E8EE6307FFEB64
+        09FFFF6600FF8A5531FD2B2B2B1E000000000000000000000000000000000000
+        0000000000000000000000000000000000060000002B18181893604F44FE9056
+        30FF885533FF534A45C400000005000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000C0000002C2323235E2727
+        2761232323482C2C2C1D00000000000000000000000000000000000000000000
+        0000000000000000000000000000000000000000000200000007000000090000
+        0007000000050000000200000000000000000000000000000000
+      }
+      ImageIndex = 13
+      object pShrift: TMenuItem
+        Caption = 'Шрифт'
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0003000000080000000B00000009000000060000000200000000000000000000
+          0002000000060000000700000007000000040000000200000000000000020000
+          00120D0D0D3D1111114D121212481A1A1A310000000800000000000000000000
+          000B0000002E0000003A000000390000002C0000001100000002000000030000
+          00232B2B2BA67B5339FFCD5F15FF524E4BFF4141415300000003000000040000
+          0023202020A16A5141FFD06015FFCD5F16FE624E41E82E2E2E0B000000020000
+          00190202026A4B433FF3F06407FF79543AFD1111113B00000026000000270000
+          00471A1A1ABEA65926FFFF6600FFF26406FF4B4846B700000003000000000000
+          00090000003A222222BAA05929FFBB5C1CFD955123E3965123E2965123E2934F
+          22E78E4E23F5E3620CFFFF6600FFBB5D1EFF4141416600000000000000000000
+          000200000019000000694A433EF1E4620BFF8C532BF18A4E26D8884E27DF834B
+          25E8945429FCFF6600FFFF6600FF825536FA2121211700000000000000000000
+          000000000008000000361F1F1FB3A05929FF9C5729F81111113B0000003C0000
+          008F94542AFBFF6600FFF66504FF4E4843BD0000000400000000000000000000
+          000000000002000000170000006448403CEBE1620DFF51443997000000381818
+          18B3CA5F17FFFF6600FFBF5D1BFF4141416A0000000000000000000000000000
+          00000000000000000007000000341B1B1BAA9F5829FFAB5A23FA0C0C0C6C3632
+          2EDCF76504FFFF6600FF865434FC2727271A0000000000000000000000000000
+          000000000000000000020000001600000060473F3BE9EA6309FF503929D27A4E
+          30F9FF6600FFF86503FF514843C2000000050000000000000000000000000000
+          0000000000000000000000000007000000311A1A1AA69F592AFFBE5C1BFEB25B
+          21FFFF6600FFC45D19FF4141416E000000020000000000000000000000000000
+          0000000000000000000000000002000000140000005D443C38E8EE6307FFEB64
+          09FFFF6600FF8A5531FD2B2B2B1E000000000000000000000000000000000000
+          0000000000000000000000000000000000060000002B18181893604F44FE9056
+          30FF885533FF534A45C400000005000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000C0000002C2323235E2727
+          2761232323482C2C2C1D00000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000200000007000000090000
+          0007000000050000000200000000000000000000000000000000
+        }
+        ImageIndex = 13
+        OnClick = mShriftClick
+      end
+      object pSortByName: TMenuItem
+        Caption = 'Сортировать по названию'
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          000000000000000000000000000000000000000000000000000081665400A165
+          3DD0666666059466479B95654797000000000000000000000000000000006A6A
+          6A0C666666B6656565470000000000000000000000000000000069696911A566
+          3CED89664F8A9B6744BF9A6542B60000000000000000000000005D5D5D0B6865
+          64BFC56627FF8C664EFA67676754000000000000000000000000000000006863
+          6367B46633FB976646F09B6542B500000000000000006666660F666666C6BC66
+          2CFFFF6600FFF86604FF8B664DFD6565656200000000000000008165545BC166
+          29F6A6643A84B06634DC9C6643B4000000006666660F676767C7B66631FFFF66
+          00FFFF6600FFFF6600FFF76606FF886650FE6666667000000000A4663DC19966
+          46AC000000009E6540BFA06741B46D6D6D07666666C0936648FFC96624FFCD66
+          21FFFF6600FFFB6602FFCF6620FFD2661EFF77665AFF656565797D62512FA665
+          3AE09766459BBB662ED9A06740B30000000080808002666666236666665AA966
+          39FFFF6600FFFE6600FF6F6760CC6565657E6666664B6A6A6A18000000006666
+          66059267494D8D664A677169613F0000000000000000000000006767672AB866
+          2FFFFF6600FFFF6600FF956646A800000000000000000000000090664AC86464
+          6442000000009E66429B996543D48080800200000000000000006767674AC766
+          26FFFF6600FFFF6600FFA5663CE8000000000000000000000000B26635B6AF66
+          34DDC1672AC9D96619F8A0663FD50000000000000000000000006565656AD666
+          1CFFFF6600FFFF6600FFB9662FFF6363632400000000000000008A654D4CA966
+          39E18B674E5CD5661CFF856853960000000000000000000000006666668AE566
+          12FFFF6600FFFF6600FFD3661EFF6666666C000000000000000055555503A366
+          3DE96767673EE26613FF66666650000000000000000000000000666666AAF366
+          08FFFF6600FFFF6600FFEC660CFF666666B4000000000000000000000000A865
+          39BB886851B6D1661EFF6A6A6A180000000000000000000000006B6663CBFE66
+          00FFFF6600FFFF6600FFFE6600FF6E6660F66060600800000000000000007B65
+          5953B86630FEB8662FEE0000000000000000000000000000000072665EEBB066
+          34FF73665EFF73665EFFB56631FF7D6656FF6767674500000000000000006D6D
+          6D07A5663DF4996745AD00000000000000000000000055555503666666B66666
+          66A7666666996767679F666666BB666666D66666667800000000
+        }
+        ImageIndex = 2
+        OnClick = mSort00Click
+      end
+      object pSortByType: TMenuItem
+        Caption = 'Сортировать по типу'
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000006666
+          6605676767A967676754000000000000000000000000000000006A6A6A186969
+          6922646464170000000000000000000000000000000000000000555555036666
+          66A7BB662EFF916649FD6666665F00000000000000000000000090664AE7A366
+          3DFF90674BE40000000000000000000000000000000055555503666666A7AF66
+          35FFFF6600FFFA6604FF8D654BFE67676763000000000000000091674AE7A366
+          3DFF90664AE400000000000000000000000055555503656565A69D6641FFFE66
+          00FFFF6600FFFF6600FFF96604FF8C664DFE6565656F00000000636363556666
+          666C68686865666666556767672F000000006767679F866651FFCE6620FFCA66
+          24FFFF6600FFFE6600FFD3661EFFD7661BFF7A6659FE66666673896650EACC66
+          22FFCC6622FFCA6623FF76675BB3000000008080800267676725676767549A65
+          43F9FF6600FFFF6600FF78675BD86666668A6565655669696922706661C08765
+          4EE487654EE4866550E36965638D0000000000000000000000005D5D5D0BA866
+          3AFFFF6600FFFF6600FF9D6640B70000000000000000000000006666666B6565
+          6588656565886565658865656588666666826A6A6A18000000006767672AB666
+          31FFFF6600FFFF6600FFAB6637F00000000100000000000000009B6542F4E066
+          14FFE06614FFE06614FFE06614FFC46628FF67676748000000006767674AC466
+          27FFFF6600FFFF6600FFC0662AFF6565652B0000000000000000666666946666
+          66AA666666AA666666AA666666AA676767A9656565260000000066666669D366
+          1EFFFF6600FFFF6600FFD96619FF666666710000000000000000666666766565
+          65886565658865656588656565886565658865656588666666806565658EE166
+          14FFFF6600FFFF6600FFF26608FF676767B800000000000000009E6641FFE066
+          14FFE06614FFE06614FFE06614FFE06614FFE06614FFB36632FF666666B7EF66
+          0AFFFF6600FFFF6600FFFF6600FF72665EF87171710900000000666666916666
+          66AA666666AA666666AA666666AA666666AA666666AA6666669D686767CBC166
+          29FF826653FF7B6658FFBE662BFF856651FF6666664600000000000000000000
+          0000000000000000000000000000000000000000000000000000666666B26767
+          67C2666666BB666666BB666666D2666666EE6565658800000000
+        }
+        ImageIndex = 3
+        OnClick = mSort01Click
+      end
+      object pSortByLic: TMenuItem
+        Caption = 'Сортировать по лицензии'
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000004646
+          460B4646460B4646460B4646460B4646460B4646460B4646460B4646460B0000
+          0000000000006666660500000000000000000000000000000000595959147B69
+          60F1C09480FCC09480FCC09480FCC09480FCC09480FCC09480FCC19480FADDA6
+          8C6A6868683B70655EE36868683B000000000000000000000000515151168A73
+          67F9E8AC90FFE8AC90FFE8AC90FFE8AC90FFE8AC90FFE8AC90FFE8AC90FFB591
+          7FA989664FF5F46607FF956646F8676767480000000000000000515151168A73
+          67F9D9A187FFC18F78FFC5927BFFBB8B74FFB2846FFFE8AC90FFC89B86FF8467
+          54FBF56607FFFF6600FFFB6602FF956747FB6565655600000000515151168A73
+          67F9DDA489FFBA8A73FFCF9A81FFCA967EFFCA967DFFAA8574FF7D685BFFD366
+          1DFFE06615FFFF6600FFF0660AFFE46612FF8A664EFD66666664515151168A73
+          67F9D9A187FFAA7E6AFFC39079FFC8947DFFBC8C75FFB58671FFD5A28AFFA689
+          7BB5B26633FFFF6600FFC56626FD666666916666665F6868682C515151168A73
+          67F9DDA489FFCB967EFFC08E77FFC7947CFFCA967DFFE8AC90FFE8AC90FFC799
+          849EC16629FFFF6600FFDF6616FF6363631F0000000000000000515151168A73
+          67F9D9A187FFAA7E6AFFCA967DFFCF9980FFE8AC90FFE8AC90FFE8AC90FFB28E
+          7EACD0661FFFFF6600FFF86605FF676565680000000000000000515151168A73
+          67F9D9A187FFC18F78FFB58670FFC6937BFFBA8A73FFB3856FFFE8AC90FFA085
+          79BADF6615FFFF6600FFFF6600FF806554BA0000000000000000515151168A73
+          67F9DDA489FFBA8A73FFC5927AFFCD987EFFBA8A73FFE7AB8FFFE8AC90FF917D
+          74C8EE660BFFFF6600FFFF6600FF956647F76D6D6D0700000000515151168A73
+          67F9D9A187FFC18F78FFAB7F6AFFBE8E76FFC6937BFFB98973FFE8AC90FF8475
+          6FD7FC6602FFFF6600FFFF6600FFAD6636FF6767674300000000515151168A73
+          67F9DDA489FFCB967EFFCC977EFFCB967EFFBE8D76FFC18F78FFE7AB8FFF7D6E
+          67E79E6640FF6A6663FF826653FF986644FF6666668C00000000595959148C73
+          68F3E8AC90FFE8AC90FFE8AC90FFE8AC90FFE8AC90FFE8AC90FFE8AC90FFA788
+          7AB46666665F6666665567676761666666806666667000000000000000007869
+          5A11AA847B1BAA847B1BAA847B1BAA847B1BAA847B1BAA847B1BAA847B1BC68E
+          8E09000000000000000000000000000000000000000000000000
+        }
+        ImageIndex = 1
+        OnClick = mSort02Click
+      end
+      object pSortByStoimost: TMenuItem
+        Caption = 'Сортировать по стоимости'
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000626262006464
+          643D696969226868681B00000001000000000000000000000000000000000000
+          000066666641676564BD6B6B6B13000000000000000000000000696969118C66
+          4CFFD6661CFF696665EF55555503000000000000000000000000000000006565
+          65498A664DF8E26614FF7A675ADA6A6A6A1D0000000000000000606060109E66
+          40F2FF6600FF696765D0686868406868682C60606010000000006767674D8866
+          50F9F76605FFFF6600FFE9660FFF78665AE36969692700000000946647E5CB66
+          22FCFF6600FFAF6634FAB06735F6B16634F16866668065656558836753FBEF66
+          0AFFF66606FFFF6600FFFF6600FFE9660EFF79665BEF64646438A06640C3D066
+          1FFFFF6600FF976646D1966647707066661900000001666666418566527D6A67
+          64B0CE6621FFFF6600FFAD6636FD776659D07B6658A26565655B77655B49AC68
+          38F0FF6600FF856651FFAD6636FFD6661CFFB46631D56761612A000000006767
+          6754DD6617FFFF6600FFC76625F855555503000000000000000000000000AF66
+          35EBFF6600FF69666396676767346F67609FD1661EFFB26633F96868682C6666
+          6675EC660CFFFF6600FFDF6615FF64646438000000000000000000000000B266
+          33EEFF6600FF6B67638600000000000000007A665ACFF66606FF666666966866
+          6696FA6603FFFF6600FFF96604FF69676583000000000000000000000000B666
+          31EFFF6600FF6A666280000000000000000067656583F56606FF676767957667
+          5CBCFF6600FFFF6600FFFF6600FF806756D3000000000000000000000000B667
+          32F2FF6600FF6A66617600000000606060089D6743DAD3661EFF656565628466
+          51DFFF6600FFFF6600FFFF6600FF966646FE6262621A0000000000000000A567
+          3CF1FF6600FF74665DAA6666667F936649E1D5661CFF806756A4404040048D66
+          4DF9CD6622FF9B6642FFC56627FFAC6638FF6565656200000000000000009566
+          47BED5671CF59F6641DCA4663CCDA2653DA46964643300000000696969116666
+          66D0656565C4666666BB666666CE676665E9676767A900000000
+        }
+        ImageIndex = 5
+        OnClick = mSort03Click
+      end
+      object pSortByZamena: TMenuItem
+        Caption = 'Сортировать по замене'
+        Bitmap.Data = {
+          36040000424D3604000000000000360000002800000010000000100000000100
+          2000000000000004000064000000640000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000008080
+          80026565659C6565656200000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000016666
+          6696B16634FF9A6644FE6666666B000000000000000000000000666666E16666
+          66FF666666FF666666FF666666FF666666EB555555060000000166666694A166
+          3EFFFF6600FFFC6602FF956648FE6666666E0000000000000000666666FFDD66
+          17FFF56607FFF56607FFE66611FF666666FF606060106666668A926648FFFD66
+          02FFFF6600FFFF6600FFFA6604FF8E664CFE6666667000000000666666FFEB66
+          0DFFFF6600FFFF6600FFF56607FF666666FF656565867C6657FFCE6621FFC466
+          27FFFF6600FFFF6600FFD4661DFFD8661AFF7C6658FF66666675666666FFDD66
+          16FFF56607FFF56607FFE66611FF666666FF60606010686868206767674F8F66
+          4BEEFF6600FFFF6600FF806554DE6666668C6767675769696922666666E26666
+          66FF666666FF666666FF666666FF666666EC5555550600000000000000009B66
+          41F6FF6600FFFF6600FFA3663CC3000000000000000000000000000000007171
+          710965656530646464336767672A55555503000000000000000069696911A966
+          3AFFFF6600FFFF6600FFB16533F5808080020000000000000000656565306666
+          66EA7A6658FF856652FF74665DFF666666D3606060100000000068686831B666
+          30FFFF6600FFFF6600FFC76625FF656565350000000000000000666666A88966
+          4FFFFE6601FFFF6600FFF66606FF71665FFF676767720000000066666650C566
+          27FFFF6600FFFF6600FFE06615FF6666667B0000000000000000666666AD8E66
+          4CFFFF6600FFFF6600FFFA6604FF73665EFF67676777000000006565656FD366
+          1DFFFF6600FFFF6600FFF86605FF686666C000000000000000006565653A6666
+          66F2856652FF8F664BFF7C6658FF666666DF64646417000000006666668EE266
+          14FFFF6600FFFF6600FFFF6600FF78665AFA6A6A6A0C00000000000000006666
+          661466666641656565446666663C6666660A0000000000000000666666ADBB66
+          2DFF866650FF79665AFFBB662EFF89664EFF6565654C00000000000000000000
+          00000000000000000000000000000000000000000000000000006666669D6565
+          65C4666666BB666666BB666666D0666666ED6666668E00000000
+        }
+        ImageIndex = 4
+        OnClick = mSort04Click
+      end
+    end
+  end
+  object ImageList1: TImageList
+    left = 80
+    top = 168
+    Bitmap = {
+      4C691B000000100000001000000000000000000000000000000000000000A064
+      3F5990664ACE7A6658F66C6662FE6A6562FE78675AF88E664CD49F633E620000
+      000000000000000000000000000000000000000000009D623B1A89664EDF6666
+      66FF666666FF666666FF666666FF666666FF666666FF666666FF666666FF8767
+      51E4A3623B27000000000000000000000000AA6C3E217A6659F7666666FF6666
+      66FF88664FFFC56626FDDE6616CFE06514D4C66626FC886650FF666666FF6666
+      66FF77655AFAA7683E310000000000000000856551EA666666FF666666FFB566
+      32FFFE6600EAFF6800360000000000000000FF6A0018FE6600AAB46632FF6666
+      66FF666666FF806755F1AA555503A2673F7E666666FF666666FFA0663FFFFF66
+      00FFFF650060FF6B0013FF6600B7FF6600F4FF65007EFF660005FF6600E9A066
+      3FFF666666FF666666FF9F6640948A664EE3666666FF686665FFEF660AFFFF66
+      00F8FF670048FF660078FF6600FFFF6600FFFF6700C700000000FF6600DCEF66
+      0BFF686665FF666666FF856652ED74665CFC666666FF846652FFFF6600FFFF66
+      00FFFF6600FFFF6600F9FF6600FFFF6600E9FF66002DFF650062FF6600FFFF66
+      00FF846652FF666666FF6F655FFE6A6664FF666666FF926649FFFF6600FFFF66
+      00FFFF6600FFFF6600FFFF6600F4FF680031FF65005DFF6600FBFF6600FFFF66
+      00FF91664AFF666666FF6F6660FE75665DFD666666FF826653FFFF6600FFFF66
+      00FFFF6600FFFF6600FFFF6600ADFF630012FF6600FBFF6600FFFF6600FFFF66
+      00FF816654FF666666FF836652F28C664DE6666666FF676665FFEC660CFFFF66
+      00FFFF6600FFFF6600FFFF66009EFF680031FF6600FFFF6600FFFF6600FFEB66
+      0EFF676666FF666666FF9D6742B9A7663B8E666666FF666666FF9A6643FFFF66
+      00FFFF6600FFFF6600FFFF6600EEFF6600DFFF6600FFFF6600FFFF6600FF9966
+      44FF666666FF72665EFEB6642E1CAA550003856551F2666666FF666666FFAB66
+      38FFFD6601FFFF6600FFFF66005000000000FF6600DAFD6601FFA96639FF6666
+      66FF676666FFA866398A0000000000000000BA6530307B6658FB666666FF6666
+      66FF806655FFBD662CFFD3661DD3CC6522B3BC662DFC7F6655FF666666FF6766
+      66FFA0663EB400000000000000000000000000000000BA60292590664BE56766
+      66FF666666FF666666FF666666FF666666FF666666FF666666FF6D6560FEA866
+      399800000000000000000000000000000000000000000000000000000000B565
+      315D996643CE836653F575665CFE73665DFE7D6656FA996644CFBC6A30350000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000078695A11AA847B1BAA847B1BAA84
+      7B1BAA847B1BAA847B1BAA847B1BAA847B1BC68E8E0900000000000000000000
+      0000000000000000000000000000595959148C7368F3E8AC90FFE8AC90FFE8AC
+      90FFE8AC90FFE8AC90FFE8AC90FFE8AC90FFA7887AB46666665F666666556767
+      6761666666806666667000000000515151168A7367F9DDA489FFCB967EFFCC97
+      7EFFCB967EFFBE8D76FFC18F78FFE7AB8FFF7D6E67E79E6640FF6A6663FF8266
+      53FF986644FF6666668C00000000515151168A7367F9D9A187FFC18F78FFAB7F
+      6AFFBE8E76FFC6937BFFB98973FFE8AC90FF84756FD7FC6602FFFF6600FFFF66
+      00FFAD6636FF6767674300000000515151168A7367F9DDA489FFBA8A73FFC592
+      7AFFCD987EFFBA8A73FFE7AB8FFFE8AC90FF917D74C8EE660BFFFF6600FFFF66
+      00FF956647F76D6D6D0700000000515151168A7367F9D9A187FFC18F78FFB586
+      70FFC6937BFFBA8A73FFB3856FFFE8AC90FFA08579BADF6615FFFF6600FFFF66
+      00FF806554BA0000000000000000515151168A7367F9D9A187FFAA7E6AFFCA96
+      7DFFCF9980FFE8AC90FFE8AC90FFE8AC90FFB28E7EACD0661FFFFF6600FFF866
+      05FF676565680000000000000000515151168A7367F9DDA489FFCB967EFFC08E
+      77FFC7947CFFCA967DFFE8AC90FFE8AC90FFC799849EC16629FFFF6600FFDF66
+      16FF6363631F0000000000000000515151168A7367F9D9A187FFAA7E6AFFC390
+      79FFC8947DFFBC8C75FFB58671FFD5A28AFFA6897BB5B26633FFFF6600FFC566
+      26FD666666916666665F6868682C515151168A7367F9DDA489FFBA8A73FFCF9A
+      81FFCA967EFFCA967DFFAA8574FF7D685BFFD3661DFFE06615FFFF6600FFF066
+      0AFFE46612FF8A664EFD66666664515151168A7367F9D9A187FFC18F78FFC592
+      7BFFBB8B74FFB2846FFFE8AC90FFC89B86FF846754FBF56607FFFF6600FFFB66
+      02FF956747FB6565655600000000515151168A7367F9E8AC90FFE8AC90FFE8AC
+      90FFE8AC90FFE8AC90FFE8AC90FFE8AC90FFB5917FA989664FF5F46607FF9566
+      46F8676767480000000000000000595959147B6960F1C09480FCC09480FCC094
+      80FCC09480FCC09480FCC09480FCC19480FADDA68C6A6868683B70655EE36868
+      683B000000000000000000000000000000004646460B4646460B4646460B4646
+      460B4646460B4646460B4646460B4646460B0000000000000000666666050000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000006D6D6D07A5663DF4996745AD0000
+      0000000000000000000055555503666666B6666666A7666666996767679F6666
+      66BB666666D66666667800000000000000007B655953B86630FEB8662FEE0000
+      000000000000000000000000000072665EEBB06634FF73665EFF73665EFFB566
+      31FF7D6656FF676767450000000000000000A86539BB886851B6D1661EFF6A6A
+      6A180000000000000000000000006B6663CBFE6600FFFF6600FFFF6600FFFE66
+      00FF6E6660F6606060080000000055555503A3663DE96767673EE26613FF6666
+      6650000000000000000000000000666666AAF36608FFFF6600FFFF6600FFEC66
+      0CFF666666B400000000000000008A654D4CA96639E18B674E5CD5661CFF8568
+      53960000000000000000000000006666668AE56612FFFF6600FFFF6600FFD366
+      1EFF6666666C0000000000000000B26635B6AF6634DDC1672AC9D96619F8A066
+      3FD50000000000000000000000006565656AD6661CFFFF6600FFFF6600FFB966
+      2FFF63636324000000000000000090664AC864646442000000009E66429B9965
+      43D48080800200000000000000006767674AC76626FFFF6600FFFF6600FFA566
+      3CE800000000000000000000000000000000666666059267494D8D664A677169
+      613F0000000000000000000000006767672AB8662FFFFF6600FFFF6600FF9566
+      46A80000000000000000000000007D62512FA6653AE09766459BBB662ED9A067
+      40B30000000080808002666666236666665AA96639FFFF6600FFFE6600FF6F67
+      60CC6565657E6666664B6A6A6A18A4663DC1996646AC000000009E6540BFA067
+      41B46D6D6D07666666C0936648FFC96624FFCD6621FFFF6600FFFB6602FFCF66
+      20FFD2661EFF77665AFF656565798165545BC16629F6A6643A84B06634DC9C66
+      43B4000000006666660F676767C7B66631FFFF6600FFFF6600FFFF6600FFF766
+      06FF886650FE66666670000000000000000068636367B46633FB976646F09B65
+      42B500000000000000006666660F666666C6BC662CFFFF6600FFF86604FF8B66
+      4DFD65656562000000000000000069696911A5663CED89664F8A9B6744BF9A65
+      42B60000000000000000000000005D5D5D0B686564BFC56627FF8C664EFA6767
+      675400000000000000000000000081665400A1653DD0666666059466479B9565
+      4797000000000000000000000000000000006A6A6A0C666666B6656565470000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000666666B2676767C2666666BB666666BB6666
+      66D2666666EE656565880000000066666691666666AA666666AA666666AA6666
+      66AA666666AA666666AA6666669D686767CBC16629FF826653FF7B6658FFBE66
+      2BFF856651FF66666646000000009E6641FFE06614FFE06614FFE06614FFE066
+      14FFE06614FFE06614FFB36632FF666666B7EF660AFFFF6600FFFF6600FFFF66
+      00FF72665EF87171710900000000666666766565658865656588656565886565
+      65886565658865656588666666806565658EE16614FFFF6600FFFF6600FFF266
+      08FF676767B8000000000000000066666694666666AA666666AA666666AA6666
+      66AA676767A9656565260000000066666669D3661EFFFF6600FFFF6600FFD966
+      19FF6666667100000000000000009B6542F4E06614FFE06614FFE06614FFE066
+      14FFC46628FF67676748000000006767674AC46627FFFF6600FFFF6600FFC066
+      2AFF6565652B00000000000000006666666B6565658865656588656565886565
+      6588666666826A6A6A18000000006767672AB66631FFFF6600FFFF6600FFAB66
+      37F0000000010000000000000000706661C087654EE487654EE4866550E36965
+      638D0000000000000000000000005D5D5D0BA8663AFFFF6600FFFF6600FF9D66
+      40B7000000000000000000000000896650EACC6622FFCC6622FFCA6623FF7667
+      5BB3000000008080800267676725676767549A6543F9FF6600FFFF6600FF7867
+      5BD86666668A6565655669696922636363556666666C68686865666666556767
+      672F000000006767679F866651FFCE6620FFCA6624FFFF6600FFFE6600FFD366
+      1EFFD7661BFF7A6659FE6666667391674AE7A3663DFF90664AE4000000000000
+      00000000000055555503656565A69D6641FFFE6600FFFF6600FFFF6600FFF966
+      04FF8C664DFE6565656F0000000090664AE7A3663DFF90674BE4000000000000
+      0000000000000000000055555503666666A7AF6635FFFF6600FFFA6604FF8D65
+      4BFE6767676300000000000000006A6A6A186969692264646417000000000000
+      000000000000000000000000000055555503666666A7BB662EFF916649FD6666
+      665F000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000066666605676767A9676767540000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000006666669D656565C4666666BB666666BB6666
+      66D0666666ED6666668E00000000000000006666661466666641656565446666
+      663C6666660A0000000000000000666666ADBB662DFF866650FF79665AFFBB66
+      2EFF89664EFF6565654C000000006565653A666666F2856652FF8F664BFF7C66
+      58FF666666DF64646417000000006666668EE26614FFFF6600FFFF6600FFFF66
+      00FF78665AFA6A6A6A0C00000000666666AD8E664CFFFF6600FFFF6600FFFA66
+      04FF73665EFF67676777000000006565656FD3661DFFFF6600FFFF6600FFF866
+      05FF686666C00000000000000000666666A889664FFFFE6601FFFF6600FFF666
+      06FF71665FFF676767720000000066666650C56627FFFF6600FFFF6600FFE066
+      15FF6666667B000000000000000065656530666666EA7A6658FF856652FF7466
+      5DFF666666D3606060100000000068686831B66630FFFF6600FFFF6600FFC766
+      25FF656565350000000000000000000000007171710965656530646464336767
+      672A55555503000000000000000069696911A9663AFFFF6600FFFF6600FFB165
+      33F5808080020000000000000000666666E2666666FF666666FF666666FF6666
+      66FF666666EC5555550600000000000000009B6641F6FF6600FFFF6600FFA366
+      3CC3000000000000000000000000666666FFDD6616FFF56607FFF56607FFE666
+      11FF666666FF60606010686868206767674F8F664BEEFF6600FFFF6600FF8065
+      54DE6666668C6767675769696922666666FFEB660DFFFF6600FFFF6600FFF566
+      07FF666666FF656565867C6657FFCE6621FFC46627FFFF6600FFFF6600FFD466
+      1DFFD8661AFF7C6658FF66666675666666FFDD6617FFF56607FFF56607FFE666
+      11FF666666FF606060106666668A926648FFFD6602FFFF6600FFFF6600FFFA66
+      04FF8E664CFE6666667000000000666666E1666666FF666666FF666666FF6666
+      66FF666666EB555555060000000166666694A1663EFFFF6600FFFC6602FF9566
+      48FE6666666E0000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000166666696B16634FF9A6644FE6666
+      666B000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000808080026565659C656565620000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000956647BED5671CF59F6641DCA466
+      3CCDA2653DA4696464330000000069696911666666D0656565C4666666BB6666
+      66CE676665E9676767A90000000000000000A5673CF1FF6600FF74665DAA6666
+      667F936649E1D5661CFF806756A4404040048D664DF9CD6622FF9B6642FFC566
+      27FFAC6638FF656565620000000000000000B66732F2FF6600FF6A6661760000
+      0000606060089D6743DAD3661EFF65656562846651DFFF6600FFFF6600FFFF66
+      00FF966646FE6262621A0000000000000000B66631EFFF6600FF6A6662800000
+      00000000000067656583F56606FF6767679576675CBCFF6600FFFF6600FFFF66
+      00FF806756D3000000000000000000000000B26633EEFF6600FF6B6763860000
+      0000000000007A665ACFF66606FF6666669668666696FA6603FFFF6600FFF966
+      04FF69676583000000000000000000000000AF6635EBFF6600FF696663966767
+      67346F67609FD1661EFFB26633F96868682C66666675EC660CFFFF6600FFDF66
+      15FF64646438000000000000000077655B49AC6838F0FF6600FF856651FFAD66
+      36FFD6661CFFB46631D56761612A0000000067676754DD6617FFFF6600FFC766
+      25F8555555030000000000000000A06640C3D0661FFFFF6600FF976646D19666
+      47707066661900000001666666418566527D6A6764B0CE6621FFFF6600FFAD66
+      36FD776659D07B6658A26565655B946647E5CB6622FCFF6600FFAF6634FAB067
+      35F6B16634F16866668065656558836753FBEF660AFFF66606FFFF6600FFFF66
+      00FFE9660EFF79665BEF64646438606060109E6640F2FF6600FF696765D06868
+      68406868682C60606010000000006767674D886650F9F76605FFFF6600FFE966
+      0FFF78665AE36969692700000000696969118C664CFFD6661CFF696665EF5555
+      550300000000000000000000000000000000656565498A664DF8E26614FF7A67
+      5ADA6A6A6A1D0000000000000000626262006464643D696969226868681B0000
+      0001000000000000000000000000000000000000000066666641676564BD6B6B
+      6B13000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000AAAAAA03CBCB
+      CB27CBCBCB54CCCCCC81CBCBCBADCCCCCCDBCCCCCC7900000000000000000000
+      0000000000000000000000000000FFFFFF01CCCCCCA0CCCCCCCECCCCCCFBCCCC
+      CCFFCCCCCCFFC8C8C8FFBDBDBDFFBBBBBBFFCCCCCCE6CCCCCCBECDCDCD660000
+      000000000000000000000000000000000000CCCCCCE0BABABAFFBABABAFFA7A7
+      A7FFABABABFFADA9A6FFAEABA9FFBEBEBEFFC7C7C7FFBEBEBEFFCDCDCD890000
+      000000000000000000000000000000000000CCCCCCB5B2B2B2FFBDBDBDFFBA92
+      78FFAE581FFFAA4400FFAA4401FFAE5F2BFFB29887FFB4B4B4FFCBCBCB940000
+      000000000000000000000000000000000000CBCBCB8AB9B9B9FFA76D46FFB357
+      1AFFDCB296FFF1DFD4FFEFDCCFFFD39E7BFFAE4D0DFFB5927AFFCCCCCC9F0000
+      000000000000000000000000000000000000CCCCCC5FB99F8DFFB15416FFEDD8
+      CAFFF7EDE6FFF7EDE6FFF7EDE6FFF4EAE4FFDCC0ADFFAC4B0BFFC6BAB2B20000
+      000000000000000000000000000000000000CECECE34AC6A3EFFD39E7BFFF7ED
+      E6FFF7EDE6FFC9C0BBFFF3E9E2FFD6CEC8FF888582FFB87344FFB88663D50000
+      000000000000000000000000000000000000CCCCCC0AAF5E28FFDBB59CFF9E97
+      93FFE7DED8FFE5DBD5FFC7BFB9FFEAE1DAFF8A8785FFBB8B6CFFB6754AE40000
+      00000000000000000000000000000000000000000000B26531F6D7AB8DFFAAA4
+      9FFFC2BAB4FFE9E0D9FFB6AFAAFFF4EBE4FFE2DDD9FFC8895EFFB47A54E60000
+      00000000000000000000000000000000000000000000B8815CD5BE703CFFE9E0
+      D9FFF7EDE6FFF5ECE5FFEFE7E1FFE4DFDAFFE5DCD6FFAF4E0EFFC3A796E00000
+      00000000000000000000000000000000000000000000C9BEB88DAD5113FFCA89
+      5FFFEDE3DCFFE1DCD9FFE1DCD9FFE2D9D2FFBD723FFFAB6536FFC7C7C7E70000
+      000000000000000000000000000000000000AA390009B46B3BA9AA4706FFAB50
+      14FFB25517FFC58459FFC48358FFAD4C0BFFB36F42FFCAC6C3FFC2C2C2F30000
+      0000000000000000000000000000FF000001A94400B5AA4400FFAE561BFFCBCB
+      CAFFC3A896FFBB8D6EFFBB8E70FFBEAB9EFFC6C6C6FFC4C4C4FFC3C3C3F70000
+      0000000000000000000000000000AB430079AA4400FFAA4400FFB36735D9CCCC
+      CCB8CBCBCB9ECBCBCB94CCCCCC88CBCBCB7BCCCCCC72CDCDCD66CBCBCB580000
+      0000000000000000000000000000AA4400F3AA4400FFAA4400E1A64000140000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000AA450000AA4400E7AC450034000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000656565976666661900000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000666666DA666666E967676745000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000666666DC6B6663FF666666FC666666808080
+      8002000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000666666DFAF6635FFB36633FF676665FF6767
+      67BD6A6A6A180000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000666666E2B36633FFFF6600FFD6661BFF7466
+      5DFF666666E46666663C00000000000000000000000000000000000000000000
+      0000000000000000000000000000666666E4B56632FFFF6600FFFF6600FFEE66
+      0BFF89664EFF666666FB66666680808080020000000000000000000000000000
+      0000000000000000000000000000666666E7B66631FFFF6600FFFF6600FFFF66
+      00FFFD6602FFB36633FF676665FF676767B36363631200000000000000000000
+      0000000000000000000000000000666666E9B86630FFFF6600FFFF6600FFFF66
+      00FFFF6600FFFF6600FFD1661FFF71665FFF666666E26565653A000000000000
+      0000000000000000000000000000666666EBB9662FFFFF6600FFFF6600FFFF66
+      00FFFF6600FFFF6600FFF16609FF8C664DFF666666FD65656583000000000000
+      0000000000000000000000000000666666EFBB662EFFFF6600FFFF6600FFFF66
+      00FFFF6600FFD5661CFF75665CFF666666E76767674800000000000000000000
+      0000000000000000000000000000666666F1BC662CFFFF6600FFFF6600FFFA66
+      03FFA9663AFF676666FF666666AD6B6B6B130000000000000000000000000000
+      0000000000000000000000000000666666F4BE662CFFFF6600FFE56611FF8266
+      54FF666666F56565656F00000000000000000000000000000000000000000000
+      0000000000000000000000000000666666F7BF662BFFBD662CFF6A6663FF6666
+      66CA676767250000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000666666F971665EFF666666FD666666915555
+      5506000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000666666FC666666E16767673E000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000666666006666660F00000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000004D4D4D0A95786A57AE88756BAE88756BAE88
+      756BAE88756BAE88756BC1957E57000000000000000000000000000000000000
+      00000000000000000000000000004C4C4C36B18B78FEC8947CFFD7A086FFC996
+      7DFFC49179FFC6937BFFE7AB8FFF000000010000000000000000000000000000
+      00000000000000000000000000004C4C4C36B18B78FEC8947CFFC1927AFFC391
+      7BFFC8967EFFCB987FFFDEA58BFFB48C7833BA8F7A30E6B3990A000000000000
+      00000000000000000000000000004C4C4C36B18B78FED29C83FF8B7267FFE3A8
+      8DFFE3A88DFFDDA489FFD9A187FFDCA489FFE7AB8FFFE9AC9053000000000000
+      00000000000000000000000000004C4C4C36B18B78FEC7947CFF8B7267FFCD98
+      7FFFBF8D77FFB0826DFFAC7F6AFFB1836DFFE4AA8EFFE4AA8F54000000020000
+      00000000000000000000000000004C4C4C36B18B78FEC7947CFF8B7267FFD79F
+      85FF9C7B6BFFBE927DFFBB907BFFC1947FFFC39580FFBF937EE3BC917DD5CF9D
+      85750000000000000000000000004C4C4C36B18B78FEC7947CFF8A7266FFDCA3
+      88FF8C7367FFE6AB8FFFC8947CFFC9957DFFC8957CFFC5927AFFD79F85FFD8A3
+      89B60000000000000000000000004C4C4C36B18B78FEBF8E77FF897166FFD69E
+      84FF836C62FFE6AB8FFFC8947CFFBB8A74FFC6927BFFCB977EFFE1A78BFFD8A3
+      89B60000000000000000000000004C4C4C36B18B78FEB68771FF8A7166FFD69E
+      84FF856E63FFE5AA8EFFB1846EFFB98A73FFC08D77FFC6947BFFE3A88DFFD8A3
+      89B60000000000000000000000004C4C4C36B18B78FEE7AC90FF8D7368FFD69E
+      84FF836C62FFE5AA8EFFA97E69FFB68772FFCD987EFFD39D83FFDDA489FFD8A3
+      89B60000000000000000000000004A4A4A1F7D6A61AD93786CBB856F64F9CD97
+      7FFF7F695FFFE6AB8FFFC8947CFFC6937BFFBE8D76FFDEA58AFFE8AC90FFD8A3
+      89B6000000000000000000000000000000000000000240404004846E64E8E2A7
+      8CFF907569FFE6AB8FFFBA8A73FFCA967EFFCD987FFFC6937AFFDFA58AFFD8A3
+      89B600000000000000000000000000000000000000008080800270635CAFA081
+      71DA6F625CEFE7AB8FFFC9957DFFD59E84FFD29B82FFD29B82FFE3A88DFFD8A3
+      89B6000000000000000000000000000000000000000000000000000000025555
+      55034D4D4D8FE7AB8FFFD29C82FFD49D84FFD39D84FFD9A186FFE8AC90FFD8A3
+      89B6000000000000000000000000000000000000000000000000000000000000
+      00014E4E4E8DDEA68BFFDEA68BFFDEA68BFFDEA68BFFDEA68BFFDEA68BFFD5A1
+      88AE000000000000000000000000000000000000000000000000000000000000
+      00004646461D4D4D4D354D4D4D354D4D4D354D4D4D354D4D4D354D4D4D354D4D
+      4D0A000000000000000000000000000000000000000000000000808080046666
+      66D0676767776666661900000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000008865
+      4FE3AE6636FF78665AFD656565C4676767666262620D00000000000000000000
+      0000000000000000000000000000000000000000000000000000000000008766
+      4FC6FF6600FFFE6601FFDC6618FFA9663AFF74665EF5676767A4676767430000
+      0000000000000000000000000000000000000000000000000000686868366E67
+      62DDFE6600FFFF6600FFFF6600FFFF6600FFF66606FF7C6658FA6767674F0000
+      00000000000000000000000000000000000080808002686665939E6540FEDF66
+      16FFFD6601FFFF6600FFFF6600FFF96604FF906649FA6767674D000000000000
+      0000000000000000000000000000000000006D666291CA6623FFD8661AFF8266
+      54FFDC6618FFFF6600FFF86604FF8F664BF86565654400000000000000000000
+      000000000000000000000000000066666632B06635FFD6661CFF6B6664EF6666
+      666EC76625FFF66606FF8B674FF6646464420000000000000000000000000000
+      00000000000000000000000000006E655FA7F86605FF7C6657FF6767674D6666
+      660FA9663AFF88664FF36565653A000000000000000000000000000000000000
+      0000000000000000000000000000916548EDE56612FF666666DD000000000000
+      0000666666DD64646438000000000000000000000000676767436666667A0000
+      00000000000000000000000000009D6642FCD7661AFF676767BD000000000000
+      00006868681B000000000000000000000000000000007C6657A86E6661E10000
+      0000000000000000000000000000956546E5E9660EFF666666E0000000010000
+      00000000000000000000000000000000000000000001A06640E3686665F50000
+      00000000000000000000000000006E6761ABF76605FF88664FFF656565560000
+      00000000000000000000000000000000000067656572B76630FF666666E30000
+      000000000000000000000000000064646438AF6635FFE66611FF72675FF56666
+      665A00000001000000006D6D6D0E67676786B9662FFF956647FF666666B10000
+      000000000000000000000000000000000000696664A5CB6623FFEC660DFF9E66
+      41FF74665DEE6D6661D58E664BF7D7661BFFB56631FF666666FC6565653A0000
+      0000000000000000000000000000000000006D6D6D07656565A69E6640FFDD66
+      17FFF86605FFF96604FFD7661BFF926649FF666666F66666665A000000000000
+      00000000000000000000000000000000000000000000000000006767674A6666
+      66AC666666E3666666F0666666D6666666946969692200000000000000000000
+      0000000000000000000000000000000000000000000000000000646464386767
+      676D000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000000000000000007B6659ACBE66
+      2CFE6767674A6464641778655860826552836767674A55555506000000000000
+      0000000000000000000000000000000000000000000066666619B36633FCFF66
+      00FFD6671CFDED650BFFFF6600FFFF6600FFE36613FF976645EB666666500000
+      0000000000000000000000000000000000000000000070686384F16609FFFF66
+      00FFE26613FFA96639E1C1672AFDEF660BFFFF6600FFFF6600FFD3661EFF8465
+      51A6606060080000000000000000000000006D6D6D07A2663DF1FF6600FFFF66
+      00FFFD6601FF906549656666660A70696249A5673CC7D96619FFE9660FFF9665
+      45E56565656A0000000000000000000000006565655DE16614FFFF6600FFFF66
+      00FFFF6600FFB7652FDE000000000000000000000000646464297B6658B66565
+      653A00000000000000000000000000000000926648D8F0660AFFCD6621FDAF65
+      34E691664AB96866667B55555506000000000000000000000000000000000000
+      00000000000000000000000000006868683B6B6664F9666666996464641C0000
+      0000000000000000000000000000000000000000000000000000000000006262
+      621A676767430000000000000000676767436262621A00000000000000000000
+      0000000000000000000000000000000000000000000064646417656565886A66
+      64F6676767390000000000000000000000000000000000000000000000000000
+      000000000000555555066666667A836753B3A5663CE3C36628FDE66611FF9166
+      4AD7000000000000000000000000000000006868683B7B6658B6646464290000
+      00000000000000000000B7652FDEFF6600FFFF6600FFFF6600FFE16614FF6565
+      655D0000000000000000000000006666666B966545E5E9660FFFD96619FFA767
+      3CC7706962496666660A90654965FD6601FFFF6600FFFF6600FFA2663DF16D6D
+      6D0700000000000000000000000060606008856652A5D3661EFFFF6600FFFF66
+      00FFEF660BFFC1672AFDA96639E1E26613FFFF6600FFF16609FF706863840000
+      0000000000000000000000000000000000000000000066666650976645EBE266
+      13FFFF6600FFFF6600FFED660CFFD6671CFDFF6600FFB36633FC666666190000
+      0000000000000000000000000000000000000000000000000000555555066767
+      674A806553817A675B5C686868166767674ABE662CFE7B6659AC000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000006767676D66666637000000000000
+      0000000000000000000000000000000000004949490E47474712555555125555
+      551255555512555555125555551255555512474747124949490E000000000000
+      000000000000000000000000000050505010595453A6E0A78CFCE0A78CFCE0A7
+      8CFCE0A78CFCE0A78CFCE0A78CFCE0A78CFCE0A78CFCE1A88CF9DEA78C7C0000
+      00000000000000000000000000004D4D4D14585352CBE8AC90FFBE8D76FFD19B
+      82FFBB8B74FFC6937BFFAA7E6AFFBF8D76FFBF8E77FFE8AC90FFDDA48C870000
+      00000000000000000000000000004D4D4D14585352CDE8AC90FFBE8D76FFC894
+      7CFFAA7E6AFFC08F77FFB98973FFBD8C75FFD29C82FFE8AC90FFDDA48C870000
+      00000000000000000000000000004D4D4D14585352CDE8AC90FFDEA58AFFDAA2
+      88FFDBA388FFE0A68BFFD9A186FFE1A78BFFE8AC90FFE8AC90FFDDA48C870000
+      00000000000000000000000000004D4D4D14585352CDE8AC90FFC9957DFFBF8E
+      77FFC18F78FFD19B82FFBA8A73FFD39C83FFE8AC90FFE8AC90FFDDA48C870000
+      00000000000000000000000000004D4D4D14585352CDE8AC90FFBE8D76FFD09A
+      81FFAC7F6BFFC49179FFB0826DFFC7947CFFC08E77FFE8AC90FFDDA48C870000
+      00000000000000000000000000004D4D4D14585352CDE8AC90FFB48670FFA57A
+      66FFC08E77FFC08E77FFE8AC90FFE8AC90FFE8AC90FFE8AC90FFDDA48C870000
+      00000000000000000000000000004D4D4D14585352CDE8AC90FFBE8D76FFCC97
+      7FFFAD806BFFC29078FFAB7F6AFFE8AC90FFE8AC90FFE8AC90FFDDA48C870000
+      00000000000000000000000000004D4D4D14585352CDE8AC90FFD39C83FFCD98
+      7FFFD49D84FFDAA287FFC9957DFFD39C83FFDBA388FFE8AC90FFDDA48C870000
+      00000000000000000000000000004D4D4D14585352CDE8AC90FFD39C83FFCD98
+      7FFFD49D84FFDAA287FFC9957DFFD39C83FFDBA388FFE8AC90FFDDA48C870000
+      00000000000000000000000000004D4D4D14585352CDE8AC90FFBE8D76FFB184
+      6EFFC6937BFFC3917AFFAE816CFFBF8E77FFD09A81FFE8AC90FFDDA48C870000
+      00000000000000000000000000004D4D4D14585352CDE8AC90FFBE8D76FFD19B
+      82FFBF8E77FFB1846EFFC08E77FFD09A81FFE8AC90FFE8AC90FFDDA48C870000
+      00000000000000000000000000004D4D4D14585352CBE8AC90FFE8AC90FFE8AC
+      90FFE8AC90FFE8AC90FFE8AC90FFE8AC90FFE8AC90FFE8AC90FFDDA48C870000
+      000000000000000000000000000050505010535250A5A88474E7A88575E8A885
+      75E8A88575E8A88575E8A88575E8A88575E8A88474E7B18A78D4D19F884D0000
+      0000000000000000000000000000000000004949490E47474712555555125555
+      551255555512555555125555551255555512474747124949490E000000000000
+      0000000000000000000000000000333333A5333333C89E4D17DAFF6600FFFF66
+      00FFFF6600FFFF6600FFFF6600FFFE6600FFDA5700FFA651179B000000000000
+      0000000000000000000000000000333333FF333333FF914B1CFFFF6600FFFF66
+      00FFFF6600FFFF6600FFFF6600FFEC5E00FF6B2B00FF7D4520FF333333925555
+      5503000000000000000000000000333333FF333333FF914B1CFFFF6600FFFF66
+      00FFFF6600FFFF6600FFFF6600FFED5F00FF6A2A00FF814720FF333333FF3333
+      33AF3333330A0000000000000000333333FF333333FF914B1CFFFF6600FFFF66
+      00FFFF6600FFFF6600FFFF6600FFEE5F00FF692A00FF85481FFF333333FF3333
+      33FF323232C50000000000000000333333FF333333FF704224FFFF6600FFFF66
+      00FFFF6600FFFF6600FFFF6600FFF56200FF7F3300FF7B4521FF333333FF3333
+      33FF333333FC0000000000000000333333FF333333FF333333FF794421FFAD51
+      14FFB45313FFBB5511FFBC5511FFC9590EFF984C1AFF343333FF333333FF3333
+      33FF333333F90000000000000000333333FF333333FF333333FF333333FF3333
+      33FF333333FF333333FF333333FF333333FF333333FF333333FF333333FF3333
+      33FF333333F60000000000000000333333FF333333FF333333FF333333FF3333
+      33FF333333FF333333FF333333FF333333FF333333FF333333FF333333FF3333
+      33FF333333F30000000000000000333333FF343333FFC05610FFD65C0AFFD65C
+      0AFFD65C0AFFD65C0AFFD65C0AFFD65C0AFFD65C0AFFD65C0AFFB55413FF3333
+      33FF333333EF0000000000000000333333FF393431FFD55500FF5C2500FF5522
+      00FF552200FF552200FF552200FF552200FF552200FF6A2A00FFF06202FF3333
+      33FF333333EC0000000000000000333333FF393431FFDB5800FF8A3700FF8836
+      00FF883600FF883600FF883600FF883600FF883600FF903A00FFEF6102FF3333
+      33FF333333E90000000000000000333333FF393431FFF96400FFD15400FFCC52
+      00FFCC5200FFCC5200FFCC5200FFCC5200FFCC5200FFD95700FFF66402FF3333
+      33FF333333E60000000000000000333333FF393431FFEA5E00FF612700FF5522
+      00FF552200FF552200FF552200FF552200FF552200FF602600FFE05B02FF3333
+      33FF333333E30000000000000000333333FF393431FFEA5E00FF9E3F00FF993D
+      00FF993D00FF993D00FF993D00FF993D00FF993D00FFA24100FFEC6002FF3333
+      33FF333333E00000000000000000333333FF373432FFED6002FFBF4C00FFBB4B
+      00FFBB4B00FFBB4B00FFBB4B00FFBB4B00FFBB4B00FFC24E00FFE96005FF3333
+      33FF333333DC000000000000000033333300333333FF4D3A2DFF5C3D29FF5C3D
+      29FF5C3D29FF5C3D29FF5C3D29FF5C3D29FF5C3D29FF5C3D29FF49382DFF3333
+      33FF333333B40000000000000000000000000000000000000000000000000000
+      0000000000000000000200000007000000090000000700000005000000020000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000C0000002C2323235E27272761232323482C2C2C1D0000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000060000002B18181893604F44FE905630FF885533FF534A45C40000
+      0005000000000000000000000000000000000000000000000000000000000000
+      0002000000140000005D443C38E8EE6307FFEB6409FFFF6600FF8A5531FD2B2B
+      2B1E000000000000000000000000000000000000000000000000000000000000
+      0007000000311A1A1AA69F592AFFBE5C1BFEB25B21FFFF6600FFC45D19FF4141
+      416E000000020000000000000000000000000000000000000000000000020000
+      001600000060473F3BE9EA6309FF503929D27A4E30F9FF6600FFF86503FF5148
+      43C2000000050000000000000000000000000000000000000000000000070000
+      00341B1B1BAA9F5829FFAB5A23FA0C0C0C6C36322EDCF76504FFFF6600FF8654
+      34FC2727271A0000000000000000000000000000000000000002000000170000
+      006448403CEBE1620DFF5144399700000038181818B3CA5F17FFFF6600FFBF5D
+      1BFF4141416A0000000000000000000000000000000000000008000000361F1F
+      1FB3A05929FF9C5729F81111113B0000003C0000008F94542AFBFF6600FFF665
+      04FF4E4843BD0000000400000000000000000000000200000019000000694A43
+      3EF1E4620BFF8C532BF18A4E26D8884E27DF834B25E8945429FCFF6600FFFF66
+      00FF825536FA212121170000000000000000000000090000003A222222BAA059
+      29FFBB5C1CFD955123E3965123E2965123E2934F22E78E4E23F5E3620CFFFF66
+      00FFBB5D1EFF414141660000000000000002000000190202026A4B433FF3F064
+      07FF79543AFD1111113B0000002600000027000000471A1A1ABEA65926FFFF66
+      00FFF26406FF4B4846B70000000300000003000000232B2B2BA67B5339FFCD5F
+      15FF524E4BFF41414153000000030000000400000023202020A16A5141FFD060
+      15FFCD5F16FE624E41E82E2E2E0B00000002000000120D0D0D3D1111114D1212
+      12481A1A1A310000000800000000000000000000000B0000002E0000003A0000
+      00390000002C00000011000000020000000000000003000000080000000B0000
+      0009000000060000000200000000000000000000000200000006000000070000
+      0007000000040000000200000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000100000002000000050000000A0000000D0000000A00000005000000020000
+      0001000000000000000000000000000000000000000000000000000000020000
+      000A0000001C0000003040200A5060300F654A31245D050505320000001C0000
+      000A000000020000000000000000000000000000000000000003000000151408
+      043FA0501BACDD742DEFD98045FFAB8063FF938073FFB77B53F9974B18A70804
+      003D0000001400000003000000000000000000000002000000152F170957BC75
+      46EE978071FF938073FF938073FF938073FF938073FF9F7F6AFFFF7F2AFFD068
+      22DF1C0D03510000001500000002000000000000000C0000003FC96A2BE29980
+      6FFF938073FF938073FF938073FF938073FF938073FFB27F5EFFFF7F2AFFFF7F
+      2AFFC46220D80000003E0000000C000000020000001F7D3E159DBE8057FF9380
+      73FF938073FF938073FF938073FF938073FF938073FFC07F54FFFF7F2AFFFF7F
+      2AFFFF7F2AFF683312910000001E0000000600000032BC6D38E1BB8C6DFFC887
+      5DFFC7865AFFC4875EFFE07F3FFFEA7F38FFCA7F4EFFD58047FFFF7F2AFFFF7F
+      2AFFFF7F2AFFB65B1ED3000000310000000A04040440AA9283FDA4968DFFA496
+      8DFFA4968DFFB6927AFFFF7F2AFFFF7F2AFFFF7F2AFFFF7F2BFFFF7F2AFFFF7F
+      2AFFFF7F2AFFD36A23E80000003F0000000A0000003FD4814BF9A89588FFA496
+      8DFFA4968DFFC88D66FFFF7F2AFFFF7F2AFFFF7F2AFFFF7F2AFFFF7F2AFFF482
+      36FFC88E67FFC28257F60000003F0000000600000031C56221DBCD8B60FFA496
+      8DFFA4968DFFEA8642FFFF7F2AFFFF7F2AFFFF7F2AFFFF7F2AFFFA8131FFAF94
+      81FFA4968DFFC88557F600000031000000020000001E8341159ED18A5CFFA496
+      8DFFBD8F72FFFF7F2AFFFF7F2AFFFF7F2AFFFF7F2AFFFF7F2AFFC68D68FFA496
+      8DFFA5958BFFB1612ABE0000001E000000000000000C0400003FCD7B44EFAD95
+      85FFE48648FFFF7F2AFFFF7F2AFFFF7F2AFFFF7F2AFFF28339FFA5968CFFAA94
+      85FFD38551FA32190B480000000C000000000000000200000015391D0959E174
+      2AEEFF802AFFFF7F2AFFFF7F2AFFFF7F2AFFFF7F2AFFF48135FFFC802DFFE472
+      26EB3A1D09580000001500000002000000000000000000000003000000141F10
+      0441AB551CB3EC7627F3FF7F2AFFFF7F2AFFFF7F2AFFEA7526F0A3511BAB1008
+      043E000000130000000300000000000000000000000000000000000000020000
+      000A0000001C000000305A2B0E58773A136D532A0F560000002F0000001B0000
+      000A000000020000000000000000000000000000000000000000000000000000
+      000100000002000000050000000A0000000D0000000A00000005000000020000
+      0001000000000000000000000000000000000000000000000000000000000000
+      0002000000233B3B3B675757578F646464856565655B6262620D000000000000
+      0000000000000000000000000000000000000000000000000003000000411A1A
+      1AB0565656F176665BFFA06640FFA6663CFF846652FF666666EF6767676D0000
+      0001000000000000000000000000000000000000000000000061121212C56462
+      5FFBB8662FFFFC6602FFFF6600FFFF6600FFFF6600FFD1661EFF75665CFF6565
+      659C0000000000000001000000000000000100000028000000B6494949E8B666
+      30FFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFEE660BFF7366
+      5EFF6565654900000005000000000000000000000065030303BC686360FCF766
+      06FFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFB666
+      30FF666666B40000001500000001000000070000008E171717C98B664EFFFF66
+      00FFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFEB66
+      0EFF666666F70000002B00000004000000070000009A1C1C1CCC976646FFFF66
+      00FFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFF766
+      06FF666666FC000000410000000A000000070000009D1E1E1ECD9A6644FFE75C
+      00FFA94400FFF06000FFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFF666
+      06FF666666FB0000004A0000000D00000008000000A0202020CF9D6642FF933B
+      00FF1E0C00FFAA4400FFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFF666
+      06FF666666FA000000410000000A00000008000000A3222222D0A06640FFFF66
+      00FFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFF566
+      06FF666666F90000002A0000000400000008000000A8252525D1A3663DFFFF66
+      00FFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFF566
+      07FF666666F8000000140000000100000008000000AB282828D3A6663BFFFF66
+      00FFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFF466
+      07FF666666F7000000050000000000000009000000AF2A2A2AD4A96639FFFF66
+      00FFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFF466
+      08FF666666F6000000010000000000000009000000B22C2C2CD6AB6638FFFF66
+      00FFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFFF6600FFF266
+      09FF666666F5000000000000000000000009000000B52E2E2ED7666666FF6666
+      66FF666666FF666666FF666666FF666666FF666666FF666666FF666666FF6666
+      66FF666666F40000000000000000000000000000003B080808441717174D1717
+      174D1717174D1717174D1717174D1717174D1717174D1717174D1818184A3030
+      3025606060100000000000000000E3BA9C81E1B290EDE0B091F0E0B091F0E0B0
+      91F0E0B091F0E0B091F0E0B091F0E0B091F0E0B091F0E0B091F0E0B091F0E0B0
+      91F0E0B191EEE4BA9B9700000000E0AE8DF1DEAA87FFDEAA87FFDEAA87FFDEAA
+      87FFDEAA87FFE1AF8EFFE1AF8CFFDEAA87FFDEAA87FFDEAA87FFDEAA87FFDEAA
+      87FFDEAA87FFE1B090F900000000DEAB88FEDEAA87FFDFAA87FFE7B694FFF1C6
+      ABFFF8D9C5FFFFE4D4FFE7BB9BFFDEAA87FFDEAA87FFDEAA87FFDEAA87FFDEAA
+      87FFDEAA87FFE0AF8FFE00000000DEAB88FEF5D3BDFFFEE1D0FFFFE5D5FFFFE5
+      D5FFFFE5D5FFFFE5D5FFF2B7A2FFEDA58FFFECB59DFFECAF98FFECAF98FFECAF
+      98FFE9BEA6FFE0AF8FFE00000000DEAB88FEFCE1D0FFFCE0D0FFFFE5D5FFF7B8
+      AAFFEC796CFFFEE4D4FFFF605AFFFF2A2AFFF37D71FFFF2A2AFFFF2A2AFFFF2A
+      2AFFF1B5A2FFE0AF8FFE00000000DEAB88FEF0A293FFF51813FFF5C3B2FFF722
+      1EFFF49387FFFFE5D5FFF79186FFF47167FFF19586FFF47167FFF47167FFF471
+      67FFF2BEABFFE0AF8FFE00000000DEAB88FEFADCCCFFF5302AFFF12F29FFF62E
+      28FFFDE2D2FFFFE5D5FFFF615DFFFF2A2AFFF37D71FFFF2A2AFFFF2A2AFFFF2A
+      2AFFF1B5A2FFE0AF8FFE00000000DEAB88FEFDE1D0FFF4A899FFFE0000FFF495
+      89FFFFE5D5FFFFE5D5FFF79387FFF47167FFF19687FFF47167FFF47167FFF471
+      67FFF2BEABFFE0AF8FFE00000000DEAB88FEFDE2D1FFF39387FFFE0000FFF368
+      5DFFFFE5D5FFFFE5D5FFFF625DFFFF2A2AFFF37D71FFFF2A2AFFFF2A2AFFFF2A
+      2AFFF1B5A2FFE0AF8FFE00000000DEAB88FEFCE1CEFFF4302BFFED6D61FFF714
+      11FFF7BAABFFFFE5D5FFF78E82FFF4695EFFF09084FFF4695EFFF4695EFFF469
+      5EFFF2BEAAFFE0AF8FFE00000000DEAB88FEFCDFCDFFF5BCACFFFCDDCCFFF491
+      85FFEB6C60FFFFE5D5FFFF635EFFFF2A2AFFF37D71FFFF2A2AFFFF2A2AFFFF2A
+      2AFFF1B5A2FFE0AF8FFE00000000DEAB88FEFDE0D0FFFFE5D5FFFFE5D5FFFFE5
+      D5FFFFE5D5FFFFE5D5FFFB968BFFF9736AFFF39C8DFFF27165FFF27165FFF271
+      65FFF1C0ADFFE0AF8FFE00000000DEAB88FEEABA9AFFF1C4A8FFF5CCB2FFF9D4
+      BDFFFDDCC8FFFFE5D5FFECC4AAFFE3B495FFE3B495FFE3B495FFE3B495FFE3B4
+      95FFE1B191FFE0AF8FFE00000000DEAA88FEDEAA87FFDEAA87FFDEAA87FFDEAA
+      87FFDEAA87FFE2AB88FFE0AC8AFFDEAA87FFDEAA87FFDEAA87FFDEAA87FFDEAA
+      87FFDEAA87FFE1AF8FFD00000000D89D75FAE0AF8EFFE0B08FFFE0B08FFFE0B0
+      8FFFE0B08FFFE0B08FFFE0B08FFFE0B08FFFE0B08FFFE0B08FFFE0B08FFFE0B0
+      8FFFE0AF8FFFDCA47EF100000000D18A5A00CE814CEED08453F0D08453F0D084
+      53F0D08453F0D08453F0D08453F0D08453F0D08453F0D08453F0D08453F0D084
+      53F0CF814DEDD08C5B7E000000000000000000000000666666054B4B4B115555
+      55125555551255555512555555125555551255555512555555124B4B4B113333
+      3305000000000000000000000000000000004040400487726853D09C84F7C291
+      7BF9CE9A83F8C2917BF9BD8E79F9C3927CF9BA8C77F9D5A088F8D8A289F78972
+      694E40404004000000000000000000000000666666058A736664DAA288FFC592
+      7BFFD9A186FFC7947CFFC08E77FFC8947CFFBB8A74FFE5AA8EFFE8AC90FF9077
+      6A5E333333050000000000000000000000006666660588726565D59E84FFBA8A
+      73FFB78872FFB98973FFB0836EFFCD987FFFBA8A73FFE8AC90FFE8AC90FF8E76
+      695F333333050000000000000000000000006666660588726565D59E84FFAA7E
+      6AFFBF8D76FFC49179FFAF826CFFB48670FFE8AC90FFE8AC90FFE8AC90FF8E76
+      695F333333050000000000000000000000006666660588726565D59E84FFBA8A
+      73FFC39079FFAD806BFFC8947CFFC6937CFFAA7E6AFFE5AA8EFFE8AC90FF8E76
+      695F33333305000000000000000000000000DB181815C13B348FE06756FFBC4D
+      40FFDC6554FFC25143FFF07360FFF07360FFF07360FFF07360FFF07360FFC83B
+      348ACC0D0D140000000000000000FF000049FF0000EFFF0000FFFF0000FFFF00
+      00FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF00
+      00FFFF0000EEFF00004800000000FF0000E0FF0000FFFD0E0EFAFF7575FFFF77
+      77FFFF0A0AFFFF5858FFFF8686FFFF3939FFFF5858FFFF1717FFFF0808FFFC5A
+      5AEFFF0000FFFF0000DF00000000FF0000FFFF0000FFFFC5C5FFFF5757FFFF30
+      30FFFF1717FFFFE5E5FFFF4646FFFF2424FFFF7474FFFF7979FFFF5858FFFF95
+      95FFFF0000FFFF0000FF00000000FF0000FFFF0000FFFFE9E9FFFF1111FFFF00
+      00FFFF0000FFFF5050FFFFB5B5FFFF9595FFFF1616FFFFD4D4FFFFB9B9FFFF31
+      31FFFF0000FFFF0000FF00000000FF0000F7FF0000FFFF6363FDFFBFBFFFFFA6
+      A6FFFF2424FFFFAEAEFFFFB9B9FFFF8181FFFF0000FFFFA3A3FFFFC2C2FFFF00
+      00FFFF0000FFFF0000F700000000FF0000A2FF0000FFFF0000FFFF0000FFFF00
+      00FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF00
+      00FFFF0000FFFF0000A000000000FF000008FB02027AF10E0CD7FA221DFFFA22
+      1DFFFA221DFFFA221DFFFA221DFFFA221DFFFA221DFFFA221DFFFA221DFFF30D
+      0CD5FB020279FF00000800000000000000004040400479685E4CB58D7AE6B28B
+      78EBB28B78EBB28B78EBB28B78EBB28B78EBB28B78EBB28B78EBB58D7AE6806D
+      62464040400400000000000000000000000000000000666666054B4B4B115555
+      55125555551255555512555555125555551255555512555555124B4B4B113333
+      3305000000000000000000000000000000005555550950505010555555125555
+      5512555555125555551255555512555555125555551255555512555555125555
+      5512505050105555550900000000515151137C6A617BD8A289F6D7A189F8D7A1
+      89F8D7A189F8D7A189F8D7A189F8D7A189F8D7A189F8D7A189F8D7A189F8D7A1
+      89F8D8A289F6B78E7AA9515151134E4E4E17816D6494E8AC90FFE8AC90FFE8AC
+      90FFE8AC90FFE8AC90FFE8AC90FFCC836DFFB3362DFFB57864FFE8AC90FFE8AC
+      90FFE8AC90FFBA907CC14E4E4E174E4E4E17806C6395E8AC90FFE8AC90FFE7AB
+      8FFFB47664FFDDA086FFE8AC90FFB80D0BFFCC0202FFA86959FFE1A78BFFE8AC
+      90FFE8AC90FFBA907CC14E4E4E174E4E4E17806C6395D29C82FF9A5044FFC828
+      26FFED2D2CFFE09C83FFB26B59FFFB0000FFA13D33FFE43431FFD92828FF9A40
+      38FFC28E77FFBA907CC14E4E4E174E4E4E17806C6395621313FFF42B2BFFF54E
+      46FFE9A88DFFE8AC90FFAF100DFFD80201FFD9A086FFE8AC90FFF26E5FFFF62E
+      2DFF9B1A1AFF8D6D5FCD4E4E4E174E4E4E17806C6395C9947DFF9A473EFFD528
+      28FFEC2E2CFFAE6656FFF70000FFA8382EFFE8AC90FFE33734FFE32928FFA038
+      32FFB7826DFFBA907CC14E4E4E174E4E4E17806C6395E8AC90FFE8AC90FFE4A9
+      8EFFAE6B5AFF9E100FFFE10302FFDB9F85FFE8AC90FFAE6557FFDBA388FFE8AC
+      90FFE8AC90FFBA907CC14E4E4E174E4E4E17806C6395E8AC90FFE8AC90FFE8AC
+      90FFE3A98DFFD38873FFE8AB8FFFE8AC90FFE8AC90FFE8AC90FFE8AC90FFE8AC
+      90FFE8AC90FFBA907CC14E4E4E174E4E4E17806C6395E8AC90FFE8AC90FFE8AC
+      90FFE8AC90FFE8AC90FFE8AC90FFE8AC90FFE8AC90FFE8AC90FFE8AC90FFE8AC
+      90FFE8AC90FFBA907CC14E4E4E174E4E4E17806C6395906B59FFD9A186FF805F
+      50FF8F6A59FF533D33FF7F5E4FFF765849FFC7947CFF8A6756FFB48670FF805F
+      50FFE8AC90FFBA907CC14E4E4E174E4E4E17806C6395644A3EFF8B6756FF3628
+      21FFE8AC90FF4D3930FFE8AC90FF4E3A31FF7F5E4FFF423129FF8E6958FF4D39
+      30FFE8AC90FFBA907CC14E4E4E174E4E4E17806C6395644A3EFF9A725FFF3A2B
+      24FFE8AC90FF4D3930FFE8AC90FF60473BFF4C392FFF6A4F42FF805F50FF4D39
+      30FFE8AC90FFBA907CC14E4E4E174E4E4E17816D6494876454FFD8A086FF7557
+      49FFE8AC90FF765849FFE8AC90FF816050FF886555FFBF8E77FF936D5BFF5A43
+      38FF6C5043FFB78E7AC24E4E4E175151511372635C74B58C79E3B28B78EBB28B
+      78EBB28B78EBB28B78EBB28B78EBB28B78EBB28B78EBB28B78EBB28B78EBB28B
+      78EBB58C79E3A281729451515113000000005555550950505010555555125555
+      5512555555125555551255555512555555125555551255555512555555125555
+      5512505050105555550900000000000000000000000000000000FF555509FF55
+      558DFF5555FDFF5555F5FF5555EEFF5555EEFF5555EEFF5555EEFF5555EEFF55
+      55EEFD5858D6FD5C5C6C000000000000000000000000C6444431F25556B5F85C
+      63D1DC5252D1F15353CBF65252C7F65252C6F75353C5F95353C5F65353C7E76C
+      6DC0C2B0B7BBB3BAC125000000000000000000000000A94C4C918A6764FF8682
+      75FF8D897CFF868175FF88625DFFDA5252FFFF5555FFFF5555FFFF5555FFB698
+      9CDCB3BBC4CEC38389A79D9DA1490000000050505060888578FD959182FF7371
+      69FF76746CFF74726AFF969383FF878276FFC05352FFFF5555FFFF5555FFB195
+      9CFFB79DA5FBBA969ACF9CAAAA124E4E4E27838075F9888478FF9E938AFFE9D2
+      C4FFE3D4C9FFDBCDC4FF9F968EFF878377FF817D73FFBD6262EED16465EBB877
+      7CE3C5BEC3C0DBDEE4B3000000005F5F5AAC9F9A89FF928780FFDFC2B4FFD6B4
+      A8FFDBBEB0FFD6C1B9FFCEB8B1FF988D85FF9E9A89FF707675FF93A7ACFF9EAF
+      B4F1D6D9E0C3D8DBE1B9A3AEB14577756CEC848175FFC29F95FFCAA499FFC7A1
+      96FFCBA59AFFCCA79BFFBA9790FFB99992FF807E73FF7A7A71FF93A7ACFFA0A5
+      AAFFD5ADB0FFC6B0B5EE9A9D9F607E7B71FA7D7A71FFEED7C8FFEBD4C5FFD9B9
+      ACFFD6B5A9FFD8B7AAFFCFB2A8FFCCB6AFFF7B776FFF7F7D73FF93A7ACFF95A4
+      A9FFC2A9AEEEB3B1BA6F0000000079776DF0838075FFE5CFC1FFD7B7AAFFCAA4
+      99FFD3B2A6FFD4B3A7FFC9ACA4FFD2C0B9FF7F7C71FF7B766DFD9C5455DEA370
+      73DAB3BBC5C3B9BCC95000000000676662BC9E9A88FFA89B93FFD9BBAEFFCEAB
+      9FFFD8B8ACFFD0AFA3FFD1BFB8FFB1A8A2FF9C9787FF7F5855FFC83737FFAD7B
+      82D4B7BFC8BFB7BFC967000000004E4E4E3B8C897BFE838075FFB8A89FFFDCBE
+      B0FFE1C5B8FFD8BFB5FFBCAFA8FF7F7D72FF8C897CFFAC3C3CFFC83737FFAC7C
+      81D1B8BFC8BBC16C6FAEC23D3D2A000000005A5A5688969282FF8E8A7CFF7A75
+      6EFF857F78FF7C7771FF8C897BFF969283FF8B4B49FFC83737FFC83737FFB075
+      79D5BC9EA6BBC3535837000000000000000000000000764745A67B746DFF938F
+      80FF9C9887FF938F80FF7E7169FF5E4D4CFF665351FFA53F3EFFC83737FFB64C
+      4EC3C644443100000000000000000000000000000000711C1C12802424326538
+      385B54383876553232665C181840543B3B7A938F80FF949081FE6546446D8421
+      211F000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000001686660CAA8A390FF838175F94D4D
+      4D14000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000494949076A6862C6716F68EC5151
+      5113000000000000000000000000AAAAAA00C9BEB876C8BEB7DBC8BEB7FDC8BE
+      B7FFC9C0B9FFCAC0BAFFC8BEB7FFC8BEB7FFC8BEB7FFCCC3BCFFC8BEB7FFC8BE
+      B7FDC8BDB6DAC8BDB674AAAAAA00C8BFB783C8BEB7FFC8BEB7FFC8BEB7FFC8BE
+      B7FFD5CEC9FFFBDADAFFF7C8C7FFF6CDCCFFF8C9C8FFF9E8E8FFC8BEB7FFC8BE
+      B7FFC8BEB7FFC8BEB7FFC8BEB881C8BEB7E7C8BEB7FFC8BEB7FFC8BEB7FFC8BE
+      B7FFDBD2CDFFFF6E6EFFFF2A2AFFFF2A2AFFFF2A2AFFF5CDCBFFC8BEB7FFC8BE
+      B7FFC8BEB7FFC8BEB7FFC8BEB7E6C8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BE
+      B7FFE1D1CDFFFF5C5CFFFF2A2AFFFF2A2AFFFF2A2AFFF4D1CFFFC8BEB7FFC8BE
+      B7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BE
+      B7FFE7D1CEFFFF4B4BFFFF2A2AFFFF2A2AFFFF2A2AFFF2D4D2FFC8BEB7FFC8BE
+      B7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFD8CFCAFFEBD2CFFFEFD4
+      D2FFFAE5E5FFFF3C3CFFFF2A2AFFFF2A2AFFFF3232FFFAE0DFFFF3D2D1FFF1D5
+      D3FFDCD4CFFFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFCDC4BEFFF9D7D6FFFF3C
+      3CFFFF2A2AFFFF2A2AFFFF2A2AFFFF2A2AFFFF2A2AFFFF2A2AFFFF3232FFF7D4
+      D3FFCBC2BCFFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFD1C8C2FFF9C5
+      C5FFFF2D2DFFFF2A2AFFFF2A2AFFFF2A2AFFFF2A2AFFFF2A2AFFFAB2B2FFD5CA
+      C5FFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFDACB
+      C6FFFAABAAFFFF2A2AFFFF2A2AFFFF2A2AFFFF2A2AFFFD7676FFE5D1CDFFC8BE
+      B7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BE
+      B7FFE3D1CDFFFB8C8BFFFF2A2AFFFF2A2AFFFF4646FFF3D7D6FFC8BEB7FFC8BE
+      B7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BE
+      B7FFC8BEB7FFECD6D3FFFE6E6EFFFF2E2EFFF8D0CFFFCDC4BEFFC8BEB7FFC8BE
+      B7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BE
+      B7FFC8BEB7FFC9BFB8FFF2D9D8FFFBBDBCFFD8CAC6FFC8BEB7FFC8BEB7FFC8BE
+      B7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFC9BFB8FFF3D6D4FFF2C0
+      BEFFF2C0BEFFF2C0BEFFF3C1BFFFF7C5C4FFF2C0BEFFF2C0BEFFF2C0BEFFF3D6
+      D4FFC9BFB8FFC8BEB7FFC8BEB7FFC8BEB7E6C8BEB7FFC9BFB8FFF9B0AFFFFF37
+      37FFFF3737FFFF3737FFFF3737FFFF3737FFFF3737FFFF3737FFFF3737FFF9B0
+      AFFFC9BFB8FFC8BEB7FFC8BEB7E6C8BEB682C8BEB7FFC8BEB7FFE6D1CEFFE8CD
+      CAFFE8CDCAFFE8CDCAFFE8CDCAFFE8CDCAFFE8CDCAFFE8CDCAFFE8CDCAFFE6D1
+      CEFFC8BEB7FFC8BEB7FFC7BDB780AAAAAA00C8BDB674C8BDB6DAC8BEB7FCC8BE
+      B7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BE
+      B7FCC8BEB7D9C8BFB873AAAAAA00000000000000000000000000661A1A0ABD09
+      0955DC0505A2AA0B0B5D00000000000000000000000000000000000000000000
+      0000000000000000000000000000551C1C09A3090956CE0505A0E90202E9FF00
+      00FFF10101F57A0B0B1700000000000000000000000000000000000000000000
+      0000000000000000000000000000AB0B0B43F20101E9FF0000F8FF0000F6FF00
+      00F3DC0303A600000001DEDEDE17E8E8E821F1F1F124FFFFFF1EFFFFFF15FFFF
+      FF0F00000000000000000000000000000000CD060685FF0000E2FF0000E0FE0E
+      0EE0C4434367B88B6D44D17A3E97E29056B7E2905DA7E1BEAD3BEEE9E92EF19C
+      9C24FF000013E100001100000000AA070727F90101CAF60101C7D6040490D721
+      21C7954A19A3E6894BFDD2956CFFAD8469FF937F72FFD17D47FCD7824A78F1EC
+      EC37E4000026FF00002DCC0D0D14DB050571FF0000B9D60505630000000D7149
+      33A0F2904CFE9D8778FFA8988EFF948175FF938073FFD68046FFFC893BFDCD91
+      6851DF808030FF000046E3050536E804048FFC0000A48009091E0000002EB265
+      31E4CC9B7AFFAA866FFFA9846DFFB3805EFFA38069FFE2803EFFFFA264FFD57A
+      3DB8B9A8A82CF7000061E803035AEB02028BEB02028D000000070000004EB179
+      53FABCB4AFFF968981FFC98151FFFF7F2AFFFE7F2AFFFE802CFFFE8A3DFFDC7B
+      3CDAB3B3B325EC020278E9020275EB020273F900007A4B0F0F1100000043AD5A
+      21E6B9A292FF988B83FFE88B4DFFFF7F2AFFFF7F2AFFF88030FFD48A5AFFE08D
+      56EB9251512FFB000091E402027DE803034CFF000062C60707240000001A4B25
+      0DB5B18567FFB58E72FFFF944DFFFF812DFFFF7F2AFFDC8B54FFD78F5FFFD187
+      5495CD050560FF0000A9DA050566D608081FFF00004CEF00003E3300000A0000
+      003F93532BD7E98A4BFEFF8F43FFFFA569FFFB9755FFF3A775FECE6237EBC904
+      048EF60101BCF70101BDA007072300000000EE00002CFF000034EA0000254D00
+      000A0000002549250C7DAA6332CBC57846DAD7AE93D79E3A288CF30000DAFE00
+      00DAFF0000DACE06067E0000000000000000FF000003FF000019FF00001CFF00
+      001100000002000000080000000B0000000B00000009D90303A6FF0000F2FF00
+      00F3FF0000F3F30101E3A90808410000000000000000FF000001FF000004FF00
+      000300000000000000000000000000000000800C0C16F20101F4FF0000FFEC02
+      02EED20404AEB10808656611110F000000000000000000000000000000000000
+      000000000000000000000000000000000000AA0B0B5DDC0505A2BD090955661A
+      1A0A000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000001414140D1C1C1C121C1C1C121C1C
+      1C121C1C1C121C1C1C121C1C1C121C1C1C121C1C1C121E1E1E112B2B2B060000
+      00010000000000000000000000001C1C1C12818181C8AEAEAEF5ADADADF6ADAD
+      ADF6ADADADF6ADADADF6ADADADF6ADADADF6ADADADF6A9A9A9F08B8B8B8A3232
+      3299151515180000000000000000171717168A8A8AE1CCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCACACAFF4C4444E7A9A9
+      A9FF454545C30000000000000000171717168A8A8AE2B9B9B9FF8B8B8BFFCCCC
+      CCFF8A8A8AFFABABABFF888888FFA2A2A2FF868686FF784040FF9C0808FA5944
+      44EE373737740000000000000000171717168A8A8AE2C1C1C1FFA6A6A6FFB7B7
+      B7FFA3A3A3FFB5B5B5FFA5A5A5FFB9B9B9FF723737FFF00101FFC30707F94202
+      0274000000000000000000000000171717168A8A8AE2C1C1C1FFA6A6A6FFB7B7
+      B7FFA3A3A3FFB5B5B5FFA3A3A3FF783F3FFFEE0101FFC50E0EFF704949CD2020
+      2008000000000000000000000000171717168A8A8AE2B6B6B6FF7A7A7AFF9999
+      99FF7A7A7AFFA9A9A9FF612828FFEE0101FFC50E0EFF937575FF9E9E9EA82020
+      2008000000000000000000000000171717168A8A8AE2BDBDBDFF989898FFBDBD
+      BDFF949494FF733A3AFFEE0101FFC30C0CFF745656FFC2C2C2FF9E9E9EA82020
+      2008000000000000000000000000171717168A8A8AE2C8C8C8FFBFBFBFFFC8C8
+      C8FF544242FFE40101FFC20D0DFF917474FFBEBEBEFFCACACAFF9E9E9EA82020
+      2008000000000000000000000000171717168A8A8AE2B9B9B9FF888888FF9C9C
+      9CFF707070FF473333FF957777FFCCCCCCFFCCCCCCFFCCCCCCFF9E9E9EA82020
+      2008000000000000000000000000171717168A8A8AE2BDBDBDFF989898FF8A8A
+      8AFF606060FF8E8E8EFF969696FFBFBFBFFFCCCCCCFFCCCCCCFF9E9E9EA82020
+      2008000000000000000000000000171717168A8A8AE2C8C8C8FFBFBFBFFFC6C6
+      C6FFC1C1C1FFC3C3C3FFBEBEBEFFC9C9C9FFCCCCCCFFCCCCCCFF9E9E9EA82020
+      2008000000000000000000000000171717168A8A8AE2B9B9B9FF888888FFA6A6
+      A6FF919191FFB4B4B4FF8A8A8AFFA6A6A6FF8E8E8EFFCCCCCCFF9E9E9EA82020
+      2008000000000000000000000000171717168C8C8CE2CCCCCCFFCCCCCCFFCCCC
+      CCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFFCCCCCCFF9F9F9FA72020
+      20080000000000000000000000001C1C1C126C6C6CC18B8B8BEF8F8F8FF19494
+      94F2999999F3A3A3A3F4ADADADF6B5B5B5F9BFBFBFFBC8C8C8FDA4A4A4A02424
+      240700000000000000000000000000000000464646165A5A5A22404040181C1C
+      1C121C1C1C121C1C1C121C1C1C121C1C1C121C1C1C121C1C1C122B2B2B060000
+      00010000000000000000000000000000000000000000000000009933330ACE13
+      1344DC0D0D60D510104EA6262614FF2B2B0CFF2A2A9FFF000002000000000000
+      00000000000000000000000000000000000000000001DD10106FF50404E6FF00
+      00FFF70404F9FD0101FFF90303F6FB2323E6FF2A2AFFFF282826000000000000
+      000000000000000000000000000000000000E10E0E91FC0101FAE90A0A98BE19
+      1933924949079B2E2E1CF52424AAFF2A2AFFFF2A2AFFF7292963000000000000
+      0000000000000000000000000000D6101050FC0101FDDD0F0F69000000000000
+      000000000000FF2A2A43FF2B2BFCFF2A2AFFFF2A2AFFEF2828B1000000000000
+      0000000000000000000000000000ED0707BCED0808BA00000000000000000000
+      000000000000FF24240EFF29292CFF2C2C4CFF2B2B6BEE2D2D66000000000000
+      0000000000000000000000000000D413135ECF15153000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000E18C5390DD8B5488000000000000
+      0000000000000000000000000000F79555B9FF9A55BAFF98549AFF99557BFF99
+      553C000000000000000000000000C580512CFB9755F9DF8C5668000000000000
+      0000000000000000000000000000F09355B8FF9955FFFF9955FFFF9955F4FF9A
+      532B0000000000000000C57C5723F4884DE8F3814AEDE4241B1C000000000000
+      0000000000000000000000000000F5975831FF9955FFFF9955FFF49555C0DF8C
+      5368DF8B5267E98F5396F99654F2F4894FE9F7140DFAFF0101EBFF1E1EB0FF2A
+      2A8CFF2B2B18000000000000000000000000FF9855D3FA9654D4EE9455BEF193
+      54F0F39454F8EF9254D4E58E5581AF705010FF00002AFF1717E0FF2A2AFFFF2A
+      2AFFFF2A2AEDFF2B2B5F0000000000000000FF995641FF9F6008000000000000
+      00008080800200000000000000000000000000000000FF292971FF2A2AFFFF2A
+      2AFFFF2A2AFFFF2A2AFFFF29299A000000000000000000000000000000000000
+      00000000000000000000000000000000000000000000FF000002FF292975FF2B
+      2BF6FF2A2AFFFF2A2AFFFF2A2AF1000000000000000000000000000000000000
+      000000000000000000000000000000000000000000000000000000000000FF29
+      2925FF2929B9FF2B2BF0FF2B2B72000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000006666
+      662D6D66639D6C6661EC686665FC696665FA6C6661E96C65629C6868682C0000
+      000000000000000000000000000000000000000000006D6D6D076D6561A66A66
+      64FB686665FF666666FF666666FF666666FF666666FF686665FF696664FB6E66
+      61A366666605000000000000000000000000555555066D6662D16B6662FE6666
+      66FF6D6661FF6F6660FF89664FFF89664FFF6F6660FF6D6661FF666666FF6B66
+      62FE6D6661CE5555550600000000000000006E6661A56A6562FE686665FF7066
+      5FFFCF6620FFFE6600E8FF65005BFF67005EFE6601EBCE6621FF70665FFF6866
+      64FF6B6662FE6E6661A3000000006868682C6A6664FB666666FF70665FFFED66
+      0CFFFF6600FFFF6500AB0000000000000000FF6500B0FF6600FFEC660CFF7066
+      60FF666666FF6A6765FB6565652B6D66639D686665FF6D6661FFCE6621FFFF66
+      00FFFF6600FFFF6600FFFF6700C2FF6700C2FF6600FFFF6600FFFF6600FFCD66
+      22FF6E6662FF686664FF6B6561986B6662EB666666FF6E6660FFFE6601FFFF66
+      00FFFF6600FFFF6600B2FF690011FF690011FF6600B2FF6600FFFF6600FFFE66
+      01FF6F6661FF666666FF6C6662EA686765FB666666FF866650FFFF6600FFFF66
+      00FFFF6600FFFF6600E50000000000000000FF6600E5FF6600FFFF6600FFFF66
+      00FF866650FF666666FF696765FB696765FB666666FF876650FFFF6600FFFF66
+      00FFFF6600FFFF6600EC0000000000000000FF6600ECFF6600FFFF6600FFFF66
+      00FF866650FF666666FF686765FB6D6662EB666666FF6E6660FFFE6601FFFF66
+      00FFFF6600FFFF6600EC0000000000000000FF6600ECFF6600FFFF6600FFFE66
+      01FF6E6660FF666666FF6C6561EA6C67639A686665FF6D6661FFCD6621FFFF66
+      00FFFF6600FFFF6600EB0000000000000000FF6600EBFF6600FFFF6600FFCC66
+      22FF6D6661FF686665FF6C6662996868682C6A6765FB666666FF706660FFEC66
+      0DFFFF6600FFFF6600D80000000000000000FF6600D9FF6600FFEC660CFF7066
+      60FF666666FF696765FB64646429000000006E6661A36B6662FE686664FF7066
+      60FFCD6621FFFE6501BBFF650044FF650044FE6501BBCD6622FF706660FF6866
+      64FF6B6663FE6C6661A00000000000000000555555066D6661CE6B6662FE6666
+      66FF6D6661FF6E6660FF886650FF87664FFF6E6660FF6D6661FF666666FF6B65
+      62FE6C6661D055555506000000000000000000000000666666056D6560A26A67
+      65FB686665FF666666FF666666FF666666FF666666FF686664FF696765FB6D65
+      61A1555555060000000000000000000000000000000000000000000000006565
+      652B6C67639A6C6562EA686665FB686665FB6C6562EA6C67639A6767672A0000
+      00000000000000000000000000007C6657E7856652FF856652FF856652FF8566
+      52FF856652FF856652FF856652FF826654FF6B6662FC6666667D00000000613E
+      1A1DA85F2FB9AE622FD7884C265ED4661DFFE06614FFE06614FFE06614FFE066
+      14FFE06614FFE06614FFE06614FFDC6617FF91664AFF66666696000000008C4F
+      2671C87137FFC87137FFA85F2ECF666666786666669966666699666666996666
+      669966666699666666996666669966666699666666946767673E000000006A39
+      1C24AA602EC2B36531E08E4F266A666666786565658865656588656565886565
+      658865656588656565886767677C808080020000000000000000000000005329
+      15255D35183F5D35183F5531183FD1661FFFD6661BFFD6661BFFD6661BFFD666
+      1BFFD6661BFFC26628FF666666FF6A6A6A0C0000000000000000000000008047
+      2464C87137FFC87137FFA35C2DC5816654F2856652FF856652FF856652FF8566
+      52FF856652FF7C6658FF666666F3606060080000000000000000000000003E1F
+      1329C46F36FFC87137FF99562A916262621A6868683168686831686868316868
+      683169696922696969115555550600000000000000000000000000000000160B
+      0B17BD6B34FFC87137FF97552A878D674EFA8F664BFF8F664BFF8F664BFF7866
+      5AFF666666E70000000000000000000000000000000000000000000000000000
+      0011BB6933FFC87137FF94542A86C86624FFCC6622FFCC6622FFCC6622FF9866
+      45FF666666ED0000000000000000000000000000000000000000000000000000
+      0011BB6933FFC87137FF94542A86656565746565658865656588656565886565
+      65886565656A0000000000000000000000000000000000000000000000000000
+      0011BB6933FFC87137FF94542A866666669E666666AA666666AA676767540000
+      0000000000000000000000000000000000000000000000000000000000002B1A
+      111EC06D35FFC87137FF97562A8CB9662FFFE06614FFE06614FF956748A60000
+      0000000000000000000000000000000000000000000000000000000000005935
+      183FC87137FFC87137FF9D592BA173665D007A6658FF7A6658FF6E6663890000
+      0000000000000000000000000000000000000000000000000000000000007441
+      1F72A9602FE2A9602FE2874C25C6000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000000000C6C6AA09C7BDB669C8BF
+      B6BAC8BEB7E9C8BEB7FDC8BEB7F1C8BEB7CCC8BFB787C7BFB720000000000000
+      000000000000000000000000000000000000C9BFB534C8BEB7E0C8BEB7FFC8BE
+      B7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFC9BEB7F8C7BEB76E0000
+      0000000000000000000000000000C9BCBC13C8BEB7EBC8BEB7FFC8BEB7D9C8BE
+      B7F9C8BEB7FFC8BDB6DAC8BEB7F7C8BEB7FFC9BEB7DCC8BEB7F6C8BEB7FFC8BE
+      B853FFFFFF010000000000000000C9BFB767C8BEB7FFC7BEB6A500000000C9BD
+      B759C8BEB7B000000000C7BEB74EC8BFB6BAFFFFFF01C7BFB844C8BEB7FFC7BE
+      B7BCC8BFB758C8BEB84F00000000C8BFB86BC8BEB7FFC9BEB7B7CCCCCC05C9BE
+      B771C9BEB7C0B6B6B607C8BEB766C8BEB7C9C6C6AA09C7BFB65BC8BEB7FFC8BE
+      B7BFC9BCB83DC8BEB7FAC9BCB83DCABFB518C8BEB7EEC8BEB7FFC8BEB7F9C8BE
+      B7FFC8BEB7FFC8BEB7F9C8BEB7FFC8BEB7FFC8BEB7F9C8BEB7FFC8BEB7FFC7BF
+      B65BC8BEB853C8BEB7FFC9BEB7C000000000C8BFB73CC8BEB7F2C8BEB7FFC8BE
+      B7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FCC7BDB77CCCCC
+      CC05C9BEB7C5C8BEB7FFC8BEB7F200000000CABFB530C8BEB7FCC9BEB7C5C8BE
+      B7C4C8BEB7F6C8BEB7FFC8BEB7FEC8BDB6DAC8BEB795CABEB82BC8BCBC17C8BE
+      B7B4C8BEB7FFC8BEB7FFC8BFB7C600000000C8BEB7BFC7BFB693BFBFBF04C6BF
+      B824C9BCB526CBB9B42CCCBDB623C9BEB82FC7BEB856C8BEB89DC8BEB7F3C8BE
+      B7FFC8BEB7FFC8BEB7F9C9BCB739C9BDB751C7BEB76E0000000000000000C8B6
+      B60EC8BEB6ACC8BEB7FEC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BEB7FFC8BE
+      B7FFC8BEB8CFC9BFB53400000000C5BDB6230000000000000000000000000000
+      000000000000C9BCB526C9BDB868C8BFB88FC7BEB7A0C8BEB7E2C8BEB7FFC7BE
+      B74E000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000000000CAC1B91DC8BDB6DAC8BE
+      B786000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000C8BCBC17C8BE
+      B8C1D1B9B90B0000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000000000000000000000000000C2C2
+      B615C7BEB5370000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000
+    }
+  end
+  object SD: TSaveDialog
+    DefaultExt = '.csv'
+    Filter = 'CSV|*.csv'
+    left = 40
+    top = 96
+  end
+  object SQLite3Connection1: TSQLite3Connection
+    Connected = False
+    LoginPrompt = False
+    DatabaseName = 'Lpro.db'
+    KeepConnection = False
+    Transaction = SQLTransaction1
+    CharSet = 'UTF8'
+    Options = []
+    left = 280
+    top = 184
+  end
+  object SQLQuery1: TSQLQuery
+    PacketRecords = -1
+    FieldDefs = <>
+    Database = SQLite3Connection1
+    Transaction = SQLTransaction1
+    Options = []
+    Params = <>
+    left = 232
+    top = 112
+  end
+  object SQLTransaction1: TSQLTransaction
+    Active = False
+    Database = SQLite3Connection1
+    Options = []
+    left = 344
+    top = 112
+  end
+  object DataSource1: TDataSource
+    DataSet = SQLQuery1
+    left = 288
+    top = 112
+  end
+  object SD2: TSaveDialog
+    Filter = 'HTM|*.htm'
+    left = 120
+    top = 112
+  end
+  object SD3: TSaveDialog
+    FileName = 'Lpro'
+    Filter = 'EXE|*.exe'
+    left = 168
+    top = 88
+  end
+  object SelectDirectoryDialog1: TSelectDirectoryDialog
+    Title = 'Пожалуйста, укажите каталог для сохранения установочного файла программы'
+    FileName = 'Lpro.exe'
+    left = 168
+    top = 136
+  end
+  object IdHTTP1: TIdHTTP
+    AllowCookies = True
+    ProxyParams.BasicAuthentication = False
+    ProxyParams.ProxyPort = 0
+    Request.ContentLength = -1
+    Request.Date = 0
+    Request.Expires = 0
+    Request.LastModified = 0
+    Request.Accept = 'text/html, */*'
+    Request.BasicAuthentication = False
+    Request.UserAgent = 'Mozilla/3.0 (compatible; Indy Library)'
+    HTTPOptions = [hoForceEncodeParams]
+    left = 328
+    top = 64
+  end
+  object SQLTransaction3: TSQLTransaction
+    Active = False
+    Database = SQLite3Connection1
+    Options = []
+    left = 744
+    top = 64
+  end
+  object SQLQuery3: TSQLQuery
+    FieldDefs = <>
+    Database = SQLite3Connection1
+    Transaction = SQLTransaction1
+    Options = []
+    Params = <>
+    left = 688
+    top = 64
+  end
+  object DataSource3: TDataSource
+    DataSet = SQLQuery3
+    left = 624
+    top = 64
+  end
+  object SQLTransaction4: TSQLTransaction
+    Active = False
+    Database = SQLite3Connection1
+    Options = []
+    left = 584
+    top = 128
+  end
+  object DataSource4: TDataSource
+    DataSet = SQLQuery4
+    left = 664
+    top = 128
+  end
+  object SQLQuery4: TSQLQuery
+    FieldDefs = <>
+    Database = SQLite3Connection1
+    Transaction = SQLTransaction1
+    Options = []
+    Params = <>
+    left = 744
+    top = 112
+  end
+  object SQLQuery2: TSQLQuery
+    PacketRecords = -1
+    FieldDefs = <>
+    Database = SQLite3Connection1
+    Transaction = SQLTransaction1
+    Options = []
+    Params = <>
+    left = 416
+    top = 64
+  end
+  object SQLQueryAllVar: TSQLQuery
+    PacketRecords = -1
+    FieldDefs = <>
+    Database = SQLite3Connection1
+    Transaction = SQLTransaction1
+    Options = []
+    Params = <>
+    left = 496
+    top = 64
+  end
+  object DataSourceAllVar: TDataSource
+    DataSet = SQLQueryAllVar
+    left = 552
+    top = 40
   end
 end

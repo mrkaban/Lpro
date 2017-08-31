@@ -1,0 +1,109 @@
+object fUpdate: TfUpdate
+  Left = 293
+  Height = 154
+  Top = 170
+  Width = 320
+  Caption = 'Обновление Lpro'
+  ClientHeight = 154
+  ClientWidth = 320
+  OnClose = FormClose
+  OnCreate = FormCreate
+  LCLVersion = '1.6.2.0'
+  object bUpdateBase: TButton
+    Left = 176
+    Height = 25
+    Top = 72
+    Width = 104
+    Caption = 'Обновить базу'
+    OnClick = bUpdateBaseClick
+    TabOrder = 0
+  end
+  object bDownloadProgram: TButton
+    Left = 176
+    Height = 25
+    Top = 112
+    Width = 139
+    Caption = 'Скачать новую версию'
+    OnClick = bDownloadProgramClick
+    TabOrder = 1
+  end
+  object Label1: TLabel
+    Left = 8
+    Height = 15
+    Top = 72
+    Width = 72
+    Caption = 'Версия базы:'
+    ParentColor = False
+  end
+  object Label2: TLabel
+    Left = 8
+    Height = 15
+    Top = 112
+    Width = 69
+    Caption = 'Версия Lpro:'
+    ParentColor = False
+  end
+  object lVersionBase: TLabel
+    Left = 96
+    Height = 15
+    Top = 72
+    Width = 62
+    Caption = 'Нет версии'
+    ParentColor = False
+  end
+  object lVersionProgram: TLabel
+    Left = 96
+    Height = 15
+    Top = 112
+    Width = 62
+    Caption = 'Нет версии'
+    ParentColor = False
+  end
+  object Label3: TLabel
+    Left = 40
+    Height = 15
+    Top = 8
+    Width = 199
+    Caption = 'Пожалуйста, дождитесь сообщения'
+    ParentColor = False
+  end
+  object Label4: TLabel
+    Left = 80
+    Height = 15
+    Top = 24
+    Width = 128
+    Caption = 'о завершении загрузки'
+    ParentColor = False
+  end
+  object IdHTTP1: TIdHTTP
+    IOHandler = IdSSLIOHandlerSocketOpenSSL1
+    AllowCookies = True
+    ProxyParams.BasicAuthentication = False
+    ProxyParams.ProxyPort = 0
+    Request.ContentLength = -1
+    Request.Date = 0
+    Request.Expires = 0
+    Request.LastModified = 0
+    Request.Accept = 'text/html, */*'
+    Request.BasicAuthentication = False
+    Request.UserAgent = 'Mozilla/3.0 (compatible; Indy Library)'
+    HTTPOptions = []
+    left = 248
+    top = 8
+  end
+  object SelectDirectoryDialog: TSelectDirectoryDialog
+    Title = 'Пожалуйста, укажите куда сохранить установочный файл'
+    left = 88
+    top = 8
+  end
+  object IdSSLIOHandlerSocketOpenSSL1: TIdSSLIOHandlerSocketOpenSSL
+    MaxLineAction = maException
+    Port = 0
+    DefaultPort = 0
+    SSLOptions.Mode = sslmUnassigned
+    SSLOptions.VerifyMode = []
+    SSLOptions.VerifyDepth = 0
+    left = 176
+    top = 24
+  end
+end

@@ -1,0 +1,92 @@
+object fPoiskVBaze: TfPoiskVBaze
+  Left = 309
+  Height = 256
+  Top = 163
+  Width = 767
+  Caption = 'Поиск программы по названию в базе данных'
+  ClientHeight = 256
+  ClientWidth = 767
+  OnClose = FormClose
+  Position = poMainFormCenter
+  LCLVersion = '1.6.4.0'
+  object NameEdit: TEdit
+    Left = 16
+    Height = 23
+    Top = 8
+    Width = 200
+    OnEditingDone = bPoiskVBazeClick
+    TabOrder = 0
+  end
+  object bPoiskVBaze: TButton
+    Left = 224
+    Height = 25
+    Top = 8
+    Width = 75
+    Caption = 'Поиск'
+    OnClick = bPoiskVBazeClick
+    TabOrder = 1
+  end
+  object DBGrid1: TDBGrid
+    Left = 0
+    Height = 220
+    Top = 40
+    Width = 768
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    Color = clWindow
+    Columns = <>
+    DataSource = DataSource2
+    Options = [dgTitles, dgIndicator, dgColumnResize, dgColumnMove, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
+    TabOrder = 2
+  end
+  object bOchistit: TButton
+    Left = 312
+    Height = 25
+    Top = 8
+    Width = 75
+    Caption = 'Очистить'
+    OnClick = bOchistitClick
+    TabOrder = 3
+  end
+  object Label1: TLabel
+    Left = 400
+    Height = 17
+    Top = 8
+    Width = 264
+    Caption = 'Совет: Лучше вводить название без версии'
+    Font.Height = -13
+    ParentColor = False
+    ParentFont = False
+  end
+  object SQLite3Connection1: TSQLite3Connection
+    Connected = False
+    LoginPrompt = False
+    DatabaseName = 'Lpro.db'
+    KeepConnection = False
+    CharSet = 'UTF8'
+    Options = []
+    left = 560
+    top = 136
+  end
+  object SQLTransaction2: TSQLTransaction
+    Active = False
+    Database = fMian.SQLite3Connection1
+    Options = []
+    left = 688
+    top = 136
+  end
+  object DataSource2: TDataSource
+    DataSet = SQLQuery2
+    left = 600
+    top = 200
+  end
+  object SQLQuery2: TSQLQuery
+    PacketRecords = -1
+    FieldDefs = <>
+    Database = fMian.SQLite3Connection1
+    Transaction = fMian.SQLTransaction1
+    Options = []
+    Params = <>
+    left = 688
+    top = 200
+  end
+end
