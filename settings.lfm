@@ -1,7 +1,7 @@
 object fSettings: TfSettings
-  Left = 417
+  Left = 353
   Height = 330
-  Top = 137
+  Top = 130
   Width = 447
   Caption = 'Настройки'
   ClientHeight = 330
@@ -13,13 +13,13 @@ object fSettings: TfSettings
     Height = 280
     Top = 0
     Width = 447
-    ActivePage = TabSheet1
+    ActivePage = SettingsAvtopoisk
     Align = alClient
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 0
     object SettingsAvtopoisk: TTabSheet
       Caption = 'Автопоиск'
-      ClientHeight = 246
+      ClientHeight = 252
       ClientWidth = 439
       object cbAvtoUnkProg: TCheckBox
         Left = 16
@@ -109,15 +109,24 @@ object fSettings: TfSettings
           'Путь'
           'Название '
           'Исходный запрос'
-          'Тип ПО'
+          'Тип ПО*'
           'Лицензия'
           'Стоимость'
           'Замена'
         )
+        OnItemClick = cgRuchKolItemClick
         TabOrder = 0
         Data = {
           0700000002020202020202
         }
+      end
+      object Label4: TLabel
+        Left = 14
+        Height = 15
+        Top = 192
+        Width = 146
+        Caption = '* - Обязательные столбцы'
+        ParentColor = False
       end
     end
   end

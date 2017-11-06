@@ -23,6 +23,7 @@ type
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
+    Label4: TLabel;
     PageControl1: TPageControl;
     Panel1: TPanel;
     SettingsAvtopoisk: TTabSheet;
@@ -34,6 +35,7 @@ type
     procedure bAvtoCancelClick(Sender: TObject);
     procedure bAvtoOkClick(Sender: TObject);
     procedure cgAvtoKolItemClick(Sender: TObject; Index: integer);
+    procedure cgRuchKolItemClick(Sender: TObject; Index: integer);
     procedure FormActivate(Sender: TObject);
   private
     { private declarations }
@@ -247,11 +249,11 @@ begin
     SQLQuery1.ParamByName('pText8').AsInteger := AvtoKol5;
     SQLQuery1.ParamByName('pText9').AsInteger := RuchKol0;
     SQLQuery1.ParamByName('pText10').AsInteger := RuchKol1;
-    SQLQuery1.ParamByName('pText11').AsInteger := RuchKol6;
-    SQLQuery1.ParamByName('pText12').AsInteger := RuchKol2;
-    SQLQuery1.ParamByName('pText13').AsInteger := RuchKol3;
-    SQLQuery1.ParamByName('pText14').AsInteger := RuchKol4;
-    SQLQuery1.ParamByName('pText15').AsInteger := RuchKol5;
+    SQLQuery1.ParamByName('pText11').AsInteger := RuchKol2;
+    SQLQuery1.ParamByName('pText12').AsInteger := RuchKol3;
+    SQLQuery1.ParamByName('pText13').AsInteger := RuchKol4;
+    SQLQuery1.ParamByName('pText14').AsInteger := RuchKol5;
+    SQLQuery1.ParamByName('pText15').AsInteger := RuchKol6;
     SQLQuery1.ExecSQL;
     Close;
 end;
@@ -282,6 +284,24 @@ begin
   begin
   showmessage('На данный момент "Тип ПО" тоже является обязательным столбцом! Иначе могут возникать ошибки, поэтому он будет включен.');
   cgAvtoKol.Checked[2] := True;
+  end;
+
+end;
+
+procedure TfSettings.cgRuchKolItemClick(Sender: TObject; Index: integer);
+var
+  n2:integer;
+begin
+
+  if cgRuchKol.Checked[3] = True then
+  n2 := 1;
+  if cgRuchKol.Checked[3] = False then
+  n2 := 0;
+
+  if n2 = 0 then
+  begin
+  showmessage('"Тип ПО" является обязательным столбцом! Сейчас он будет включен.');
+  cgRuchKol.Checked[3] := True;
   end;
 
 end;
@@ -621,11 +641,11 @@ begin
     SQLQuery1.ParamByName('pText8').AsInteger := AvtoKol5;
     SQLQuery1.ParamByName('pText9').AsInteger := RuchKol0;
     SQLQuery1.ParamByName('pText10').AsInteger := RuchKol1;
-    SQLQuery1.ParamByName('pText11').AsInteger := RuchKol6;
-    SQLQuery1.ParamByName('pText12').AsInteger := RuchKol2;
-    SQLQuery1.ParamByName('pText13').AsInteger := RuchKol3;
-    SQLQuery1.ParamByName('pText14').AsInteger := RuchKol4;
-    SQLQuery1.ParamByName('pText15').AsInteger := RuchKol5;
+    SQLQuery1.ParamByName('pText11').AsInteger := RuchKol2;
+    SQLQuery1.ParamByName('pText12').AsInteger := RuchKol3;
+    SQLQuery1.ParamByName('pText13').AsInteger := RuchKol4;
+    SQLQuery1.ParamByName('pText14').AsInteger := RuchKol5;
+    SQLQuery1.ParamByName('pText15').AsInteger := RuchKol6;
     SQLQuery1.ExecSQL;
 end;
 

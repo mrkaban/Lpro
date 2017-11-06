@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Lpro"
-#define MyAppVersion "1.4.4"
+#define MyAppVersion "1.4.5"
 #define MyAppPublisher "Континентсвободы.рф"
 #define MyAppURL "https://континентсвободы.рф/"
 #define MyAppExeName "Lpro.exe"
@@ -21,10 +21,10 @@ AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf}\{#MyAppName}
 DisableProgramGroupPage=yes
-LicenseFile=D:\Public\lpro\Lpro 1.4.4\GPL.txt
+LicenseFile=D:\Public\lpro\Lpro 1.4.5\GPL.txt
 OutputDir=C:\Users\MrKaban\Desktop
 OutputBaseFilename=Lpro
-SetupIconFile=D:\Public\lpro\Lpro 1.4.4\Lpro.ico
+SetupIconFile=D:\Public\lpro\Lpro 1.4.5\Lpro.ico
 Compression=lzma
 SolidCompression=yes
 
@@ -36,19 +36,19 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 0,6.1
 
 [Files]
-Source: "D:\Public\lpro\Lpro 1.4.4\Lpro.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Public\lpro\Lpro 1.4.4\base.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Public\lpro\Lpro 1.4.4\GPL.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Public\lpro\Lpro 1.4.4\libeay32.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Public\lpro\Lpro 1.4.4\Lpro.db"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Public\lpro\Lpro 1.4.4\Lpro.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Public\lpro\Lpro 1.4.4\Lpro.ico"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Public\lpro\Lpro 1.4.4\prog.txt"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Public\lpro\Lpro 1.4.4\sqlite3.def"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Public\lpro\Lpro 1.4.4\sqlite3.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Public\lpro\Lpro 1.4.4\ssleay32.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Public\lpro\Lpro 1.4.4\update.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Public\lpro\Lpro 1.4.4\help\*"; DestDir: "{app}/help"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "D:\Public\lpro\Lpro 1.4.5\Lpro.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\Public\lpro\Lpro 1.4.5\base.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\Public\lpro\Lpro 1.4.5\GPL.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\Public\lpro\Lpro 1.4.5\libeay32.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\Public\lpro\Lpro 1.4.5\Lpro.db"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\Public\lpro\Lpro 1.4.5\Lpro.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\Public\lpro\Lpro 1.4.5\Lpro.ico"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\Public\lpro\Lpro 1.4.5\prog.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\Public\lpro\Lpro 1.4.5\sqlite3.def"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\Public\lpro\Lpro 1.4.5\sqlite3.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\Public\lpro\Lpro 1.4.5\ssleay32.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\Public\lpro\Lpro 1.4.5\update.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\Public\lpro\Lpro 1.4.5\help\*"; DestDir: "{app}/help"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

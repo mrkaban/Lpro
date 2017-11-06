@@ -25,6 +25,7 @@ type
     bUkazKatalog: TButton;
     bOpenKatPodrob: TButton;
     bInstViewZam: TButton;
+    bInstpoSokrtiZapros: TButton;
     bViewZamPodrob: TButton;
     cbZamenaPodrob: TComboBox;
     ComboBox1: TComboBox;
@@ -131,6 +132,7 @@ type
     InstallPoPage: TTabSheet;
     SQLTransaction4: TSQLTransaction;
     ToolButton5: TToolButton;
+    ToolButton6: TToolButton;
     tsLicenseSogl: TTabSheet;
     tsVseVarianti: TTabSheet;
     tsPodrobnosti: TTabSheet;
@@ -159,6 +161,7 @@ type
       var Handled: Boolean);
     procedure bDeinstrallClick(Sender: TObject);
     procedure bExplorerClick(Sender: TObject);
+    procedure bInstpoSokrtiZaprosClick(Sender: TObject);
     procedure bInstViewZamClick(Sender: TObject);
     procedure bOpenKatPodrobClick(Sender: TObject);
     procedure bRegeditClick(Sender: TObject);
@@ -169,8 +172,10 @@ type
     procedure DBGrid1CellClick(Column: TColumn);
     procedure DBGrid1DrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
+    procedure DBGrid1TitleClick(Column: TColumn);
     procedure DBGrid2DrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
+    procedure DBGrid2TitleClick(Column: TColumn);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure leKatalogSearchChange(Sender: TObject);
@@ -320,10 +325,33 @@ var
     //Для имени пк
     i1: DWORD;
     p1: PChar;
+    Nst7:Word;
+    Nst1:Word;
+    Nst2:Word;
+    Nst3:Word;
+    Nst4:Word;
+    Nst5:Word;
+    Nst6:Word;
   begin
   i1:=255;
 GetMem(p1, i1);
 GetComputerName(p1, i1);
+
+
+   //подгружаем настройки для определения заголовков колонок
+    SQLQuery4.Close;
+    SQLQuery4.Active:=false;
+    SQLQuery4.SQL.Clear;
+    s := 'select * from setting';
+    SQLQuery4.SQL.Add(s);
+    SQLQuery4.Active:=true;
+
+   { SQLQuery1.SQL.Clear;
+    SQLQuery1.SQL.Text:='select * from setting';
+    SQLQuery1.Open;
+    SQLQuery1.First;    }
+
+
   // если открыт авто поиск
     if PageControl1.ActivePageindex=0 then
       begin
@@ -341,13 +369,28 @@ t.add('<h1 align=center>Lpro - Проверка лицензий установ�
 t.add('<h2 align=center>Имя компьютера: ' + p1 + '</h2>');
 t.add('<html>');
 t.add('<table border=1 align=center>');
+//    подружаю из базы 1 или 0 для колонок
+
+Nst7:=SQLQuery4.FieldByName('AvtoSt7').AsInteger;
+Nst2:=SQLQuery4.FieldByName('AvtoSt2').AsInteger;
+Nst3:=SQLQuery4.FieldByName('AvtoSt3').AsInteger;
+Nst4:=SQLQuery4.FieldByName('AvtoSt4').AsInteger;
+Nst5:=SQLQuery4.FieldByName('AvtoSt5').AsInteger;
+Nst6:=SQLQuery4.FieldByName('AvtoSt6').AsInteger;
+
 //
  t.add('<tr>');
+ if Nst7 = 1 then
 t.add('<td> Исходное название');
+ if Nst2 = 1 then
 t.add('<td> Название в БД');
+ if Nst3 = 1 then
 t.add('<td> Тип ПО');
+ if Nst4 = 1 then
 t.add('<td> Лицензия');
+ if Nst5 = 1 then
 t.add('<td> Стоимость');
+ if Nst6 = 1 then
 t.add('<td> Замена');
 t.add('</tr>');
 //
@@ -391,17 +434,33 @@ t.add('<h2 align=center>Имя компьютера: ' + p1 + '</h2>');
 t.add('<html>');
 t.add('<table border=1 align=center>');
 //
+Nst7:=SQLQuery4.FieldByName('RuchSt7').AsInteger;
+Nst2:=SQLQuery4.FieldByName('RuchSt2').AsInteger;
+Nst1:=SQLQuery4.FieldByName('RuchSt1').AsInteger;
+Nst3:=SQLQuery4.FieldByName('RuchSt3').AsInteger;
+Nst4:=SQLQuery4.FieldByName('RuchSt4').AsInteger;
+Nst5:=SQLQuery4.FieldByName('RuchSt5').AsInteger;
+Nst6:=SQLQuery4.FieldByName('RuchSt6').AsInteger;
+
  t.add('<tr>');
-t.add('<td> ID');
+ if Nst7 = 1 then
+t.add('<td> Путь');
+ if Nst2 = 1 then
 t.add('<td> Название');
+ if Nst1 = 1 then
+ t.add('<td> Исходный запрос');
+ if Nst3 = 1 then
 t.add('<td> Тип ПО');
+ if Nst4 = 1 then
 t.add('<td> Лицензия');
+ if Nst5 = 1 then
 t.add('<td> Стоимость');
+ if Nst6 = 1 then
 t.add('<td> Замена');
 t.add('</tr>');
 //
 t.add('<tr>');
-for i:=6 to DBGrid2.DataSource.DataSet.Fields.Count-1 do
+for i:=7 to DBGrid2.DataSource.DataSet.Fields.Count-1 do
 t.add('<td>'+DBGrid2.DataSource.DataSet.fields[i].fieldname);
 t.add('</tr>');
 while not DBGrid2.DataSource.DataSet.eof do
@@ -459,6 +518,21 @@ Var
   s: string;
   ds : TDataSet;
   Zagolovki: array of array of string;
+  //для подгрузки из настроек включенных колонок
+     Nst7:Word;
+     Nst2:Word;   // для загрузки из базы настроек
+     Nst3:Word;   // какие нужно загружать столбцы в автопоиске
+     Nst4:Word;
+     Nst5:Word;
+     Nst6:Word;
+     Nst1:Word;
+     Nst7Pos:Word; // переменные для определения позиций колонок
+     Nst2Pos:Word; // необходимо для заполнения заголовков и изменения ширины
+     Nst3Pos:Word;
+     Nst4Pos:Word;
+     Nst5Pos:Word;
+     Nst6Pos:Word;
+     Nst1Pos:Word;
 begin
     OO := CreateOleObject('com.sun.star.ServiceManager');
   Desktop := OO.createInstance('com.sun.star.frame.Desktop');
@@ -466,42 +540,1054 @@ begin
   Sheet := Doc.getSheets.GetByIndex(0);
   Sheet.Name := 'Lpro';
 
-  //теперь заполняем заголовки Zagolovki
-  SetLength(Zagolovki, 1, 6);
-  Zagolovki[0][0] := 'Исходное название';
-  Cell := Sheet.getCellByPosition(0, 0);
-  Cell.SetString(WideString(UTF8Decode(Zagolovki[0][0])));
-  Zagolovki[0][1] := 'Название в БД';
-  Cell := Sheet.getCellByPosition(1, 0);
-  Cell.SetString(WideString(UTF8Decode(Zagolovki[0][1])));
-  Zagolovki[0][2] := 'Тип ПО';
-  Cell := Sheet.getCellByPosition(2, 0);
-  Cell.SetString(WideString(UTF8Decode(Zagolovki[0][2])));
-  Zagolovki[0][3] := 'Лицензия';
-  Cell := Sheet.getCellByPosition(3, 0);
-  Cell.SetString(WideString(UTF8Decode(Zagolovki[0][3])));
-  Zagolovki[0][4] := 'Стоимость';
-  Cell := Sheet.getCellByPosition(4, 0);
-  Cell.SetString(WideString(UTF8Decode(Zagolovki[0][4])));
-  Zagolovki[0][5] := 'Замена';
-  Cell := Sheet.getCellByPosition(5, 0);
-  Cell.SetString(WideString(UTF8Decode(Zagolovki[0][5])));
-  //конец заполнения заголовков
+    // получаем настройки из таблицы
+    SQLQuery2.Close;
+    SQLQuery2.Active:=false;
+    SQLQuery2.SQL.Clear;
+    s := 'select * from setting';
+    SQLQuery2.SQL.Add(s);
+    SQLQuery2.Active:=true;
 
-  ds := DBGrid1.DataSource.DataSet;
-  ds.First; j := 1; // с какой строки начинать вставлять в CALC
-  while not ds.EOF do
+
+  // если открыт авто поиск
+    if PageControl1.ActivePageindex=0 then
+      begin
+    // получаю включенные колонки
+    Nst7:=SQLQuery2.FieldByName('AvtoSt7').AsInteger;
+    Nst2:=SQLQuery2.FieldByName('AvtoSt2').AsInteger;
+    Nst3:=SQLQuery2.FieldByName('AvtoSt3').AsInteger;
+    Nst4:=SQLQuery2.FieldByName('AvtoSt4').AsInteger;
+    Nst5:=SQLQuery2.FieldByName('AvtoSt5').AsInteger;
+    Nst6:=SQLQuery2.FieldByName('AvtoSt6').AsInteger;
+     // начало определения позиций
+
+       if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) then
   begin
-    for i := 0 to ds.FieldCount do
-    begin
-      Cell := Sheet.getCellByPosition(i, j);
-      if i = 0 then
-       Cell.SetString(WideString(UTF8Decode(ds.Fields.Fields[i].AsString)));
-      if i > 0 then
-      Cell.SetString(WideString(UTF8Decode(ds.Fields.Fields[i - 1].AsString)));
-    end;
-    ds.Next; inc(j);
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //723456
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+  Nst6Pos := 5;
   end;
+
+  if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) then
+  begin
+  Nst2Pos := 0;    //23456
+  Nst3Pos := 1;
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+  end;
+
+  if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) then
+  begin
+  Nst2Pos := 0;    //2456
+  Nst4Pos := 1;
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+  end;
+
+  if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 0) and (Nst5 = 1) and (Nst6 = 1) then
+  begin
+  Nst2Pos := 0;   //2356
+  Nst3Pos := 1;
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+  end;
+
+  if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 0) and (Nst6 = 1) then
+  begin
+  Nst2Pos := 0;   //2346
+  Nst3Pos := 1;
+  Nst4Pos := 2;
+  Nst6Pos := 3;
+  end;
+
+  if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;   //2345
+  Nst3Pos := 1;
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72456
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 0) and (Nst5 = 1) and (Nst6 = 1) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72356
+  Nst3Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 0) and (Nst6 = 1) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72346
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst6Pos := 4;
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72345
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 1) and (Nst6 = 1) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //7256
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+  end;
+
+   if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 1) and (Nst6 = 1) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //7246
+  Nst4Pos := 2;
+  Nst6Pos := 3;
+  end;
+
+   if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //7234
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  end;
+
+   if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 0) and (Nst5 = 1) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //7235
+  Nst3Pos := 2;
+  Nst5Pos := 3;
+  end;
+
+   if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 1) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //7236
+  Nst3Pos := 2;
+  Nst6Pos := 3;
+  end;
+
+   if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //723
+  Nst3Pos := 2;
+  end;
+
+   if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 1) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //724
+  Nst4Pos := 2;
+  end;
+
+   if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 1) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //725
+  Nst5Pos := 2;
+  end;
+
+   if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 1) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //726
+  Nst6Pos := 2;
+  end;
+
+   if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //234
+  Nst4Pos := 2;
+  end;
+
+   if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 0) and (Nst5 = 1) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //235
+  Nst5Pos := 2;
+  end;
+
+   if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 1) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //236
+  Nst6Pos := 2;
+  end;
+
+   if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst4Pos := 1;   //245
+  Nst5Pos := 2;
+  end;
+
+   if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 1) and (Nst5 = 0) and (Nst6 = 1) then
+  begin
+  Nst2Pos := 0;
+  Nst4Pos := 1;   //246
+  Nst6Pos := 2;
+  end;
+
+   if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 1) and (Nst6 = 1) then
+  begin
+  Nst2Pos := 0;
+  Nst5Pos := 1;   //256
+  Nst6Pos := 2;
+  end;
+
+   if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72
+  end;
+
+   if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //23
+  end;
+
+   if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 1) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst4Pos := 1;   //24
+  end;
+
+   if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 1) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst5Pos := 1;   //25
+  end;
+
+   if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 1) then
+  begin
+  Nst2Pos := 0;
+  Nst6Pos := 1;   //26
+  end;
+
+    // конец определения позиций
+
+      //теперь заполняем заголовки Zagolovki
+        SetLength(Zagolovki, 1, 7);
+
+        if Nst7 = 1 then
+        begin
+        Zagolovki[0][Nst7Pos + 1] := 'Исходное название';
+        Cell := Sheet.getCellByPosition(Nst7Pos + 1, 0);
+        Cell.SetString(WideString(UTF8Decode(Zagolovki[0][Nst7Pos + 1])));
+        end;
+        if Nst2 = 1 then
+        begin
+        Zagolovki[0][Nst2Pos + 1] := 'Название в БД';
+        Cell := Sheet.getCellByPosition(Nst2Pos + 1, 0);
+        Cell.SetString(WideString(UTF8Decode(Zagolovki[0][Nst2Pos + 1])));
+        end;
+        if Nst3 = 1 then
+        begin
+        Zagolovki[0][Nst3Pos + 1] := 'Тип ПО';
+        Cell := Sheet.getCellByPosition(Nst3Pos + 1, 0);
+        Cell.SetString(WideString(UTF8Decode(Zagolovki[0][Nst3Pos + 1])));
+        end;
+        if Nst4 = 1 then
+        begin
+        Zagolovki[0][Nst4Pos + 1] := 'Лицензия';
+        Cell := Sheet.getCellByPosition(Nst4Pos + 1, 0);
+        Cell.SetString(WideString(UTF8Decode(Zagolovki[0][Nst4Pos + 1])));
+        end;
+        if Nst5 = 1 then
+        begin
+        Zagolovki[0][Nst5Pos + 1] := 'Стоимость';
+        Cell := Sheet.getCellByPosition(Nst5Pos + 1, 0);
+        Cell.SetString(WideString(UTF8Decode(Zagolovki[0][Nst5Pos + 1])));
+        end;
+        if Nst6 = 1 then
+        begin
+        Zagolovki[0][Nst6Pos + 1] := 'Замена';
+        Cell := Sheet.getCellByPosition(Nst6Pos + 1, 0);
+        Cell.SetString(WideString(UTF8Decode(Zagolovki[0][Nst6Pos + 1])));
+        end;
+
+     //   Zagolovki[0][0] := 'Исходное название';
+     //   Cell := Sheet.getCellByPosition(0, 0);
+     //   Cell.SetString(WideString(UTF8Decode(Zagolovki[0][0])));
+        //конец заполнения заголовков
+
+   ds := DBGrid1.DataSource.DataSet;
+        ds.First;
+        j := 1; // с какой строки начинать вставлять в CALC
+        while not ds.EOF do
+        begin
+          for i := 1 to ds.FieldCount do
+          begin
+            Cell := Sheet.getCellByPosition(i, j);
+            if i = 0 then
+             Cell.SetString(WideString(UTF8Decode(ds.Fields.Fields[i].AsString)));
+            if i > 0 then
+            Cell.SetString(WideString(UTF8Decode(ds.Fields.Fields[i - 1].AsString)));
+          end;
+          ds.Next;
+          inc(j);
+        end;
+
+      end;
+
+    // если открыт ручной поиск
+    if PageControl1.ActivePageindex=1 then
+      begin
+
+ Nst7:=SQLQuery1.FieldByName('RuchSt7').AsInteger;
+ Nst2:=SQLQuery1.FieldByName('RuchSt2').AsInteger;
+ Nst1:=SQLQuery1.FieldByName('RuchSt1').AsInteger;
+ Nst3:=SQLQuery1.FieldByName('RuchSt3').AsInteger;
+ Nst4:=SQLQuery1.FieldByName('RuchSt4').AsInteger;
+ Nst5:=SQLQuery1.FieldByName('RuchSt5').AsInteger;
+ Nst6:=SQLQuery1.FieldByName('RuchSt6').AsInteger;
+
+   //заполняем заголовки колонок и меняем ширину колонок
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;
+  Nst1Pos := 2;   //7213456
+  Nst3Pos := 3;
+  Nst4Pos := 4;
+  Nst5Pos := 5;
+  Nst6Pos := 6;
+//  showmessage('Сработал вариант 7213456');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //723456
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 723456');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst2 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //713456
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 713456');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst3 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //712456
+  Nst2Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 712456');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //712356
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst5Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 712356');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //712346
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst4Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 712346');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //712345
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst4Pos := 4;
+  Nst5Pos := 5;
+//  showmessage('Сработал вариант 712345');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst7 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //123456
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 123456');
+  end;
+
+  if (Nst1 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst2 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst3Pos := 1;   //13456
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 13456');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst3 = 0) and (Nst7 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //12456
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 12456');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst4 = 0) and (Nst7 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //12356
+  Nst3Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 12356');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst5 = 0) and (Nst7 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //12346
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 12346');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 0) and (Nst7 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //12345
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+//  showmessage('Сработал вариант 12345');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //73456
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 73456');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst3 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72456
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 72456');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72356
+  Nst3Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 72356');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72346
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 72346');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72345
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+//  showmessage('Сработал вариант 72345');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst3 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71456
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71456');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71356
+  Nst3Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71356');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71346
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71346');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst2 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71345
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+//  showmessage('Сработал вариант 71345');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst3 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71256
+  Nst2Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71256');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst3 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71246
+  Nst2Pos := 2;
+  Nst4Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71246');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst3 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71245
+  Nst2Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+//  showmessage('Сработал вариант 71245');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst6 = 1) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71236
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71236');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71235
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst5Pos := 4;
+//  showmessage('Сработал вариант 71235');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71234
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst4Pos := 4;
+//  showmessage('Сработал вариант 71234');
+  end;
+
+  if (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst7 = 0) then
+  begin
+  Nst3Pos := 0;
+  Nst4Pos := 1;   //3456
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 3456');
+  end;
+
+  if (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst7 = 0) and (Nst3 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst4Pos := 1;   //2456
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 2456');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst4 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //2356
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 2356');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst7 = 0) and (Nst5 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //2346
+  Nst4Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 2346');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst7 = 0) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //2345
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+ // showmessage('Сработал вариант 2345');
+  end;
+
+  if (Nst7 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst3 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst4Pos := 1;   //7456
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7456');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //7356
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7356');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //7346
+  Nst4Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7346');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //7345
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+//  showmessage('Сработал вариант 7345');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7156
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7156');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7146
+  Nst4Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7146');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7145
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+//  showmessage('Сработал вариант 7145');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst6 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7126
+  Nst2Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7126');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst5 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7125
+  Nst2Pos := 2;
+  Nst5Pos := 3;
+//  showmessage('Сработал вариант 7125');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7123
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+ // showmessage('Сработал вариант 7123');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //712
+  Nst2Pos := 2;
+ // showmessage('Сработал вариант 712');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst2 = 0) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //713
+  Nst3Pos := 2;
+//  showmessage('Сработал вариант 713');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst4 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //714
+  Nst4Pos := 2;
+//  showmessage('Сработал вариант 714');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst5 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //715
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 715');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //716
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 716');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst1 = 0) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //723
+  Nst3Pos := 2;
+//  showmessage('Сработал вариант 723');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst1 = 0) and (Nst3 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //724
+  Nst4Pos := 2;
+//  showmessage('Сработал вариант 724');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst3 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //725
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 725');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //726
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 726');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //734
+  Nst4Pos := 2;
+//  showmessage('Сработал вариант 734');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //735
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 735');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //736
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 736');
+  end;
+
+  if (Nst7 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst3 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst4Pos := 1;   //745
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 745');
+  end;
+
+  if (Nst7 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst5 = 0) and (Nst1 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst4Pos := 1;   //746
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 746');
+  end;
+
+  if (Nst7 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst3 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //756
+  Nst2Pos := 2;
+//  showmessage('Сработал вариант 756');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst7 = 0) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //123
+  Nst3Pos := 2;
+//  showmessage('Сработал вариант 123');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst7 = 0) and (Nst3 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //124
+  Nst4Pos := 2;
+//  showmessage('Сработал вариант 124');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst5 = 1) and (Nst7 = 0) and (Nst3 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //125
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 125');
+  end;
+
+  if (Nst1 = 1) and (Nst3 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst2 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst3Pos := 1;   //136
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 136');
+  end;
+
+  if (Nst1 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst7 = 0) and (Nst2 = 0) and (Nst3 = 0) and (Nst6 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst4Pos := 1;   //145
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 145');
+  end;
+
+  if (Nst1 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst2 = 0) and (Nst3 = 0) and (Nst5 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst4Pos := 1;   //146
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 146');
+  end;
+
+  if (Nst1 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst2 = 0) and (Nst3 = 0) and (Nst4 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst5Pos := 1;   //156
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 156');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst1 = 0) and (Nst5 = 0) and (Nst6 = 0) and (Nst7 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //234
+  Nst4Pos := 2;
+//  showmessage('Сработал вариант 234');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //235
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 235');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //236
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 236');
+  end;
+
+  if (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst3 = 0) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst4Pos := 1;   //245
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 245');
+  end;
+
+  if (Nst2 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst3 = 0) and (Nst5 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst4Pos := 1;   //246
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 246');
+  end;
+
+  if (Nst2 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst3 = 0) and (Nst4 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst5Pos := 1;   //256
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 256');
+  end;
+
+ // showmessage('Nst7Pos' + IntToStr(Nst7Pos) + #13 + ' Nst2Pos' + IntToStr(Nst2Pos) + #13 + 'Nst1Pos' + IntToStr(Nst1Pos) + #13 + ' Nst3Pos' + IntToStr(Nst3Pos) + #13 + ' Nst4Pos' + IntToStr(Nst4Pos) + #13 + ' Nst5Pos' + IntToStr(Nst5Pos) + #13 + ' Nst6Pos' + IntToStr(Nst6Pos));
+
+             SetLength(Zagolovki, 1, 8);
+              if Nst7 = 1 then
+              begin
+                Zagolovki[0][Nst7Pos + 1] := 'Путь';
+                Cell := Sheet.getCellByPosition(Nst7Pos + 1, 0);
+                Cell.SetString(WideString(UTF8Decode(Zagolovki[0][Nst7Pos + 1])));
+              end;
+              if Nst2 = 1 then
+              begin
+              Zagolovki[0][Nst2Pos + 1] := 'Название';
+              Cell := Sheet.getCellByPosition(Nst2Pos + 1, 0);
+              Cell.SetString(WideString(UTF8Decode(Zagolovki[0][Nst2Pos + 1])));
+              end;
+
+              if Nst1 = 1 then
+              begin
+              Zagolovki[0][Nst1Pos + 1] := 'Исходный запрос';
+              Cell := Sheet.getCellByPosition(Nst1Pos + 1, 0);
+              Cell.SetString(WideString(UTF8Decode(Zagolovki[0][Nst1Pos + 1])));
+              end;
+
+              if Nst3 = 1 then
+              begin
+              Zagolovki[0][Nst3Pos + 1] := 'Тип ПО';
+              Cell := Sheet.getCellByPosition(Nst3Pos + 1, 0);
+              Cell.SetString(WideString(UTF8Decode(Zagolovki[0][Nst3Pos + 1])));
+              end;
+              if Nst4 = 1 then
+              begin
+              Zagolovki[0][Nst4Pos + 1] := 'Лицензия';
+              Cell := Sheet.getCellByPosition(Nst4Pos + 1, 0);
+              Cell.SetString(WideString(UTF8Decode(Zagolovki[0][Nst4Pos + 1])));
+              end;
+              if Nst5 = 1 then
+              begin
+              Zagolovki[0][Nst5Pos + 1] := 'Стоимость';
+              Cell := Sheet.getCellByPosition(Nst5Pos + 1, 0);
+              Cell.SetString(WideString(UTF8Decode(Zagolovki[0][Nst5Pos + 1])));
+              end;
+              if Nst6 = 1 then
+              begin
+              Zagolovki[0][Nst6Pos + 1] := 'Замена';
+              Cell := Sheet.getCellByPosition(Nst6Pos + 1, 0);
+              Cell.SetString(WideString(UTF8Decode(Zagolovki[0][Nst6Pos + 1])));
+              end;
+
+            //  Zagolovki[0][0] := 'Путь';
+            //  Cell := Sheet.getCellByPosition(0, 0);
+            //  Cell.SetString(WideString(UTF8Decode(Zagolovki[0][0])));
+
+
+              ds := DBGrid2.DataSource.DataSet;
+              ds.First; j := 1; // с какой строки начинать вставлять в CALC
+              while not ds.EOF do
+              begin
+                for i := 1 to ds.FieldCount do
+                begin
+                  Cell := Sheet.getCellByPosition(i, j);
+                  if i = 0 then
+                   Cell.SetString(WideString(UTF8Decode(ds.Fields.Fields[i].AsString)));
+                  if i > 0 then
+                  Cell.SetString(WideString(UTF8Decode(ds.Fields.Fields[i - 1].AsString)));
+                end;
+                ds.Next; inc(j);
+              end;
+
+      end;
+
+
+
 
 end;
 
@@ -517,6 +1603,8 @@ begin
 // если открыт авто поиск
     if PageControl1.ActivePageindex=0 then
       begin
+
+
 Rez := CLSIDFromProgID(PWideChar(WideString('Excel.Application')), ClassID);
 if Rez <> S_OK then begin
   MessageDlg('EXCEL не установлен. Поддерживается передача только в EXCEL.',mtERROR,[mbok],0);
@@ -1769,38 +2857,19 @@ var
      Nst4:Word;
      Nst5:Word;
      Nst6:Word;
+     Nst1:Word;
      Nst7Pos:Word; // переменные для определения позиций колонок
      Nst2Pos:Word; // необходимо для заполнения заголовков и изменения ширины
      Nst3Pos:Word;
      Nst4Pos:Word;
      Nst5Pos:Word;
      Nst6Pos:Word;
+     Nst1Pos:Word;
 begin
      //если автопоиск
      if PageControl1.ActivePageindex=0 then
       begin
-   {  s := '';
-     s := 'SELECT st7, st2, st3, st4, st5, st6 FROM test order by st1';
 
-     SQLQuery1.Close;
-     SQLQuery1.Active:=false;
-     SQLQuery1.SQL.Clear;
-     SQLQuery1.SQL.Add(s);
-     SQLQuery1.Active:=true;
-     SQLQuery1.Open;
-     //заполняем заголовки колонок и меняем ширину колонок
-     DBGrid1.Columns[0].Title.Caption:='Исходное название';
-     DBGrid1.Columns[1].Title.Caption:='Название в БД';
-     DBGrid1.Columns[2].Title.Caption:='Тип ПО';
-     DBGrid1.Columns[3].Title.Caption:='Лицензия';
-     DBGrid1.Columns[4].Title.Caption:='Стоимость';
-     DBGrid1.Columns[5].Title.Caption:='Замена';
-     DBGrid1.Columns[0].Width:= 200;
-     DBGrid1.Columns[1].Width:= 110;
-     DBGrid1.Columns[2].Width:= 150;
-     DBGrid1.Columns[3].Width:= 110;
-     DBGrid1.Columns[4].Width:= 90;
-     DBGrid1.Columns[5].Width:= 150;    }
 
     SQLQuery1.Close;
     SQLQuery1.Active:=false;
@@ -2112,7 +3181,7 @@ end;
      // если ручной поиск
      if PageControl1.ActivePageindex=1 then
       begin
-     s := '';
+   {  s := '';
      s := 'SELECT st7, st2, st3, st4, st5, st6 FROM ruch order by st1';
 
      SQLQuery3.Close;
@@ -2133,7 +3202,776 @@ end;
      DBGrid2.Columns[2].Width:= 150;
      DBGrid2.Columns[3].Width:= 110;
      DBGrid2.Columns[4].Width:= 90;
-     DBGrid2.Columns[5].Width:= 150;
+     DBGrid2.Columns[5].Width:= 150;     }
+
+       //начало постройки запроса согласно настройкам программы
+
+    SQLQuery1.Close;
+    SQLQuery1.Active:=false;
+    SQLQuery1.SQL.Clear;
+    s := 'select * from setting';
+    SQLQuery1.SQL.Add(s);
+    SQLQuery1.Active:=true;
+
+ {SQLQuery1.SQL.Clear;
+ SQLQuery1.SQL.Text:='select * from setting';
+ SQLQuery1.Open;
+ SQLQuery1.First; }
+
+ s := '';
+ s := 'SELECT ';
+
+ Nst7:=SQLQuery1.FieldByName('RuchSt7').AsInteger;
+ if Nst7 = 1 then
+ s := s + 'st7';    //   путь
+
+ Nst2:=SQLQuery1.FieldByName('RuchSt2').AsInteger;
+ if (Nst2 = 1) and (Nst7 = 1) then
+ s := s + ', st2';     // название
+
+ if (Nst2 = 1) and (Nst7 = 0) then
+ s := s + ' st2';
+
+ if Nst2=0 then
+    begin
+    showmessage('Поле "Название" отключено, поэтому данный вид сортировки недоступен.');
+    exit;
+    end;
+
+ Nst1:=SQLQuery1.FieldByName('RuchSt1').AsInteger;
+ Nst3:=SQLQuery1.FieldByName('RuchSt3').AsInteger;
+ Nst4:=SQLQuery1.FieldByName('RuchSt4').AsInteger;
+ Nst5:=SQLQuery1.FieldByName('RuchSt5').AsInteger;
+ Nst6:=SQLQuery1.FieldByName('RuchSt6').AsInteger;
+
+ if Nst1 = 1 then
+ begin
+ if (Nst2 = 0) and (Nst7 = 0) and (Nst1 = 1) then
+ s := s + ' st1'
+ else
+  s := s + ', st1';
+ end;
+ //if Nst1 = 1 then
+ //s := s + ', st1';      // исходный запрос
+
+ if Nst3 = 1 then
+ s := s + ', st3';      // тип по
+
+ if Nst4 = 1 then
+ s := s + ', st4';       // лицензия
+
+ if Nst5 = 1 then
+ s := s + ', st5';       // стоимость
+
+ if Nst6 = 1 then
+ s := s + ', st6';       // замена
+
+ if Nst2 = 1 then
+ s := s + ' FROM ruch ORDER BY st2 DESC'
+ else
+ s := s + ' FROM ruch';
+ //showmessage(s);
+ //конец постройки запроса
+
+
+SQLQuery3.Close;
+SQLQuery3.Active:=false;
+SQLQuery3.SQL.Clear;
+SQLQuery3.SQL.Add(s);
+SQLQuery3.Active:=true;
+SQLQuery3.Open;
+
+      //заполняем заголовки колонок и меняем ширину колонок
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;
+  Nst1Pos := 2;   //7213456
+  Nst3Pos := 3;
+  Nst4Pos := 4;
+  Nst5Pos := 5;
+  Nst6Pos := 6;
+//  showmessage('Сработал вариант 7213456');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //723456
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 723456');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst2 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //713456
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 713456');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst3 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //712456
+  Nst2Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 712456');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //712356
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst5Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 712356');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //712346
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst4Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 712346');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //712345
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst4Pos := 4;
+  Nst5Pos := 5;
+//  showmessage('Сработал вариант 712345');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst7 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //123456
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 123456');
+  end;
+
+  if (Nst1 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst2 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst3Pos := 1;   //13456
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 13456');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst3 = 0) and (Nst7 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //12456
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 12456');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst4 = 0) and (Nst7 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //12356
+  Nst3Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 12356');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst5 = 0) and (Nst7 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //12346
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 12346');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 0) and (Nst7 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //12345
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+//  showmessage('Сработал вариант 12345');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //73456
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 73456');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst3 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72456
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 72456');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72356
+  Nst3Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 72356');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72346
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 72346');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72345
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+//  showmessage('Сработал вариант 72345');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst3 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71456
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71456');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71356
+  Nst3Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71356');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71346
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71346');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst2 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71345
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+//  showmessage('Сработал вариант 71345');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst3 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71256
+  Nst2Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71256');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst3 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71246
+  Nst2Pos := 2;
+  Nst4Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71246');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst3 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71245
+  Nst2Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+//  showmessage('Сработал вариант 71245');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst6 = 1) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71236
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71236');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71235
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst5Pos := 4;
+//  showmessage('Сработал вариант 71235');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71234
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst4Pos := 4;
+//  showmessage('Сработал вариант 71234');
+  end;
+
+  if (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst7 = 0) then
+  begin
+  Nst3Pos := 0;
+  Nst4Pos := 1;   //3456
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 3456');
+  end;
+
+  if (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst7 = 0) and (Nst3 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst4Pos := 1;   //2456
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 2456');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst4 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //2356
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 2356');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst7 = 0) and (Nst5 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //2346
+  Nst4Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 2346');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst7 = 0) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //2345
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+ // showmessage('Сработал вариант 2345');
+  end;
+
+  if (Nst7 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst3 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst4Pos := 1;   //7456
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7456');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //7356
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7356');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //7346
+  Nst4Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7346');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //7345
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+//  showmessage('Сработал вариант 7345');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7156
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7156');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7146
+  Nst4Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7146');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7145
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+//  showmessage('Сработал вариант 7145');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst6 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7126
+  Nst2Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7126');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst5 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7125
+  Nst2Pos := 2;
+  Nst5Pos := 3;
+//  showmessage('Сработал вариант 7125');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7123
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+ // showmessage('Сработал вариант 7123');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //712
+  Nst2Pos := 2;
+ // showmessage('Сработал вариант 712');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst2 = 0) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //713
+  Nst3Pos := 2;
+//  showmessage('Сработал вариант 713');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst4 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //714
+  Nst4Pos := 2;
+//  showmessage('Сработал вариант 714');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst5 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //715
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 715');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //716
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 716');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst1 = 0) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //723
+  Nst3Pos := 2;
+//  showmessage('Сработал вариант 723');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst1 = 0) and (Nst3 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //724
+  Nst4Pos := 2;
+//  showmessage('Сработал вариант 724');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst3 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //725
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 725');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //726
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 726');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //734
+  Nst4Pos := 2;
+//  showmessage('Сработал вариант 734');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //735
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 735');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //736
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 736');
+  end;
+
+  if (Nst7 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst3 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst4Pos := 1;   //745
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 745');
+  end;
+
+  if (Nst7 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst5 = 0) and (Nst1 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst4Pos := 1;   //746
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 746');
+  end;
+
+  if (Nst7 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst3 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //756
+  Nst2Pos := 2;
+//  showmessage('Сработал вариант 756');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst7 = 0) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //123
+  Nst3Pos := 2;
+//  showmessage('Сработал вариант 123');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst7 = 0) and (Nst3 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //124
+  Nst4Pos := 2;
+//  showmessage('Сработал вариант 124');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst5 = 1) and (Nst7 = 0) and (Nst3 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //125
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 125');
+  end;
+
+  if (Nst1 = 1) and (Nst3 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst2 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst3Pos := 1;   //136
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 136');
+  end;
+
+  if (Nst1 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst7 = 0) and (Nst2 = 0) and (Nst3 = 0) and (Nst6 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst4Pos := 1;   //145
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 145');
+  end;
+
+  if (Nst1 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst2 = 0) and (Nst3 = 0) and (Nst5 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst4Pos := 1;   //146
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 146');
+  end;
+
+  if (Nst1 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst2 = 0) and (Nst3 = 0) and (Nst4 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst5Pos := 1;   //156
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 156');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst1 = 0) and (Nst5 = 0) and (Nst6 = 0) and (Nst7 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //234
+  Nst4Pos := 2;
+//  showmessage('Сработал вариант 234');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //235
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 235');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //236
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 236');
+  end;
+
+  if (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst3 = 0) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst4Pos := 1;   //245
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 245');
+  end;
+
+  if (Nst2 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst3 = 0) and (Nst5 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst4Pos := 1;   //246
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 246');
+  end;
+
+  if (Nst2 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst3 = 0) and (Nst4 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst5Pos := 1;   //256
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 256');
+  end;
+
+ // showmessage('Nst7Pos' + IntToStr(Nst7Pos) + #13 + ' Nst2Pos' + IntToStr(Nst2Pos) + #13 + 'Nst1Pos' + IntToStr(Nst1Pos) + #13 + ' Nst3Pos' + IntToStr(Nst3Pos) + #13 + ' Nst4Pos' + IntToStr(Nst4Pos) + #13 + ' Nst5Pos' + IntToStr(Nst5Pos) + #13 + ' Nst6Pos' + IntToStr(Nst6Pos));
+
+
+if Nst7 = 1 then
+begin
+DBGrid2.Columns[Nst7Pos].Title.Caption:='Путь';
+DBGrid2.Columns[Nst7Pos].Width:= 200;
+end;
+if Nst2 = 1 then
+begin
+DBGrid2.Columns[Nst2Pos].Title.Caption:='Название';
+DBGrid2.Columns[Nst2Pos].Width:= 110;
+end;
+
+if Nst1 = 1 then
+begin
+DBGrid2.Columns[Nst1Pos].Title.Caption:='Исходный запрос';
+DBGrid2.Columns[Nst1Pos].Width:= 80;
+end;
+
+if Nst3 = 1 then
+begin
+DBGrid2.Columns[Nst3Pos].Title.Caption:='Тип ПО';
+DBGrid2.Columns[Nst3Pos].Width:= 130;
+end;
+if Nst4 = 1 then
+begin
+DBGrid2.Columns[Nst4Pos].Title.Caption:='Лицензия';
+DBGrid2.Columns[Nst4Pos].Width:= 90;
+end;
+if Nst5 = 1 then
+begin
+DBGrid2.Columns[Nst5Pos].Title.Caption:='Стоимость';
+DBGrid2.Columns[Nst5Pos].Width:= 80;
+end;
+if Nst6 = 1 then
+begin
+DBGrid2.Columns[Nst6Pos].Title.Caption:='Замена';
+DBGrid2.Columns[Nst6Pos].Width:= 130;
+end;
+
       end;
 end;
 
@@ -2146,12 +3984,14 @@ var
      Nst4:Word;
      Nst5:Word;
      Nst6:Word;
+     Nst1:Word;
      Nst7Pos:Word; // переменные для определения позиций колонок
      Nst2Pos:Word; // необходимо для заполнения заголовков и изменения ширины
      Nst3Pos:Word;
      Nst4Pos:Word;
      Nst5Pos:Word;
      Nst6Pos:Word;
+     Nst1Pos:Word;
 begin
      //если автопоиск
      if PageControl1.ActivePageindex=0 then
@@ -2495,7 +4335,7 @@ end;
      //если ручной поиск
      if PageControl1.ActivePageindex=1 then
       begin
-      s := '';
+   {   s := '';
      s := 'SELECT st7, st2, st3, st4, st5, st6 FROM ruch order by st3  DESC';
 
      SQLQuery3.Close;
@@ -2516,7 +4356,774 @@ end;
      DBGrid2.Columns[2].Width:= 150;
      DBGrid2.Columns[3].Width:= 110;
      DBGrid2.Columns[4].Width:= 90;
-     DBGrid2.Columns[5].Width:= 150;
+     DBGrid2.Columns[5].Width:= 150; }
+
+          //начало постройки запроса согласно настройкам программы
+
+    SQLQuery1.Close;
+    SQLQuery1.Active:=false;
+    SQLQuery1.SQL.Clear;
+    s := 'select * from setting';
+    SQLQuery1.SQL.Add(s);
+    SQLQuery1.Active:=true;
+
+ {SQLQuery1.SQL.Clear;
+ SQLQuery1.SQL.Text:='select * from setting';
+ SQLQuery1.Open;
+ SQLQuery1.First; }
+
+ s := '';
+ s := 'SELECT ';
+
+ Nst7:=SQLQuery1.FieldByName('RuchSt7').AsInteger;
+ if Nst7 = 1 then
+ s := s + 'st7';    //   путь
+
+ Nst2:=SQLQuery1.FieldByName('RuchSt2').AsInteger;
+ if (Nst2 = 1) and (Nst7 = 1) then
+ s := s + ', st2';     // название
+
+ if (Nst2 = 1) and (Nst7 = 0) then
+ s := s + ' st2';
+
+ Nst1:=SQLQuery1.FieldByName('RuchSt1').AsInteger;
+ Nst3:=SQLQuery1.FieldByName('RuchSt3').AsInteger;
+ if Nst3=0 then
+    begin
+    showmessage('Поле "Тип ПО" отключено, поэтому данный вид сортировки недоступен.');
+    exit;
+    end;
+ Nst4:=SQLQuery1.FieldByName('RuchSt4').AsInteger;
+ Nst5:=SQLQuery1.FieldByName('RuchSt5').AsInteger;
+ Nst6:=SQLQuery1.FieldByName('RuchSt6').AsInteger;
+
+ if Nst1 = 1 then
+ begin
+ if (Nst2 = 0) and (Nst7 = 0) and (Nst1 = 1) then
+ s := s + ' st1'
+ else
+  s := s + ', st1';
+ end;
+ //if Nst1 = 1 then
+ //s := s + ', st1';      // исходный запрос
+
+ if Nst3 = 1 then
+ s := s + ', st3';      // тип по
+
+ if Nst4 = 1 then
+ s := s + ', st4';       // лицензия
+
+ if Nst5 = 1 then
+ s := s + ', st5';       // стоимость
+
+ if Nst6 = 1 then
+ s := s + ', st6';       // замена
+
+ if Nst2 = 1 then
+ s := s + ' FROM ruch ORDER BY st3 DESC'
+ else
+ s := s + ' FROM ruch';
+ //showmessage(s);
+ //конец постройки запроса
+
+
+SQLQuery3.Close;
+SQLQuery3.Active:=false;
+SQLQuery3.SQL.Clear;
+SQLQuery3.SQL.Add(s);
+SQLQuery3.Active:=true;
+SQLQuery3.Open;
+
+      //заполняем заголовки колонок и меняем ширину колонок
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;
+  Nst1Pos := 2;   //7213456
+  Nst3Pos := 3;
+  Nst4Pos := 4;
+  Nst5Pos := 5;
+  Nst6Pos := 6;
+//  showmessage('Сработал вариант 7213456');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //723456
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 723456');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst2 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //713456
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 713456');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst3 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //712456
+  Nst2Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 712456');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //712356
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst5Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 712356');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //712346
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst4Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 712346');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //712345
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst4Pos := 4;
+  Nst5Pos := 5;
+//  showmessage('Сработал вариант 712345');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst7 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //123456
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 123456');
+  end;
+
+  if (Nst1 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst2 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst3Pos := 1;   //13456
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 13456');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst3 = 0) and (Nst7 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //12456
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 12456');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst4 = 0) and (Nst7 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //12356
+  Nst3Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 12356');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst5 = 0) and (Nst7 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //12346
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 12346');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 0) and (Nst7 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //12345
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+//  showmessage('Сработал вариант 12345');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //73456
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 73456');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst3 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72456
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 72456');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72356
+  Nst3Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 72356');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72346
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 72346');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72345
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+//  showmessage('Сработал вариант 72345');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst3 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71456
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71456');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71356
+  Nst3Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71356');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71346
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71346');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst2 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71345
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+//  showmessage('Сработал вариант 71345');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst3 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71256
+  Nst2Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71256');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst3 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71246
+  Nst2Pos := 2;
+  Nst4Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71246');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst3 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71245
+  Nst2Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+//  showmessage('Сработал вариант 71245');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst6 = 1) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71236
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71236');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71235
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst5Pos := 4;
+//  showmessage('Сработал вариант 71235');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71234
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst4Pos := 4;
+//  showmessage('Сработал вариант 71234');
+  end;
+
+  if (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst7 = 0) then
+  begin
+  Nst3Pos := 0;
+  Nst4Pos := 1;   //3456
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 3456');
+  end;
+
+  if (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst7 = 0) and (Nst3 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst4Pos := 1;   //2456
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 2456');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst4 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //2356
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 2356');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst7 = 0) and (Nst5 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //2346
+  Nst4Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 2346');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst7 = 0) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //2345
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+ // showmessage('Сработал вариант 2345');
+  end;
+
+  if (Nst7 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst3 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst4Pos := 1;   //7456
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7456');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //7356
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7356');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //7346
+  Nst4Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7346');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //7345
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+//  showmessage('Сработал вариант 7345');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7156
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7156');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7146
+  Nst4Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7146');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7145
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+//  showmessage('Сработал вариант 7145');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst6 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7126
+  Nst2Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7126');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst5 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7125
+  Nst2Pos := 2;
+  Nst5Pos := 3;
+//  showmessage('Сработал вариант 7125');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7123
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+ // showmessage('Сработал вариант 7123');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //712
+  Nst2Pos := 2;
+ // showmessage('Сработал вариант 712');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst2 = 0) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //713
+  Nst3Pos := 2;
+//  showmessage('Сработал вариант 713');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst4 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //714
+  Nst4Pos := 2;
+//  showmessage('Сработал вариант 714');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst5 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //715
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 715');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //716
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 716');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst1 = 0) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //723
+  Nst3Pos := 2;
+//  showmessage('Сработал вариант 723');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst1 = 0) and (Nst3 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //724
+  Nst4Pos := 2;
+//  showmessage('Сработал вариант 724');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst3 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //725
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 725');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //726
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 726');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //734
+  Nst4Pos := 2;
+//  showmessage('Сработал вариант 734');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //735
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 735');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //736
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 736');
+  end;
+
+  if (Nst7 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst3 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst4Pos := 1;   //745
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 745');
+  end;
+
+  if (Nst7 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst5 = 0) and (Nst1 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst4Pos := 1;   //746
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 746');
+  end;
+
+  if (Nst7 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst3 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //756
+  Nst2Pos := 2;
+//  showmessage('Сработал вариант 756');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst7 = 0) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //123
+  Nst3Pos := 2;
+//  showmessage('Сработал вариант 123');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst7 = 0) and (Nst3 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //124
+  Nst4Pos := 2;
+//  showmessage('Сработал вариант 124');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst5 = 1) and (Nst7 = 0) and (Nst3 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //125
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 125');
+  end;
+
+  if (Nst1 = 1) and (Nst3 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst2 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst3Pos := 1;   //136
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 136');
+  end;
+
+  if (Nst1 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst7 = 0) and (Nst2 = 0) and (Nst3 = 0) and (Nst6 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst4Pos := 1;   //145
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 145');
+  end;
+
+  if (Nst1 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst2 = 0) and (Nst3 = 0) and (Nst5 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst4Pos := 1;   //146
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 146');
+  end;
+
+  if (Nst1 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst2 = 0) and (Nst3 = 0) and (Nst4 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst5Pos := 1;   //156
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 156');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst1 = 0) and (Nst5 = 0) and (Nst6 = 0) and (Nst7 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //234
+  Nst4Pos := 2;
+//  showmessage('Сработал вариант 234');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //235
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 235');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //236
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 236');
+  end;
+
+  if (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst3 = 0) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst4Pos := 1;   //245
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 245');
+  end;
+
+  if (Nst2 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst3 = 0) and (Nst5 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst4Pos := 1;   //246
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 246');
+  end;
+
+  if (Nst2 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst3 = 0) and (Nst4 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst5Pos := 1;   //256
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 256');
+  end;
+
+ // showmessage('Nst7Pos' + IntToStr(Nst7Pos) + #13 + ' Nst2Pos' + IntToStr(Nst2Pos) + #13 + 'Nst1Pos' + IntToStr(Nst1Pos) + #13 + ' Nst3Pos' + IntToStr(Nst3Pos) + #13 + ' Nst4Pos' + IntToStr(Nst4Pos) + #13 + ' Nst5Pos' + IntToStr(Nst5Pos) + #13 + ' Nst6Pos' + IntToStr(Nst6Pos));
+
+
+if Nst7 = 1 then
+begin
+DBGrid2.Columns[Nst7Pos].Title.Caption:='Путь';
+DBGrid2.Columns[Nst7Pos].Width:= 200;
+end;
+if Nst2 = 1 then
+begin
+DBGrid2.Columns[Nst2Pos].Title.Caption:='Название';
+DBGrid2.Columns[Nst2Pos].Width:= 110;
+end;
+
+if Nst1 = 1 then
+begin
+DBGrid2.Columns[Nst1Pos].Title.Caption:='Исходный запрос';
+DBGrid2.Columns[Nst1Pos].Width:= 80;
+end;
+
+if Nst3 = 1 then
+begin
+DBGrid2.Columns[Nst3Pos].Title.Caption:='Тип ПО';
+DBGrid2.Columns[Nst3Pos].Width:= 130;
+end;
+if Nst4 = 1 then
+begin
+DBGrid2.Columns[Nst4Pos].Title.Caption:='Лицензия';
+DBGrid2.Columns[Nst4Pos].Width:= 90;
+end;
+if Nst5 = 1 then
+begin
+DBGrid2.Columns[Nst5Pos].Title.Caption:='Стоимость';
+DBGrid2.Columns[Nst5Pos].Width:= 80;
+end;
+if Nst6 = 1 then
+begin
+DBGrid2.Columns[Nst6Pos].Title.Caption:='Замена';
+DBGrid2.Columns[Nst6Pos].Width:= 130;
+end;
       end;
 end;
 
@@ -2530,12 +5137,14 @@ var
      Nst4:Word;
      Nst5:Word;
      Nst6:Word;
+     Nst1:Word;
      Nst7Pos:Word; // переменные для определения позиций колонок
      Nst2Pos:Word; // необходимо для заполнения заголовков и изменения ширины
      Nst3Pos:Word;
      Nst4Pos:Word;
      Nst5Pos:Word;
      Nst6Pos:Word;
+     Nst1Pos:Word;
 begin
      //если автопоиск
      if PageControl1.ActivePageindex=0 then
@@ -2878,7 +5487,7 @@ end;
      //если ручной
      if PageControl1.ActivePageindex=1 then
       begin
-      s := '';
+   {   s := '';
       s := 'SELECT st7, st2, st3, st4, st5, st6 FROM ruch order by st4  DESC';
 
       SQLQuery3.Close;
@@ -2899,7 +5508,773 @@ end;
       DBGrid2.Columns[2].Width:= 150;
       DBGrid2.Columns[3].Width:= 110;
       DBGrid2.Columns[4].Width:= 90;
-      DBGrid2.Columns[5].Width:= 150;
+      DBGrid2.Columns[5].Width:= 150;   }
+          //начало постройки запроса согласно настройкам программы
+
+    SQLQuery1.Close;
+    SQLQuery1.Active:=false;
+    SQLQuery1.SQL.Clear;
+    s := 'select * from setting';
+    SQLQuery1.SQL.Add(s);
+    SQLQuery1.Active:=true;
+
+ {SQLQuery1.SQL.Clear;
+ SQLQuery1.SQL.Text:='select * from setting';
+ SQLQuery1.Open;
+ SQLQuery1.First; }
+
+ s := '';
+ s := 'SELECT ';
+
+ Nst7:=SQLQuery1.FieldByName('RuchSt7').AsInteger;
+ if Nst7 = 1 then
+ s := s + 'st7';    //   путь
+
+ Nst2:=SQLQuery1.FieldByName('RuchSt2').AsInteger;
+ if (Nst2 = 1) and (Nst7 = 1) then
+ s := s + ', st2';     // название
+
+ if (Nst2 = 1) and (Nst7 = 0) then
+ s := s + ' st2';
+
+ Nst1:=SQLQuery1.FieldByName('RuchSt1').AsInteger;
+ Nst3:=SQLQuery1.FieldByName('RuchSt3').AsInteger;
+ Nst4:=SQLQuery1.FieldByName('RuchSt4').AsInteger;
+ if Nst4=0 then
+    begin
+    showmessage('Поле "Лицензия" отключено, поэтому данный вид сортировки недоступен.');
+    exit;
+    end;
+ Nst5:=SQLQuery1.FieldByName('RuchSt5').AsInteger;
+ Nst6:=SQLQuery1.FieldByName('RuchSt6').AsInteger;
+
+ if Nst1 = 1 then
+ begin
+ if (Nst2 = 0) and (Nst7 = 0) and (Nst1 = 1) then
+ s := s + ' st1'
+ else
+  s := s + ', st1';
+ end;
+ //if Nst1 = 1 then
+ //s := s + ', st1';      // исходный запрос
+
+ if Nst3 = 1 then
+ s := s + ', st3';      // тип по
+
+ if Nst4 = 1 then
+ s := s + ', st4';       // лицензия
+
+ if Nst5 = 1 then
+ s := s + ', st5';       // стоимость
+
+ if Nst6 = 1 then
+ s := s + ', st6';       // замена
+
+ if Nst2 = 1 then
+ s := s + ' FROM ruch ORDER BY st4 DESC'
+ else
+ s := s + ' FROM ruch';
+ //showmessage(s);
+ //конец постройки запроса
+
+
+SQLQuery3.Close;
+SQLQuery3.Active:=false;
+SQLQuery3.SQL.Clear;
+SQLQuery3.SQL.Add(s);
+SQLQuery3.Active:=true;
+SQLQuery3.Open;
+
+      //заполняем заголовки колонок и меняем ширину колонок
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;
+  Nst1Pos := 2;   //7213456
+  Nst3Pos := 3;
+  Nst4Pos := 4;
+  Nst5Pos := 5;
+  Nst6Pos := 6;
+//  showmessage('Сработал вариант 7213456');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //723456
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 723456');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst2 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //713456
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 713456');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst3 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //712456
+  Nst2Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 712456');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //712356
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst5Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 712356');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //712346
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst4Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 712346');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //712345
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst4Pos := 4;
+  Nst5Pos := 5;
+//  showmessage('Сработал вариант 712345');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst7 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //123456
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 123456');
+  end;
+
+  if (Nst1 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst2 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst3Pos := 1;   //13456
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 13456');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst3 = 0) and (Nst7 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //12456
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 12456');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst4 = 0) and (Nst7 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //12356
+  Nst3Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 12356');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst5 = 0) and (Nst7 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //12346
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 12346');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 0) and (Nst7 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //12345
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+//  showmessage('Сработал вариант 12345');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //73456
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 73456');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst3 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72456
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 72456');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72356
+  Nst3Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 72356');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72346
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 72346');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72345
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+//  showmessage('Сработал вариант 72345');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst3 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71456
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71456');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71356
+  Nst3Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71356');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71346
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71346');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst2 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71345
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+//  showmessage('Сработал вариант 71345');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst3 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71256
+  Nst2Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71256');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst3 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71246
+  Nst2Pos := 2;
+  Nst4Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71246');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst3 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71245
+  Nst2Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+//  showmessage('Сработал вариант 71245');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst6 = 1) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71236
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71236');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71235
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst5Pos := 4;
+//  showmessage('Сработал вариант 71235');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71234
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst4Pos := 4;
+//  showmessage('Сработал вариант 71234');
+  end;
+
+  if (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst7 = 0) then
+  begin
+  Nst3Pos := 0;
+  Nst4Pos := 1;   //3456
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 3456');
+  end;
+
+  if (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst7 = 0) and (Nst3 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst4Pos := 1;   //2456
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 2456');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst4 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //2356
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 2356');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst7 = 0) and (Nst5 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //2346
+  Nst4Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 2346');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst7 = 0) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //2345
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+ // showmessage('Сработал вариант 2345');
+  end;
+
+  if (Nst7 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst3 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst4Pos := 1;   //7456
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7456');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //7356
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7356');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //7346
+  Nst4Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7346');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //7345
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+//  showmessage('Сработал вариант 7345');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7156
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7156');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7146
+  Nst4Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7146');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7145
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+//  showmessage('Сработал вариант 7145');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst6 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7126
+  Nst2Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7126');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst5 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7125
+  Nst2Pos := 2;
+  Nst5Pos := 3;
+//  showmessage('Сработал вариант 7125');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7123
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+ // showmessage('Сработал вариант 7123');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //712
+  Nst2Pos := 2;
+ // showmessage('Сработал вариант 712');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst2 = 0) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //713
+  Nst3Pos := 2;
+//  showmessage('Сработал вариант 713');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst4 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //714
+  Nst4Pos := 2;
+//  showmessage('Сработал вариант 714');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst5 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //715
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 715');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //716
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 716');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst1 = 0) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //723
+  Nst3Pos := 2;
+//  showmessage('Сработал вариант 723');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst1 = 0) and (Nst3 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //724
+  Nst4Pos := 2;
+//  showmessage('Сработал вариант 724');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst3 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //725
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 725');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //726
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 726');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //734
+  Nst4Pos := 2;
+//  showmessage('Сработал вариант 734');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //735
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 735');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //736
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 736');
+  end;
+
+  if (Nst7 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst3 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst4Pos := 1;   //745
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 745');
+  end;
+
+  if (Nst7 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst5 = 0) and (Nst1 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst4Pos := 1;   //746
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 746');
+  end;
+
+  if (Nst7 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst3 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //756
+  Nst2Pos := 2;
+//  showmessage('Сработал вариант 756');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst7 = 0) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //123
+  Nst3Pos := 2;
+//  showmessage('Сработал вариант 123');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst7 = 0) and (Nst3 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //124
+  Nst4Pos := 2;
+//  showmessage('Сработал вариант 124');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst5 = 1) and (Nst7 = 0) and (Nst3 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //125
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 125');
+  end;
+
+  if (Nst1 = 1) and (Nst3 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst2 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst3Pos := 1;   //136
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 136');
+  end;
+
+  if (Nst1 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst7 = 0) and (Nst2 = 0) and (Nst3 = 0) and (Nst6 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst4Pos := 1;   //145
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 145');
+  end;
+
+  if (Nst1 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst2 = 0) and (Nst3 = 0) and (Nst5 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst4Pos := 1;   //146
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 146');
+  end;
+
+  if (Nst1 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst2 = 0) and (Nst3 = 0) and (Nst4 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst5Pos := 1;   //156
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 156');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst1 = 0) and (Nst5 = 0) and (Nst6 = 0) and (Nst7 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //234
+  Nst4Pos := 2;
+//  showmessage('Сработал вариант 234');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //235
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 235');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //236
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 236');
+  end;
+
+  if (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst3 = 0) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst4Pos := 1;   //245
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 245');
+  end;
+
+  if (Nst2 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst3 = 0) and (Nst5 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst4Pos := 1;   //246
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 246');
+  end;
+
+  if (Nst2 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst3 = 0) and (Nst4 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst5Pos := 1;   //256
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 256');
+  end;
+
+ // showmessage('Nst7Pos' + IntToStr(Nst7Pos) + #13 + ' Nst2Pos' + IntToStr(Nst2Pos) + #13 + 'Nst1Pos' + IntToStr(Nst1Pos) + #13 + ' Nst3Pos' + IntToStr(Nst3Pos) + #13 + ' Nst4Pos' + IntToStr(Nst4Pos) + #13 + ' Nst5Pos' + IntToStr(Nst5Pos) + #13 + ' Nst6Pos' + IntToStr(Nst6Pos));
+
+
+if Nst7 = 1 then
+begin
+DBGrid2.Columns[Nst7Pos].Title.Caption:='Путь';
+DBGrid2.Columns[Nst7Pos].Width:= 200;
+end;
+if Nst2 = 1 then
+begin
+DBGrid2.Columns[Nst2Pos].Title.Caption:='Название';
+DBGrid2.Columns[Nst2Pos].Width:= 110;
+end;
+
+if Nst1 = 1 then
+begin
+DBGrid2.Columns[Nst1Pos].Title.Caption:='Исходный запрос';
+DBGrid2.Columns[Nst1Pos].Width:= 80;
+end;
+
+if Nst3 = 1 then
+begin
+DBGrid2.Columns[Nst3Pos].Title.Caption:='Тип ПО';
+DBGrid2.Columns[Nst3Pos].Width:= 130;
+end;
+if Nst4 = 1 then
+begin
+DBGrid2.Columns[Nst4Pos].Title.Caption:='Лицензия';
+DBGrid2.Columns[Nst4Pos].Width:= 90;
+end;
+if Nst5 = 1 then
+begin
+DBGrid2.Columns[Nst5Pos].Title.Caption:='Стоимость';
+DBGrid2.Columns[Nst5Pos].Width:= 80;
+end;
+if Nst6 = 1 then
+begin
+DBGrid2.Columns[Nst6Pos].Title.Caption:='Замена';
+DBGrid2.Columns[Nst6Pos].Width:= 130;
+end;
       end;
 end;
 
@@ -2913,12 +6288,14 @@ var
   Nst4:Word;
   Nst5:Word;
   Nst6:Word;
+  Nst1:Word;
   Nst7Pos:Word; // переменные для определения позиций колонок
   Nst2Pos:Word; // необходимо для заполнения заголовков и изменения ширины
   Nst3Pos:Word;
   Nst4Pos:Word;
   Nst5Pos:Word;
   Nst6Pos:Word;
+  Nst1Pos:Word;
 begin
      //если автопоиск
      if PageControl1.ActivePageindex=0 then
@@ -3261,7 +6638,7 @@ end;
          //если ручной
      if PageControl1.ActivePageindex=1 then
       begin
-      s := '';
+   {   s := '';
       s := 'SELECT st7, st2, st3, st4, st5, st6 FROM ruch order by st5  DESC';
 
       SQLQuery3.Close;
@@ -3282,7 +6659,774 @@ end;
       DBGrid2.Columns[2].Width:= 150;
       DBGrid2.Columns[3].Width:= 110;
       DBGrid2.Columns[4].Width:= 90;
-      DBGrid2.Columns[5].Width:= 150;
+      DBGrid2.Columns[5].Width:= 150;    }
+
+          //начало постройки запроса согласно настройкам программы
+
+    SQLQuery1.Close;
+    SQLQuery1.Active:=false;
+    SQLQuery1.SQL.Clear;
+    s := 'select * from setting';
+    SQLQuery1.SQL.Add(s);
+    SQLQuery1.Active:=true;
+
+ {SQLQuery1.SQL.Clear;
+ SQLQuery1.SQL.Text:='select * from setting';
+ SQLQuery1.Open;
+ SQLQuery1.First; }
+
+ s := '';
+ s := 'SELECT ';
+
+ Nst7:=SQLQuery1.FieldByName('RuchSt7').AsInteger;
+ if Nst7 = 1 then
+ s := s + 'st7';    //   путь
+
+ Nst2:=SQLQuery1.FieldByName('RuchSt2').AsInteger;
+ if (Nst2 = 1) and (Nst7 = 1) then
+ s := s + ', st2';     // название
+
+ if (Nst2 = 1) and (Nst7 = 0) then
+ s := s + ' st2';
+
+ Nst1:=SQLQuery1.FieldByName('RuchSt1').AsInteger;
+ Nst3:=SQLQuery1.FieldByName('RuchSt3').AsInteger;
+ Nst4:=SQLQuery1.FieldByName('RuchSt4').AsInteger;
+ Nst5:=SQLQuery1.FieldByName('RuchSt5').AsInteger;
+ if Nst5=0 then
+    begin
+    showmessage('Поле "Стоимость" отключено, поэтому данный вид сортировки недоступен.');
+    exit;
+    end;
+ Nst6:=SQLQuery1.FieldByName('RuchSt6').AsInteger;
+
+ if Nst1 = 1 then
+ begin
+ if (Nst2 = 0) and (Nst7 = 0) and (Nst1 = 1) then
+ s := s + ' st1'
+ else
+  s := s + ', st1';
+ end;
+ //if Nst1 = 1 then
+ //s := s + ', st1';      // исходный запрос
+
+ if Nst3 = 1 then
+ s := s + ', st3';      // тип по
+
+ if Nst4 = 1 then
+ s := s + ', st4';       // лицензия
+
+ if Nst5 = 1 then
+ s := s + ', st5';       // стоимость
+
+ if Nst6 = 1 then
+ s := s + ', st6';       // замена
+
+ if Nst2 = 1 then
+ s := s + ' FROM ruch ORDER BY st5 DESC'
+ else
+ s := s + ' FROM ruch';
+ //showmessage(s);
+ //конец постройки запроса
+
+
+SQLQuery3.Close;
+SQLQuery3.Active:=false;
+SQLQuery3.SQL.Clear;
+SQLQuery3.SQL.Add(s);
+SQLQuery3.Active:=true;
+SQLQuery3.Open;
+
+      //заполняем заголовки колонок и меняем ширину колонок
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;
+  Nst1Pos := 2;   //7213456
+  Nst3Pos := 3;
+  Nst4Pos := 4;
+  Nst5Pos := 5;
+  Nst6Pos := 6;
+//  showmessage('Сработал вариант 7213456');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //723456
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 723456');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst2 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //713456
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 713456');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst3 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //712456
+  Nst2Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 712456');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //712356
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst5Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 712356');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //712346
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst4Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 712346');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //712345
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst4Pos := 4;
+  Nst5Pos := 5;
+//  showmessage('Сработал вариант 712345');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst7 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //123456
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 123456');
+  end;
+
+  if (Nst1 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst2 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst3Pos := 1;   //13456
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 13456');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst3 = 0) and (Nst7 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //12456
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 12456');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst4 = 0) and (Nst7 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //12356
+  Nst3Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 12356');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst5 = 0) and (Nst7 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //12346
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 12346');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 0) and (Nst7 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //12345
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+//  showmessage('Сработал вариант 12345');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //73456
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 73456');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst3 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72456
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 72456');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72356
+  Nst3Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 72356');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72346
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 72346');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72345
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+//  showmessage('Сработал вариант 72345');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst3 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71456
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71456');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71356
+  Nst3Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71356');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71346
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71346');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst2 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71345
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+//  showmessage('Сработал вариант 71345');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst3 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71256
+  Nst2Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71256');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst3 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71246
+  Nst2Pos := 2;
+  Nst4Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71246');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst3 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71245
+  Nst2Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+//  showmessage('Сработал вариант 71245');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst6 = 1) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71236
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71236');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71235
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst5Pos := 4;
+//  showmessage('Сработал вариант 71235');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71234
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst4Pos := 4;
+//  showmessage('Сработал вариант 71234');
+  end;
+
+  if (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst7 = 0) then
+  begin
+  Nst3Pos := 0;
+  Nst4Pos := 1;   //3456
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 3456');
+  end;
+
+  if (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst7 = 0) and (Nst3 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst4Pos := 1;   //2456
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 2456');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst4 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //2356
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 2356');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst7 = 0) and (Nst5 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //2346
+  Nst4Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 2346');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst7 = 0) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //2345
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+ // showmessage('Сработал вариант 2345');
+  end;
+
+  if (Nst7 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst3 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst4Pos := 1;   //7456
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7456');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //7356
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7356');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //7346
+  Nst4Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7346');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //7345
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+//  showmessage('Сработал вариант 7345');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7156
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7156');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7146
+  Nst4Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7146');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7145
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+//  showmessage('Сработал вариант 7145');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst6 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7126
+  Nst2Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7126');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst5 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7125
+  Nst2Pos := 2;
+  Nst5Pos := 3;
+//  showmessage('Сработал вариант 7125');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7123
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+ // showmessage('Сработал вариант 7123');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //712
+  Nst2Pos := 2;
+ // showmessage('Сработал вариант 712');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst2 = 0) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //713
+  Nst3Pos := 2;
+//  showmessage('Сработал вариант 713');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst4 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //714
+  Nst4Pos := 2;
+//  showmessage('Сработал вариант 714');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst5 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //715
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 715');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //716
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 716');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst1 = 0) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //723
+  Nst3Pos := 2;
+//  showmessage('Сработал вариант 723');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst1 = 0) and (Nst3 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //724
+  Nst4Pos := 2;
+//  showmessage('Сработал вариант 724');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst3 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //725
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 725');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //726
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 726');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //734
+  Nst4Pos := 2;
+//  showmessage('Сработал вариант 734');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //735
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 735');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //736
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 736');
+  end;
+
+  if (Nst7 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst3 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst4Pos := 1;   //745
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 745');
+  end;
+
+  if (Nst7 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst5 = 0) and (Nst1 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst4Pos := 1;   //746
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 746');
+  end;
+
+  if (Nst7 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst3 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //756
+  Nst2Pos := 2;
+//  showmessage('Сработал вариант 756');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst7 = 0) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //123
+  Nst3Pos := 2;
+//  showmessage('Сработал вариант 123');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst7 = 0) and (Nst3 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //124
+  Nst4Pos := 2;
+//  showmessage('Сработал вариант 124');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst5 = 1) and (Nst7 = 0) and (Nst3 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //125
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 125');
+  end;
+
+  if (Nst1 = 1) and (Nst3 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst2 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst3Pos := 1;   //136
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 136');
+  end;
+
+  if (Nst1 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst7 = 0) and (Nst2 = 0) and (Nst3 = 0) and (Nst6 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst4Pos := 1;   //145
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 145');
+  end;
+
+  if (Nst1 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst2 = 0) and (Nst3 = 0) and (Nst5 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst4Pos := 1;   //146
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 146');
+  end;
+
+  if (Nst1 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst2 = 0) and (Nst3 = 0) and (Nst4 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst5Pos := 1;   //156
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 156');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst1 = 0) and (Nst5 = 0) and (Nst6 = 0) and (Nst7 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //234
+  Nst4Pos := 2;
+//  showmessage('Сработал вариант 234');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //235
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 235');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //236
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 236');
+  end;
+
+  if (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst3 = 0) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst4Pos := 1;   //245
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 245');
+  end;
+
+  if (Nst2 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst3 = 0) and (Nst5 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst4Pos := 1;   //246
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 246');
+  end;
+
+  if (Nst2 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst3 = 0) and (Nst4 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst5Pos := 1;   //256
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 256');
+  end;
+
+ // showmessage('Nst7Pos' + IntToStr(Nst7Pos) + #13 + ' Nst2Pos' + IntToStr(Nst2Pos) + #13 + 'Nst1Pos' + IntToStr(Nst1Pos) + #13 + ' Nst3Pos' + IntToStr(Nst3Pos) + #13 + ' Nst4Pos' + IntToStr(Nst4Pos) + #13 + ' Nst5Pos' + IntToStr(Nst5Pos) + #13 + ' Nst6Pos' + IntToStr(Nst6Pos));
+
+
+if Nst7 = 1 then
+begin
+DBGrid2.Columns[Nst7Pos].Title.Caption:='Путь';
+DBGrid2.Columns[Nst7Pos].Width:= 200;
+end;
+if Nst2 = 1 then
+begin
+DBGrid2.Columns[Nst2Pos].Title.Caption:='Название';
+DBGrid2.Columns[Nst2Pos].Width:= 110;
+end;
+
+if Nst1 = 1 then
+begin
+DBGrid2.Columns[Nst1Pos].Title.Caption:='Исходный запрос';
+DBGrid2.Columns[Nst1Pos].Width:= 80;
+end;
+
+if Nst3 = 1 then
+begin
+DBGrid2.Columns[Nst3Pos].Title.Caption:='Тип ПО';
+DBGrid2.Columns[Nst3Pos].Width:= 130;
+end;
+if Nst4 = 1 then
+begin
+DBGrid2.Columns[Nst4Pos].Title.Caption:='Лицензия';
+DBGrid2.Columns[Nst4Pos].Width:= 90;
+end;
+if Nst5 = 1 then
+begin
+DBGrid2.Columns[Nst5Pos].Title.Caption:='Стоимость';
+DBGrid2.Columns[Nst5Pos].Width:= 80;
+end;
+if Nst6 = 1 then
+begin
+DBGrid2.Columns[Nst6Pos].Title.Caption:='Замена';
+DBGrid2.Columns[Nst6Pos].Width:= 130;
+end;
       end;
 end;
 
@@ -3295,12 +7439,14 @@ var
      Nst4:Word;
      Nst5:Word;
      Nst6:Word;
+     Nst1:Word;
      Nst7Pos:Word; // переменные для определения позиций колонок
      Nst2Pos:Word; // необходимо для заполнения заголовков и изменения ширины
      Nst3Pos:Word;
      Nst4Pos:Word;
      Nst5Pos:Word;
      Nst6Pos:Word;
+     Nst1Pos:Word;
 begin
 //если автопоиск
      if PageControl1.ActivePageindex=0 then
@@ -3644,7 +7790,7 @@ end;
      //если ручной
      if PageControl1.ActivePageindex=1 then
       begin
-      s := '';
+    {  s := '';
       s := 'SELECT st7, st2, st3, st4, st5, st6 FROM ruch order by st6  DESC';
 
       SQLQuery3.Close;
@@ -3665,7 +7811,775 @@ end;
       DBGrid2.Columns[2].Width:= 150;
       DBGrid2.Columns[3].Width:= 110;
       DBGrid2.Columns[4].Width:= 90;
-      DBGrid2.Columns[5].Width:= 150;
+      DBGrid2.Columns[5].Width:= 150;     }
+
+          //начало постройки запроса согласно настройкам программы
+
+    SQLQuery1.Close;
+    SQLQuery1.Active:=false;
+    SQLQuery1.SQL.Clear;
+    s := 'select * from setting';
+    SQLQuery1.SQL.Add(s);
+    SQLQuery1.Active:=true;
+
+ {SQLQuery1.SQL.Clear;
+ SQLQuery1.SQL.Text:='select * from setting';
+ SQLQuery1.Open;
+ SQLQuery1.First; }
+
+ s := '';
+ s := 'SELECT ';
+
+ Nst7:=SQLQuery1.FieldByName('RuchSt7').AsInteger;
+ if Nst7 = 1 then
+ s := s + 'st7';    //   путь
+
+ Nst2:=SQLQuery1.FieldByName('RuchSt2').AsInteger;
+ if (Nst2 = 1) and (Nst7 = 1) then
+ s := s + ', st2';     // название
+
+ if (Nst2 = 1) and (Nst7 = 0) then
+ s := s + ' st2';
+
+ Nst1:=SQLQuery1.FieldByName('RuchSt1').AsInteger;
+ Nst3:=SQLQuery1.FieldByName('RuchSt3').AsInteger;
+ Nst4:=SQLQuery1.FieldByName('RuchSt4').AsInteger;
+ Nst5:=SQLQuery1.FieldByName('RuchSt5').AsInteger;
+ Nst6:=SQLQuery1.FieldByName('RuchSt6').AsInteger;
+
+ if Nst6=0 then
+    begin
+    showmessage('Поле "Замена" отключено, поэтому данный вид сортировки недоступен.');
+    exit;
+    end;
+
+ if Nst1 = 1 then
+ begin
+ if (Nst2 = 0) and (Nst7 = 0) and (Nst1 = 1) then
+ s := s + ' st1'
+ else
+  s := s + ', st1';
+ end;
+ //if Nst1 = 1 then
+ //s := s + ', st1';      // исходный запрос
+
+ if Nst3 = 1 then
+ s := s + ', st3';      // тип по
+
+ if Nst4 = 1 then
+ s := s + ', st4';       // лицензия
+
+ if Nst5 = 1 then
+ s := s + ', st5';       // стоимость
+
+ if Nst6 = 1 then
+ s := s + ', st6';       // замена
+
+ if Nst2 = 1 then
+ s := s + ' FROM ruch ORDER BY st6 DESC'
+ else
+ s := s + ' FROM ruch';
+ //showmessage(s);
+ //конец постройки запроса
+
+
+SQLQuery3.Close;
+SQLQuery3.Active:=false;
+SQLQuery3.SQL.Clear;
+SQLQuery3.SQL.Add(s);
+SQLQuery3.Active:=true;
+SQLQuery3.Open;
+
+      //заполняем заголовки колонок и меняем ширину колонок
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;
+  Nst1Pos := 2;   //7213456
+  Nst3Pos := 3;
+  Nst4Pos := 4;
+  Nst5Pos := 5;
+  Nst6Pos := 6;
+//  showmessage('Сработал вариант 7213456');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //723456
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 723456');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst2 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //713456
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 713456');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst3 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //712456
+  Nst2Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 712456');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //712356
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst5Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 712356');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //712346
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst4Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 712346');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //712345
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst4Pos := 4;
+  Nst5Pos := 5;
+//  showmessage('Сработал вариант 712345');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst7 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //123456
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 123456');
+  end;
+
+  if (Nst1 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst2 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst3Pos := 1;   //13456
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 13456');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst3 = 0) and (Nst7 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //12456
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 12456');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst4 = 0) and (Nst7 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //12356
+  Nst3Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 12356');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst5 = 0) and (Nst7 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //12346
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 12346');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 0) and (Nst7 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //12345
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+//  showmessage('Сработал вариант 12345');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //73456
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 73456');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst3 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72456
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 72456');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72356
+  Nst3Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 72356');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72346
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 72346');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72345
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+//  showmessage('Сработал вариант 72345');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst3 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71456
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71456');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71356
+  Nst3Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71356');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71346
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71346');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst2 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71345
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+//  showmessage('Сработал вариант 71345');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst3 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71256
+  Nst2Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71256');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst3 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71246
+  Nst2Pos := 2;
+  Nst4Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71246');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst3 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71245
+  Nst2Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+//  showmessage('Сработал вариант 71245');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst6 = 1) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71236
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71236');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71235
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst5Pos := 4;
+//  showmessage('Сработал вариант 71235');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71234
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst4Pos := 4;
+//  showmessage('Сработал вариант 71234');
+  end;
+
+  if (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst7 = 0) then
+  begin
+  Nst3Pos := 0;
+  Nst4Pos := 1;   //3456
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 3456');
+  end;
+
+  if (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst7 = 0) and (Nst3 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst4Pos := 1;   //2456
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 2456');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst4 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //2356
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 2356');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst7 = 0) and (Nst5 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //2346
+  Nst4Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 2346');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst7 = 0) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //2345
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+ // showmessage('Сработал вариант 2345');
+  end;
+
+  if (Nst7 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst3 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst4Pos := 1;   //7456
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7456');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //7356
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7356');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //7346
+  Nst4Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7346');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //7345
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+//  showmessage('Сработал вариант 7345');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7156
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7156');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7146
+  Nst4Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7146');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7145
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+//  showmessage('Сработал вариант 7145');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst6 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7126
+  Nst2Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7126');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst5 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7125
+  Nst2Pos := 2;
+  Nst5Pos := 3;
+//  showmessage('Сработал вариант 7125');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7123
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+ // showmessage('Сработал вариант 7123');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //712
+  Nst2Pos := 2;
+ // showmessage('Сработал вариант 712');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst2 = 0) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //713
+  Nst3Pos := 2;
+//  showmessage('Сработал вариант 713');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst4 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //714
+  Nst4Pos := 2;
+//  showmessage('Сработал вариант 714');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst5 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //715
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 715');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //716
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 716');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst1 = 0) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //723
+  Nst3Pos := 2;
+//  showmessage('Сработал вариант 723');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst1 = 0) and (Nst3 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //724
+  Nst4Pos := 2;
+//  showmessage('Сработал вариант 724');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst3 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //725
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 725');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //726
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 726');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //734
+  Nst4Pos := 2;
+//  showmessage('Сработал вариант 734');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //735
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 735');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //736
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 736');
+  end;
+
+  if (Nst7 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst3 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst4Pos := 1;   //745
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 745');
+  end;
+
+  if (Nst7 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst5 = 0) and (Nst1 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst4Pos := 1;   //746
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 746');
+  end;
+
+  if (Nst7 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst3 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //756
+  Nst2Pos := 2;
+//  showmessage('Сработал вариант 756');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst7 = 0) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //123
+  Nst3Pos := 2;
+//  showmessage('Сработал вариант 123');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst7 = 0) and (Nst3 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //124
+  Nst4Pos := 2;
+//  showmessage('Сработал вариант 124');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst5 = 1) and (Nst7 = 0) and (Nst3 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //125
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 125');
+  end;
+
+  if (Nst1 = 1) and (Nst3 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst2 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst3Pos := 1;   //136
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 136');
+  end;
+
+  if (Nst1 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst7 = 0) and (Nst2 = 0) and (Nst3 = 0) and (Nst6 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst4Pos := 1;   //145
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 145');
+  end;
+
+  if (Nst1 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst2 = 0) and (Nst3 = 0) and (Nst5 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst4Pos := 1;   //146
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 146');
+  end;
+
+  if (Nst1 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst2 = 0) and (Nst3 = 0) and (Nst4 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst5Pos := 1;   //156
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 156');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst1 = 0) and (Nst5 = 0) and (Nst6 = 0) and (Nst7 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //234
+  Nst4Pos := 2;
+//  showmessage('Сработал вариант 234');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //235
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 235');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //236
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 236');
+  end;
+
+  if (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst3 = 0) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst4Pos := 1;   //245
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 245');
+  end;
+
+  if (Nst2 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst3 = 0) and (Nst5 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst4Pos := 1;   //246
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 246');
+  end;
+
+  if (Nst2 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst3 = 0) and (Nst4 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst5Pos := 1;   //256
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 256');
+  end;
+
+ // showmessage('Nst7Pos' + IntToStr(Nst7Pos) + #13 + ' Nst2Pos' + IntToStr(Nst2Pos) + #13 + 'Nst1Pos' + IntToStr(Nst1Pos) + #13 + ' Nst3Pos' + IntToStr(Nst3Pos) + #13 + ' Nst4Pos' + IntToStr(Nst4Pos) + #13 + ' Nst5Pos' + IntToStr(Nst5Pos) + #13 + ' Nst6Pos' + IntToStr(Nst6Pos));
+
+
+if Nst7 = 1 then
+begin
+DBGrid2.Columns[Nst7Pos].Title.Caption:='Путь';
+DBGrid2.Columns[Nst7Pos].Width:= 200;
+end;
+if Nst2 = 1 then
+begin
+DBGrid2.Columns[Nst2Pos].Title.Caption:='Название';
+DBGrid2.Columns[Nst2Pos].Width:= 110;
+end;
+
+if Nst1 = 1 then
+begin
+DBGrid2.Columns[Nst1Pos].Title.Caption:='Исходный запрос';
+DBGrid2.Columns[Nst1Pos].Width:= 80;
+end;
+
+if Nst3 = 1 then
+begin
+DBGrid2.Columns[Nst3Pos].Title.Caption:='Тип ПО';
+DBGrid2.Columns[Nst3Pos].Width:= 130;
+end;
+if Nst4 = 1 then
+begin
+DBGrid2.Columns[Nst4Pos].Title.Caption:='Лицензия';
+DBGrid2.Columns[Nst4Pos].Width:= 90;
+end;
+if Nst5 = 1 then
+begin
+DBGrid2.Columns[Nst5Pos].Title.Caption:='Стоимость';
+DBGrid2.Columns[Nst5Pos].Width:= 80;
+end;
+if Nst6 = 1 then
+begin
+DBGrid2.Columns[Nst6Pos].Title.Caption:='Замена';
+DBGrid2.Columns[Nst6Pos].Width:= 130;
+end;
       end;
 end;
 
@@ -4179,6 +9093,351 @@ if DBGrid1.DataSource.DataSet.FieldByName('st3').AsString = 'Платное ПО
    end;
 end;
 
+procedure TfMian.DBGrid1TitleClick(Column: TColumn);
+var
+  s:string;
+     Nst7:Word;
+     Nst2:Word;   // для загрузки из базы настроек
+     Nst3:Word;   // какие нужно загружать столбцы в автопоиске
+     Nst4:Word;
+     Nst5:Word;
+     Nst6:Word;
+     Nst7Pos:Word; // переменные для определения позиций колонок
+     Nst2Pos:Word; // необходимо для заполнения заголовков и изменения ширины
+     Nst3Pos:Word;
+     Nst4Pos:Word;
+     Nst5Pos:Word;
+     Nst6Pos:Word;                // Column.FieldName - получить столбец
+    stCol:string;
+begin
+        stCol := Column.FieldName;
+    SQLQuery1.Close;
+    SQLQuery1.Active:=false;
+    SQLQuery1.SQL.Clear;
+    s := 'select * from setting';
+    SQLQuery1.SQL.Add(s);
+    SQLQuery1.Active:=true;
+
+    s := '';
+    s := 'SELECT ';
+
+    Nst7:=SQLQuery1.FieldByName('AvtoSt7').AsInteger;
+    if Nst7 = 1 then
+    s := s + 'st7';    // исходное название
+
+    Nst2:=SQLQuery1.FieldByName('AvtoSt2').AsInteger;
+    if (Nst2 = 1) and (Nst7 = 1) then
+    s := s + ', st2';     // название в бд
+
+    Nst2:=SQLQuery1.FieldByName('AvtoSt2').AsInteger;
+    if (Nst2 = 1) and (Nst7 = 0) then
+    s := s + ' st2';
+
+    Nst3:=SQLQuery1.FieldByName('AvtoSt3').AsInteger;
+    Nst4:=SQLQuery1.FieldByName('AvtoSt4').AsInteger;
+    Nst5:=SQLQuery1.FieldByName('AvtoSt5').AsInteger;
+    Nst6:=SQLQuery1.FieldByName('AvtoSt6').AsInteger;
+
+    if Nst3 = 1 then
+    s := s + ', st3';      // тип по
+
+    if Nst4 = 1 then
+    s := s + ', st4';       // лицензия
+
+    if Nst5 = 1 then
+    s := s + ', st5';       // стоимость
+
+    if Nst6 = 1 then
+    s := s + ', st6';       // замена          //Column.FieldName
+
+    if stCol = 'st1' then
+    s := s + ' FROM test order by st1 ';
+
+    if stCol = 'st2' then
+    s := s + ' FROM test order by st2 ';
+
+    if stCol = 'st3' then
+    s := s + ' FROM test order by st3 ';
+
+    if stCol = 'st4' then
+    s := s + ' FROM test order by st4 ';
+
+    if stCol = 'st5' then
+    s := s + ' FROM test order by st5 ';
+
+    if stCol = 'st6' then
+    s := s + ' FROM test order by st6 ';
+
+    if stCol = 'st7' then
+    s := s + ' FROM test order by st7 ';
+
+    SQLQuery1.Close;
+    SQLQuery1.Active:=false;
+    SQLQuery1.SQL.Clear;
+    SQLQuery1.SQL.Add(s);
+    SQLQuery1.Active:=true;
+    SQLQuery1.Open;
+
+    if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //723456
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+  Nst6Pos := 5;
+  end;
+
+  if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) then
+  begin
+  Nst2Pos := 0;    //23456
+  Nst3Pos := 1;
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+  end;
+
+  if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) then
+  begin
+  Nst2Pos := 0;    //2456
+  Nst4Pos := 1;
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+  end;
+
+  if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 0) and (Nst5 = 1) and (Nst6 = 1) then
+  begin
+  Nst2Pos := 0;   //2356
+  Nst3Pos := 1;
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+  end;
+
+  if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 0) and (Nst6 = 1) then
+  begin
+  Nst2Pos := 0;   //2346
+  Nst3Pos := 1;
+  Nst4Pos := 2;
+  Nst6Pos := 3;
+  end;
+
+  if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;   //2345
+  Nst3Pos := 1;
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72456
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 0) and (Nst5 = 1) and (Nst6 = 1) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72356
+  Nst3Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 0) and (Nst6 = 1) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72346
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst6Pos := 4;
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72345
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 1) and (Nst6 = 1) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //7256
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+  end;
+
+   if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 1) and (Nst6 = 1) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //7246
+  Nst4Pos := 2;
+  Nst6Pos := 3;
+  end;
+
+   if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //7234
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  end;
+
+   if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 0) and (Nst5 = 1) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //7235
+  Nst3Pos := 2;
+  Nst5Pos := 3;
+  end;
+
+   if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 1) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //7236
+  Nst3Pos := 2;
+  Nst6Pos := 3;
+  end;
+
+   if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //723
+  Nst3Pos := 2;
+  end;
+
+   if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 1) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //724
+  Nst4Pos := 2;
+  end;
+
+   if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 1) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //725
+  Nst5Pos := 2;
+  end;
+
+   if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 1) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //726
+  Nst6Pos := 2;
+  end;
+
+   if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //234
+  Nst4Pos := 2;
+  end;
+
+   if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 0) and (Nst5 = 1) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //235
+  Nst5Pos := 2;
+  end;
+
+   if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 1) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //236
+  Nst6Pos := 2;
+  end;
+
+   if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst4Pos := 1;   //245
+  Nst5Pos := 2;
+  end;
+
+   if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 1) and (Nst5 = 0) and (Nst6 = 1) then
+  begin
+  Nst2Pos := 0;
+  Nst4Pos := 1;   //246
+  Nst6Pos := 2;
+  end;
+
+   if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 1) and (Nst6 = 1) then
+  begin
+  Nst2Pos := 0;
+  Nst5Pos := 1;   //256
+  Nst6Pos := 2;
+  end;
+
+   if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72
+  end;
+
+   if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //23
+  end;
+
+   if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 1) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst4Pos := 1;   //24
+  end;
+
+   if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 1) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst5Pos := 1;   //25
+  end;
+
+   if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 1) then
+  begin
+  Nst2Pos := 0;
+  Nst6Pos := 1;   //26
+  end;
+
+if Nst7 = 1 then
+begin
+DBGrid1.Columns[Nst7Pos].Title.Caption:='Исходное название';
+DBGrid1.Columns[Nst7Pos].Width:= 200;
+end;
+if Nst2 = 1 then
+begin
+DBGrid1.Columns[Nst2Pos].Title.Caption:='Название в БД';
+DBGrid1.Columns[Nst2Pos].Width:= 110;
+end;
+if Nst3 = 1 then
+begin
+DBGrid1.Columns[Nst3Pos].Title.Caption:='Тип ПО';
+DBGrid1.Columns[Nst3Pos].Width:= 150;
+end;
+if Nst4 = 1 then
+begin
+DBGrid1.Columns[Nst4Pos].Title.Caption:='Лицензия';
+DBGrid1.Columns[Nst4Pos].Width:= 110;
+end;
+if Nst5 = 1 then
+begin
+DBGrid1.Columns[Nst5Pos].Title.Caption:='Стоимость';
+DBGrid1.Columns[Nst5Pos].Width:= 90;
+end;
+if Nst6 = 1 then
+begin
+DBGrid1.Columns[Nst6Pos].Title.Caption:='Замена';
+DBGrid1.Columns[Nst6Pos].Width:= 150;
+end;
+
+end;
+
 procedure TfMian.DBGrid2DrawColumnCell(Sender: TObject; const Rect: TRect;
   DataCol: Integer; Column: TColumn; State: TGridDrawState);
 begin                             // меняем цвет шрифта в зависимости от типа ПО
@@ -4205,6 +9464,809 @@ if DBGrid2.DataSource.DataSet.FieldByName('st3').AsString = 'Платное ПО
    DBGrid2.Canvas.Font.Color := RGB(255, 0, 0);
    DBGrid2.DefaultDrawColumnCell(Rect, DataCol, Column, State);
   end;
+end;
+
+procedure TfMian.DBGrid2TitleClick(Column: TColumn);
+var
+     s:string;
+     Nst7:Word;
+     Nst2:Word;   // для загрузки из базы настроек
+     Nst3:Word;   // какие нужно загружать столбцы в автопоиске
+     Nst4:Word;
+     Nst5:Word;
+     Nst6:Word;
+     Nst1:Word;
+     Nst7Pos:Word; // переменные для определения позиций колонок
+     Nst2Pos:Word; // необходимо для заполнения заголовков и изменения ширины
+     Nst3Pos:Word;
+     Nst4Pos:Word;
+     Nst5Pos:Word;
+     Nst6Pos:Word;
+     Nst1Pos:Word;
+     stCol:string;
+begin
+stCol := Column.FieldName;
+  SQLQuery1.Close;
+    SQLQuery1.Active:=false;
+    SQLQuery1.SQL.Clear;
+    s := 'select * from setting';
+    SQLQuery1.SQL.Add(s);
+    SQLQuery1.Active:=true;
+
+ {SQLQuery1.SQL.Clear;
+ SQLQuery1.SQL.Text:='select * from setting';
+ SQLQuery1.Open;
+ SQLQuery1.First; }
+
+ s := '';
+ s := 'SELECT ';
+
+ Nst7:=SQLQuery1.FieldByName('RuchSt7').AsInteger;
+ if Nst7 = 1 then
+ s := s + 'st7';    //   путь
+
+ Nst2:=SQLQuery1.FieldByName('RuchSt2').AsInteger;
+ if (Nst2 = 1) and (Nst7 = 1) then
+ s := s + ', st2';     // название
+
+ if (Nst2 = 1) and (Nst7 = 0) then
+ s := s + ' st2';
+
+ if Nst2=0 then
+    begin
+    showmessage('Поле "Название" отключено, поэтому данный вид сортировки недоступен.');
+    exit;
+    end;
+
+ Nst1:=SQLQuery1.FieldByName('RuchSt1').AsInteger;
+ Nst3:=SQLQuery1.FieldByName('RuchSt3').AsInteger;
+ Nst4:=SQLQuery1.FieldByName('RuchSt4').AsInteger;
+ Nst5:=SQLQuery1.FieldByName('RuchSt5').AsInteger;
+ Nst6:=SQLQuery1.FieldByName('RuchSt6').AsInteger;
+
+ if Nst1 = 1 then
+ begin
+ if (Nst2 = 0) and (Nst7 = 0) and (Nst1 = 1) then
+ s := s + ' st1'
+ else
+  s := s + ', st1';
+ end;
+ //if Nst1 = 1 then
+ //s := s + ', st1';      // исходный запрос
+
+ if Nst3 = 1 then
+ s := s + ', st3';      // тип по
+
+ if Nst4 = 1 then
+ s := s + ', st4';       // лицензия
+
+ if Nst5 = 1 then
+ s := s + ', st5';       // стоимость
+
+ if Nst6 = 1 then
+ s := s + ', st6';       // замена
+
+
+ if stCol = 'st1' then
+    s := s + ' FROM ruch order by st1 DESC';
+
+    if stCol = 'st2' then
+    s := s + ' FROM ruch order by st2 DESC';
+
+    if stCol = 'st3' then
+    s := s + ' FROM ruch order by st3 DESC';
+
+    if stCol = 'st4' then
+    s := s + ' FROM ruch order by st4 DESC';
+
+    if stCol = 'st5' then
+    s := s + ' FROM ruch order by st5 DESC';
+
+    if stCol = 'st6' then
+    s := s + ' FROM ruch order by st6 DESC';
+
+    if stCol = 'st7' then
+    s := s + ' FROM ruch order by st7 DESC';
+ //конец постройки запроса
+
+
+SQLQuery3.Close;
+SQLQuery3.Active:=false;
+SQLQuery3.SQL.Clear;
+SQLQuery3.SQL.Add(s);
+SQLQuery3.Active:=true;
+SQLQuery3.Open;
+
+      //заполняем заголовки колонок и меняем ширину колонок
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;
+  Nst1Pos := 2;   //7213456
+  Nst3Pos := 3;
+  Nst4Pos := 4;
+  Nst5Pos := 5;
+  Nst6Pos := 6;
+//  showmessage('Сработал вариант 7213456');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //723456
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 723456');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst2 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //713456
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 713456');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst3 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //712456
+  Nst2Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 712456');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //712356
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst5Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 712356');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //712346
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst4Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 712346');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //712345
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst4Pos := 4;
+  Nst5Pos := 5;
+//  showmessage('Сработал вариант 712345');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst7 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //123456
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+  Nst6Pos := 5;
+//  showmessage('Сработал вариант 123456');
+  end;
+
+  if (Nst1 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst2 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst3Pos := 1;   //13456
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 13456');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst3 = 0) and (Nst7 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //12456
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 12456');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst4 = 0) and (Nst7 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //12356
+  Nst3Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 12356');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst5 = 0) and (Nst7 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //12346
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 12346');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 0) and (Nst7 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //12345
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+//  showmessage('Сработал вариант 12345');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //73456
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 73456');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst3 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72456
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 72456');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72356
+  Nst3Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 72356');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72346
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 72346');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72345
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+//  showmessage('Сработал вариант 72345');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst3 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71456
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71456');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71356
+  Nst3Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71356');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71346
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71346');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst2 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71345
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+//  showmessage('Сработал вариант 71345');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst3 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71256
+  Nst2Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71256');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst3 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71246
+  Nst2Pos := 2;
+  Nst4Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71246');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst3 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71245
+  Nst2Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+//  showmessage('Сработал вариант 71245');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst6 = 1) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71236
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst6Pos := 4;
+//  showmessage('Сработал вариант 71236');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71235
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst5Pos := 4;
+//  showmessage('Сработал вариант 71235');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //71234
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+  Nst4Pos := 4;
+//  showmessage('Сработал вариант 71234');
+  end;
+
+  if (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst7 = 0) then
+  begin
+  Nst3Pos := 0;
+  Nst4Pos := 1;   //3456
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 3456');
+  end;
+
+  if (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst7 = 0) and (Nst3 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst4Pos := 1;   //2456
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 2456');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst4 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //2356
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 2356');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst7 = 0) and (Nst5 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //2346
+  Nst4Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 2346');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst7 = 0) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //2345
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+ // showmessage('Сработал вариант 2345');
+  end;
+
+  if (Nst7 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst3 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst4Pos := 1;   //7456
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7456');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //7356
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7356');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //7346
+  Nst4Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7346');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //7345
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+//  showmessage('Сработал вариант 7345');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7156
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7156');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7146
+  Nst4Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7146');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7145
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+//  showmessage('Сработал вариант 7145');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst6 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7126
+  Nst2Pos := 2;
+  Nst6Pos := 3;
+//  showmessage('Сработал вариант 7126');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst5 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7125
+  Nst2Pos := 2;
+  Nst5Pos := 3;
+//  showmessage('Сработал вариант 7125');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //7123
+  Nst2Pos := 2;
+  Nst3Pos := 3;
+ // showmessage('Сработал вариант 7123');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //712
+  Nst2Pos := 2;
+ // showmessage('Сработал вариант 712');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst2 = 0) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //713
+  Nst3Pos := 2;
+//  showmessage('Сработал вариант 713');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst4 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //714
+  Nst4Pos := 2;
+//  showmessage('Сработал вариант 714');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst5 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //715
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 715');
+  end;
+
+  if (Nst7 = 1) and (Nst1 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //716
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 716');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst1 = 0) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //723
+  Nst3Pos := 2;
+//  showmessage('Сработал вариант 723');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst1 = 0) and (Nst3 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //724
+  Nst4Pos := 2;
+//  showmessage('Сработал вариант 724');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst3 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //725
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 725');
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //726
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 726');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //734
+  Nst4Pos := 2;
+//  showmessage('Сработал вариант 734');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //735
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 735');
+  end;
+
+  if (Nst7 = 1) and (Nst3 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst3Pos := 1;   //736
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 736');
+  end;
+
+  if (Nst7 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst3 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst4Pos := 1;   //745
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 745');
+  end;
+
+  if (Nst7 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst5 = 0) and (Nst1 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst4Pos := 1;   //746
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 746');
+  end;
+
+  if (Nst7 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst3 = 0) and (Nst4 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst1Pos := 1;   //756
+  Nst2Pos := 2;
+//  showmessage('Сработал вариант 756');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst7 = 0) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //123
+  Nst3Pos := 2;
+//  showmessage('Сработал вариант 123');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst7 = 0) and (Nst3 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //124
+  Nst4Pos := 2;
+//  showmessage('Сработал вариант 124');
+  end;
+
+  if (Nst1 = 1) and (Nst2 = 1) and (Nst5 = 1) and (Nst7 = 0) and (Nst3 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst2Pos := 1;   //125
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 125');
+  end;
+
+  if (Nst1 = 1) and (Nst3 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst2 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst3Pos := 1;   //136
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 136');
+  end;
+
+  if (Nst1 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst7 = 0) and (Nst2 = 0) and (Nst3 = 0) and (Nst6 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst4Pos := 1;   //145
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 145');
+  end;
+
+  if (Nst1 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst2 = 0) and (Nst3 = 0) and (Nst5 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst4Pos := 1;   //146
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 146');
+  end;
+
+  if (Nst1 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst2 = 0) and (Nst3 = 0) and (Nst4 = 0) then
+  begin
+  Nst1Pos := 0;
+  Nst5Pos := 1;   //156
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 156');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst1 = 0) and (Nst5 = 0) and (Nst6 = 0) and (Nst7 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //234
+  Nst4Pos := 2;
+//  showmessage('Сработал вариант 234');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst4 = 0) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //235
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 235');
+  end;
+
+  if (Nst2 = 1) and (Nst3 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst4 = 0) and (Nst5 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //236
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 236');
+  end;
+
+  if (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst3 = 0) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst4Pos := 1;   //245
+  Nst5Pos := 2;
+//  showmessage('Сработал вариант 245');
+  end;
+
+  if (Nst2 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst3 = 0) and (Nst5 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst4Pos := 1;   //246
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 246');
+  end;
+
+  if (Nst2 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst3 = 0) and (Nst4 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst5Pos := 1;   //256
+  Nst6Pos := 2;
+//  showmessage('Сработал вариант 256');
+  end;
+
+ // showmessage('Nst7Pos' + IntToStr(Nst7Pos) + #13 + ' Nst2Pos' + IntToStr(Nst2Pos) + #13 + 'Nst1Pos' + IntToStr(Nst1Pos) + #13 + ' Nst3Pos' + IntToStr(Nst3Pos) + #13 + ' Nst4Pos' + IntToStr(Nst4Pos) + #13 + ' Nst5Pos' + IntToStr(Nst5Pos) + #13 + ' Nst6Pos' + IntToStr(Nst6Pos));
+
+
+if Nst7 = 1 then
+begin
+DBGrid2.Columns[Nst7Pos].Title.Caption:='Путь';
+DBGrid2.Columns[Nst7Pos].Width:= 200;
+end;
+if Nst2 = 1 then
+begin
+DBGrid2.Columns[Nst2Pos].Title.Caption:='Название';
+DBGrid2.Columns[Nst2Pos].Width:= 110;
+end;
+
+if Nst1 = 1 then
+begin
+DBGrid2.Columns[Nst1Pos].Title.Caption:='Исходный запрос';
+DBGrid2.Columns[Nst1Pos].Width:= 80;
+end;
+
+if Nst3 = 1 then
+begin
+DBGrid2.Columns[Nst3Pos].Title.Caption:='Тип ПО';
+DBGrid2.Columns[Nst3Pos].Width:= 130;
+end;
+if Nst4 = 1 then
+begin
+DBGrid2.Columns[Nst4Pos].Title.Caption:='Лицензия';
+DBGrid2.Columns[Nst4Pos].Width:= 90;
+end;
+if Nst5 = 1 then
+begin
+DBGrid2.Columns[Nst5Pos].Title.Caption:='Стоимость';
+DBGrid2.Columns[Nst5Pos].Width:= 80;
+end;
+if Nst6 = 1 then
+begin
+DBGrid2.Columns[Nst6Pos].Title.Caption:='Замена';
+DBGrid2.Columns[Nst6Pos].Width:= 130;
+end;
 end;
 
 procedure TfMian.AvtoPoiskPageContextPopup(Sender: TObject; MousePos: TPoint;
@@ -4234,6 +10296,131 @@ begin
     Exit;
    end;
  if ShellExecute(0,nil, PChar('Explorer.exe'),PChar(leKatalog.Text),nil,1) = 0 then;
+end;
+
+procedure TfMian.bInstpoSokrtiZaprosClick(Sender: TObject);
+var
+  i: Integer; //счетчик
+  FullKey: String;
+  FiltrNameProg: String;
+  s: String;
+       p1: Integer;
+     p2: Integer;
+     p3:String;
+     //для замен
+     FiltrInstZamena:String;
+     Poz2InstZam:Byte;
+     Poz3InstZam:Byte;
+begin
+ if rVetkaReestra.ItemIndex = 0 then
+ begin
+    MyRegistry2:=TRegistry.Create;
+    FullKey:= 'Software\Microsoft\Windows\CurrentVersion\Uninstall\'
+    end
+  else if rVetkaReestra.ItemIndex = 1 then
+  begin
+    MyRegistry2:=TRegistry.Create(KEY_WOW64_64KEY);
+  FullKey:= 'Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\';
+  end;
+
+
+  // MyRegistry:=TRegistry.Create(KEY_WOW64_64KEY);
+  for i:= 0 to ListBox1.Count -1 do
+    if ListBox1.Selected[i] then
+    begin
+      leKeyName.Text:=ListBox1.Items.Strings[i];
+   //   leFullPathKey.Text:=FullKey + leKeyName.Text + '\';
+ //   end
+ // else begin
+ //  Exit
+  end;
+  leFullPathKey.Text:=FullKey + leKeyName.Text + '\';
+
+  {
+  MyRegistry:=TRegistry.Create;
+ MyRegistry.RootKey:=HKEY_LOCAL_MACHINE;  //  lKeyName.Caption
+ If MyRegistry.OpenKey(PChar(FullKey + leKeyName.Text + '\'), False) Then
+   Begin
+    leDisplayName.Text:=CP1251ToUTF8(MyRegistry.ReadString('DisplayName'));
+    leVersionProg.Text:=CP1251ToUTF8(MyRegistry.ReadString('DisplayVersion'));
+    leKatalog.Text:=CP1251ToUTF8(MyRegistry.ReadString('InstallLocation'));
+    leRazrab.Text:=CP1251ToUTF8(MyRegistry.ReadString('Publisher'));
+    UninstallKey:=CP1251ToUTF8(MyRegistry.ReadString('UninstallString'));
+   End;
+ // MyRegistry.CloseKey;
+ //MyRegistry.Free;
+ }
+ //начало другого реестра
+    MyRegistry2.RootKey:=HKEY_LOCAL_MACHINE;
+    MyRegistry2.OpenKeyReadOnly(PChar(FullKey + leKeyName.Text + '\'));
+    leDisplayName.Text:=CP1251ToUTF8(MyRegistry2.ReadString('DisplayName'));
+    leVersionProg.Text:=CP1251ToUTF8(MyRegistry2.ReadString('DisplayVersion'));
+    leKatalog.Text:=CP1251ToUTF8(MyRegistry2.ReadString('InstallLocation'));
+    leRazrab.Text:=CP1251ToUTF8(MyRegistry2.ReadString('Publisher'));
+    UninstallKey:=CP1251ToUTF8(MyRegistry2.ReadString('UninstallString'));
+    leInstallDate.Text:=CP1251ToUTF8(MyRegistry2.ReadString('InstallDate'));
+ //конец другого реестра
+
+
+ // Теперь начинается поиск в базе
+
+    if leDisplayName.Text = '' then
+   begin
+    FiltrNameProg:=leKeyName.Text;
+   end
+    else begin
+    FiltrNameProg:=leDisplayName.Text;
+    end;
+     FiltrNameProg:= InputBox('Сократите запрос в базу', 'Подсказка:  сократите название, чтобы программу было проще найти в базе данных', FiltrNameProg);
+ //   s := 'SELECT name, type, license FROM program WHERE (name LIKE "%%%' + FiltrNameProg + '%%")';
+      s := 'SELECT name, type, license, zamena FROM program WHERE (name LIKE "' + FiltrNameProg + '%%")';
+
+  // всё, в s хранится запрос, его и используй для получения данных из БД
+  //Showmessage(s);
+
+SQLQuery4.Close;
+SQLQuery4.Active:=false;
+SQLQuery4.SQL.Clear;
+SQLQuery4.SQL.Add(s);
+SQLQuery4.Active:=true;
+SQLQuery4.Open;
+
+//заполняем заголовки колонок и меняем ширину колонок
+
+DBGrid3.Columns[0].Title.Caption:='Название';
+DBGrid3.Columns[1].Title.Caption:='Тип ПО';
+DBGrid3.Columns[2].Title.Caption:='Лицензия';
+DBGrid3.Columns[3].Title.Caption:='Замена';
+DBGrid3.Columns[0].Width:= 200;
+DBGrid3.Columns[1].Width:= 140;
+DBGrid3.Columns[2].Width:= 110;
+DBGrid3.Columns[3].Width:= 130;
+
+// заполняем combobox с заменами
+    cbInstallZam.Clear;
+    FiltrInstZamena:=SQLQuery4.FieldByName('zamena').AsString;
+    Poz2InstZam:=(UTF8Pos(',', FiltrInstZamena)) + 1;
+    UTF8Delete(FiltrInstZamena, UTF8Pos(',', FiltrInstZamena), UTF8Length(FiltrInstZamena));
+    cbInstallZam.Items.Add(FiltrInstZamena);
+    cbInstallZam.ItemIndex:= 0;
+    FiltrInstZamena:=SQLQuery4.FieldByName('zamena').AsString;
+    // UTF8Delete(FiltrStr, UTF8Pos('\', FiltrStr), UTF8Pos('\', FiltrStr));
+    Poz3InstZam:=UTF8Pos(',', FiltrInstZamena);
+    if (UTF8Pos(',', FiltrInstZamena)<>0) then
+    begin
+    UTF8Delete(FiltrInstZamena, 1, Poz2InstZam);
+    UTF8Delete(FiltrInstZamena, UTF8Pos(',', FiltrInstZamena), UTF8Length(FiltrInstZamena));
+    cbInstallZam.Items.Add(FiltrInstZamena);
+    end;
+    FiltrInstZamena:=SQLQuery4.FieldByName('zamena').AsString;
+    UTF8Delete(FiltrInstZamena, 1, Poz3InstZam);
+    Poz3InstZam:=UTF8Pos(',', FiltrInstZamena) + 1;
+    if (UTF8Pos(',', FiltrInstZamena)<>0) then
+    begin
+    UTF8Delete(FiltrInstZamena, 1, Poz3InstZam);
+    cbInstallZam.Items.Add(FiltrInstZamena);
+    end;
+	//конец заполнения замен
 end;
 
 procedure TfMian.bInstViewZamClick(Sender: TObject);
@@ -4476,6 +10663,7 @@ ProgressBar1.Position:=3;
     MassivRuchStr[N][4]:= SQLQuery3.FieldByName('license').AsString;
     MassivRuchStr[N][5]:= SQLQuery3.FieldByName('cena').AsString;
     MassivRuchStr[N][6]:= SQLQuery3.FieldByName('zamena').AsString;
+
   end;
     //
 
@@ -4539,10 +10727,13 @@ ProgressBar1.Position:=3;
  Nst5:=SQLQuery1.FieldByName('RuchSt5').AsInteger;
  Nst6:=SQLQuery1.FieldByName('RuchSt6').AsInteger;
 
+ if Nst1 = 1 then
+ begin
  if (Nst2 = 0) and (Nst7 = 0) and (Nst1 = 1) then
  s := s + ' st1'
  else
   s := s + ', st1';
+ end;
  //if Nst1 = 1 then
  //s := s + ', st1';      // исходный запрос
 
@@ -4562,14 +10753,15 @@ ProgressBar1.Position:=3;
  s := s + ' FROM ruch ORDER BY st2 DESC'
  else
  s := s + ' FROM ruch';
+ //showmessage(s);
  //конец постройки запроса
 
 
 MyListRuch.Free;
 MyFiltrList2.Free;
 
-
 ProgressBar1.Position:=4;
+
 SQLQuery3.Close;
 SQLQuery3.Active:=false;
 SQLQuery3.SQL.Clear;
@@ -4588,6 +10780,7 @@ SQLQuery3.Open;
   Nst4Pos := 4;
   Nst5Pos := 5;
   Nst6Pos := 6;
+//  showmessage('Сработал вариант 7213456');
   end;
 
   if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) then
@@ -4598,6 +10791,7 @@ SQLQuery3.Open;
   Nst4Pos := 3;
   Nst5Pos := 4;
   Nst6Pos := 5;
+//  showmessage('Сработал вариант 723456');
   end;
 
   if (Nst7 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst2 = 0) then
@@ -4608,6 +10802,7 @@ SQLQuery3.Open;
   Nst4Pos := 3;
   Nst5Pos := 4;
   Nst6Pos := 5;
+//  showmessage('Сработал вариант 713456');
   end;
 
   if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst3 = 0) then
@@ -4618,6 +10813,7 @@ SQLQuery3.Open;
   Nst4Pos := 3;
   Nst5Pos := 4;
   Nst6Pos := 5;
+//  showmessage('Сработал вариант 712456');
   end;
 
   if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst4 = 0) then
@@ -4628,6 +10824,7 @@ SQLQuery3.Open;
   Nst3Pos := 3;
   Nst5Pos := 4;
   Nst6Pos := 5;
+//  showmessage('Сработал вариант 712356');
   end;
 
   if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst5 = 0) then
@@ -4638,6 +10835,7 @@ SQLQuery3.Open;
   Nst3Pos := 3;
   Nst4Pos := 4;
   Nst6Pos := 5;
+//  showmessage('Сработал вариант 712346');
   end;
 
   if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 0) then
@@ -4648,6 +10846,7 @@ SQLQuery3.Open;
   Nst3Pos := 3;
   Nst4Pos := 4;
   Nst5Pos := 5;
+//  showmessage('Сработал вариант 712345');
   end;
 
   if (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst7 = 0) then
@@ -4658,6 +10857,7 @@ SQLQuery3.Open;
   Nst4Pos := 3;
   Nst5Pos := 4;
   Nst6Pos := 5;
+//  showmessage('Сработал вариант 123456');
   end;
 
   if (Nst1 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst2 = 0) then
@@ -4667,6 +10867,7 @@ SQLQuery3.Open;
   Nst4Pos := 2;
   Nst5Pos := 3;
   Nst6Pos := 4;
+//  showmessage('Сработал вариант 13456');
   end;
 
   if (Nst1 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst3 = 0) and (Nst7 = 0) then
@@ -4676,6 +10877,7 @@ SQLQuery3.Open;
   Nst4Pos := 2;
   Nst5Pos := 3;
   Nst6Pos := 4;
+//  showmessage('Сработал вариант 12456');
   end;
 
   if (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst4 = 0) and (Nst7 = 0) then
@@ -4685,6 +10887,7 @@ SQLQuery3.Open;
   Nst3Pos := 2;
   Nst5Pos := 3;
   Nst6Pos := 4;
+//  showmessage('Сработал вариант 12356');
   end;
 
   if (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst5 = 0) and (Nst7 = 0) then
@@ -4694,6 +10897,7 @@ SQLQuery3.Open;
   Nst3Pos := 2;
   Nst4Pos := 3;
   Nst6Pos := 4;
+//  showmessage('Сработал вариант 12346');
   end;
 
   if (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 0) and (Nst7 = 0) then
@@ -4703,6 +10907,7 @@ SQLQuery3.Open;
   Nst3Pos := 2;
   Nst4Pos := 3;
   Nst5Pos := 4;
+//  showmessage('Сработал вариант 12345');
   end;
 
   if (Nst7 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) then
@@ -4712,6 +10917,7 @@ SQLQuery3.Open;
   Nst4Pos := 2;
   Nst5Pos := 3;
   Nst6Pos := 4;
+//  showmessage('Сработал вариант 73456');
   end;
 
   if (Nst7 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst3 = 0) then
@@ -4721,6 +10927,7 @@ SQLQuery3.Open;
   Nst4Pos := 2;
   Nst5Pos := 3;
   Nst6Pos := 4;
+//  showmessage('Сработал вариант 72456');
   end;
 
   if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst4 = 0) then
@@ -4730,6 +10937,7 @@ SQLQuery3.Open;
   Nst3Pos := 2;
   Nst5Pos := 3;
   Nst6Pos := 4;
+//  showmessage('Сработал вариант 72356');
   end;
 
   if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst5 = 0) then
@@ -4739,6 +10947,7 @@ SQLQuery3.Open;
   Nst3Pos := 2;
   Nst4Pos := 3;
   Nst6Pos := 4;
+//  showmessage('Сработал вариант 72346');
   end;
 
   if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst6 = 0) then
@@ -4748,6 +10957,7 @@ SQLQuery3.Open;
   Nst3Pos := 2;
   Nst4Pos := 3;
   Nst5Pos := 4;
+//  showmessage('Сработал вариант 72345');
   end;
 
   if (Nst7 = 1) and (Nst1 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst3 = 0) then
@@ -4757,6 +10967,7 @@ SQLQuery3.Open;
   Nst4Pos := 2;
   Nst5Pos := 3;
   Nst6Pos := 4;
+//  showmessage('Сработал вариант 71456');
   end;
 
   if (Nst7 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst4 = 0) then
@@ -4766,6 +10977,7 @@ SQLQuery3.Open;
   Nst3Pos := 2;
   Nst5Pos := 3;
   Nst6Pos := 4;
+//  showmessage('Сработал вариант 71356');
   end;
 
   if (Nst7 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst5 = 0) then
@@ -4775,6 +10987,7 @@ SQLQuery3.Open;
   Nst3Pos := 2;
   Nst4Pos := 3;
   Nst6Pos := 4;
+//  showmessage('Сработал вариант 71346');
   end;
 
   if (Nst7 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst2 = 0) and (Nst6 = 0) then
@@ -4784,6 +10997,7 @@ SQLQuery3.Open;
   Nst3Pos := 2;
   Nst4Pos := 3;
   Nst5Pos := 4;
+//  showmessage('Сработал вариант 71345');
   end;
 
   if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst3 = 0) and (Nst4 = 0) then
@@ -4793,6 +11007,7 @@ SQLQuery3.Open;
   Nst2Pos := 2;
   Nst5Pos := 3;
   Nst6Pos := 4;
+//  showmessage('Сработал вариант 71256');
   end;
 
   if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst3 = 0) and (Nst5 = 0) then
@@ -4802,6 +11017,7 @@ SQLQuery3.Open;
   Nst2Pos := 2;
   Nst4Pos := 3;
   Nst6Pos := 4;
+//  showmessage('Сработал вариант 71246');
   end;
 
   if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst3 = 0) and (Nst6 = 0) then
@@ -4811,6 +11027,7 @@ SQLQuery3.Open;
   Nst2Pos := 2;
   Nst4Pos := 3;
   Nst5Pos := 4;
+//  showmessage('Сработал вариант 71245');
   end;
 
   if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst6 = 1) and (Nst4 = 0) and (Nst5 = 0) then
@@ -4820,6 +11037,7 @@ SQLQuery3.Open;
   Nst2Pos := 2;
   Nst3Pos := 3;
   Nst6Pos := 4;
+//  showmessage('Сработал вариант 71236');
   end;
 
   if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst4 = 0) and (Nst6 = 0) then
@@ -4829,6 +11047,7 @@ SQLQuery3.Open;
   Nst2Pos := 2;
   Nst3Pos := 3;
   Nst5Pos := 4;
+//  showmessage('Сработал вариант 71235');
   end;
 
   if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 0) and (Nst6 = 0) then
@@ -4838,6 +11057,7 @@ SQLQuery3.Open;
   Nst2Pos := 2;
   Nst3Pos := 3;
   Nst4Pos := 4;
+//  showmessage('Сработал вариант 71234');
   end;
 
   if (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst7 = 0) then
@@ -4846,6 +11066,7 @@ SQLQuery3.Open;
   Nst4Pos := 1;   //3456
   Nst5Pos := 2;
   Nst6Pos := 3;
+//  showmessage('Сработал вариант 3456');
   end;
 
   if (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst7 = 0) and (Nst3 = 0) then
@@ -4854,6 +11075,7 @@ SQLQuery3.Open;
   Nst4Pos := 1;   //2456
   Nst5Pos := 2;
   Nst6Pos := 3;
+//  showmessage('Сработал вариант 2456');
   end;
 
   if (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst4 = 0) then
@@ -4862,6 +11084,7 @@ SQLQuery3.Open;
   Nst3Pos := 1;   //2356
   Nst5Pos := 2;
   Nst6Pos := 3;
+//  showmessage('Сработал вариант 2356');
   end;
 
   if (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst7 = 0) and (Nst5 = 0) then
@@ -4870,6 +11093,7 @@ SQLQuery3.Open;
   Nst3Pos := 1;   //2346
   Nst4Pos := 2;
   Nst6Pos := 3;
+//  showmessage('Сработал вариант 2346');
   end;
 
   if (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst7 = 0) and (Nst6 = 0) then
@@ -4878,6 +11102,7 @@ SQLQuery3.Open;
   Nst3Pos := 1;   //2345
   Nst4Pos := 2;
   Nst5Pos := 3;
+ // showmessage('Сработал вариант 2345');
   end;
 
   if (Nst7 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst3 = 0) then
@@ -4886,6 +11111,7 @@ SQLQuery3.Open;
   Nst4Pos := 1;   //7456
   Nst5Pos := 2;
   Nst6Pos := 3;
+//  showmessage('Сработал вариант 7456');
   end;
 
   if (Nst7 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst4 = 0) then
@@ -4894,6 +11120,7 @@ SQLQuery3.Open;
   Nst3Pos := 1;   //7356
   Nst5Pos := 2;
   Nst6Pos := 3;
+//  showmessage('Сработал вариант 7356');
   end;
 
   if (Nst7 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst5 = 0) then
@@ -4902,6 +11129,7 @@ SQLQuery3.Open;
   Nst3Pos := 1;   //7346
   Nst4Pos := 2;
   Nst6Pos := 3;
+//  showmessage('Сработал вариант 7346');
   end;
 
   if (Nst7 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst6 = 0) then
@@ -4910,6 +11138,7 @@ SQLQuery3.Open;
   Nst3Pos := 1;   //7345
   Nst4Pos := 2;
   Nst5Pos := 3;
+//  showmessage('Сработал вариант 7345');
   end;
 
   if (Nst7 = 1) and (Nst1 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst4 = 0) then
@@ -4918,6 +11147,7 @@ SQLQuery3.Open;
   Nst1Pos := 1;   //7156
   Nst5Pos := 2;
   Nst6Pos := 3;
+//  showmessage('Сработал вариант 7156');
   end;
 
   if (Nst7 = 1) and (Nst1 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst5 = 0) then
@@ -4926,6 +11156,7 @@ SQLQuery3.Open;
   Nst1Pos := 1;   //7146
   Nst4Pos := 2;
   Nst6Pos := 3;
+//  showmessage('Сработал вариант 7146');
   end;
 
   if (Nst7 = 1) and (Nst1 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst6 = 0) then
@@ -4934,6 +11165,7 @@ SQLQuery3.Open;
   Nst1Pos := 1;   //7145
   Nst4Pos := 2;
   Nst5Pos := 3;
+//  showmessage('Сработал вариант 7145');
   end;
 
   if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst6 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 0) then
@@ -4942,6 +11174,7 @@ SQLQuery3.Open;
   Nst1Pos := 1;   //7126
   Nst2Pos := 2;
   Nst6Pos := 3;
+//  showmessage('Сработал вариант 7126');
   end;
 
   if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst5 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst6 = 0) then
@@ -4950,6 +11183,7 @@ SQLQuery3.Open;
   Nst1Pos := 1;   //7125
   Nst2Pos := 2;
   Nst5Pos := 3;
+//  showmessage('Сработал вариант 7125');
   end;
 
   if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
@@ -4958,6 +11192,7 @@ SQLQuery3.Open;
   Nst1Pos := 1;   //7123
   Nst2Pos := 2;
   Nst3Pos := 3;
+ // showmessage('Сработал вариант 7123');
   end;
 
   if (Nst7 = 1) and (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
@@ -4965,6 +11200,7 @@ SQLQuery3.Open;
   Nst7Pos := 0;
   Nst1Pos := 1;   //712
   Nst2Pos := 2;
+ // showmessage('Сработал вариант 712');
   end;
 
   if (Nst7 = 1) and (Nst1 = 1) and (Nst3 = 1) and (Nst2 = 0) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
@@ -4972,6 +11208,7 @@ SQLQuery3.Open;
   Nst7Pos := 0;
   Nst1Pos := 1;   //713
   Nst3Pos := 2;
+//  showmessage('Сработал вариант 713');
   end;
 
   if (Nst7 = 1) and (Nst1 = 1) and (Nst4 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst5 = 0) and (Nst6 = 0) then
@@ -4979,6 +11216,7 @@ SQLQuery3.Open;
   Nst7Pos := 0;
   Nst1Pos := 1;   //714
   Nst4Pos := 2;
+//  showmessage('Сработал вариант 714');
   end;
 
   if (Nst7 = 1) and (Nst1 = 1) and (Nst5 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst4 = 0) and (Nst6 = 0) then
@@ -4986,6 +11224,7 @@ SQLQuery3.Open;
   Nst7Pos := 0;
   Nst1Pos := 1;   //715
   Nst5Pos := 2;
+//  showmessage('Сработал вариант 715');
   end;
 
   if (Nst7 = 1) and (Nst1 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 0) then
@@ -4993,6 +11232,7 @@ SQLQuery3.Open;
   Nst7Pos := 0;
   Nst1Pos := 1;   //716
   Nst6Pos := 2;
+//  showmessage('Сработал вариант 716');
   end;
 
   if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst1 = 0) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
@@ -5000,6 +11240,7 @@ SQLQuery3.Open;
   Nst7Pos := 0;
   Nst2Pos := 1;   //723
   Nst3Pos := 2;
+//  showmessage('Сработал вариант 723');
   end;
 
   if (Nst7 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst1 = 0) and (Nst3 = 0) and (Nst5 = 0) and (Nst6 = 0) then
@@ -5007,6 +11248,7 @@ SQLQuery3.Open;
   Nst7Pos := 0;
   Nst2Pos := 1;   //724
   Nst4Pos := 2;
+//  showmessage('Сработал вариант 724');
   end;
 
   if (Nst7 = 1) and (Nst2 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst3 = 0) and (Nst4 = 0) and (Nst6 = 0) then
@@ -5014,6 +11256,7 @@ SQLQuery3.Open;
   Nst7Pos := 0;
   Nst2Pos := 1;   //725
   Nst5Pos := 2;
+//  showmessage('Сработал вариант 725');
   end;
 
   if (Nst7 = 1) and (Nst2 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 0) then
@@ -5021,6 +11264,7 @@ SQLQuery3.Open;
   Nst7Pos := 0;
   Nst2Pos := 1;   //726
   Nst6Pos := 2;
+//  showmessage('Сработал вариант 726');
   end;
 
   if (Nst7 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst5 = 0) and (Nst6 = 0) then
@@ -5028,6 +11272,7 @@ SQLQuery3.Open;
   Nst7Pos := 0;
   Nst3Pos := 1;   //734
   Nst4Pos := 2;
+//  showmessage('Сработал вариант 734');
   end;
 
   if (Nst7 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst4 = 0) and (Nst6 = 0) then
@@ -5035,6 +11280,7 @@ SQLQuery3.Open;
   Nst7Pos := 0;
   Nst3Pos := 1;   //735
   Nst5Pos := 2;
+//  showmessage('Сработал вариант 735');
   end;
 
   if (Nst7 = 1) and (Nst3 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst4 = 0) and (Nst5 = 0) then
@@ -5042,6 +11288,7 @@ SQLQuery3.Open;
   Nst7Pos := 0;
   Nst3Pos := 1;   //736
   Nst6Pos := 2;
+//  showmessage('Сработал вариант 736');
   end;
 
   if (Nst7 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst3 = 0) and (Nst6 = 0) then
@@ -5049,6 +11296,7 @@ SQLQuery3.Open;
   Nst7Pos := 0;
   Nst4Pos := 1;   //745
   Nst5Pos := 2;
+//  showmessage('Сработал вариант 745');
   end;
 
   if (Nst7 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst2 = 0) and (Nst3 = 0) and (Nst5 = 0) and (Nst1 = 0) then
@@ -5056,6 +11304,7 @@ SQLQuery3.Open;
   Nst7Pos := 0;
   Nst4Pos := 1;   //746
   Nst6Pos := 2;
+//  showmessage('Сработал вариант 746');
   end;
 
   if (Nst7 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst1 = 0) and (Nst2 = 0) and (Nst3 = 0) and (Nst4 = 0) then
@@ -5063,6 +11312,7 @@ SQLQuery3.Open;
   Nst7Pos := 0;
   Nst1Pos := 1;   //756
   Nst2Pos := 2;
+//  showmessage('Сработал вариант 756');
   end;
 
   if (Nst1 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst7 = 0) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
@@ -5070,6 +11320,7 @@ SQLQuery3.Open;
   Nst1Pos := 0;
   Nst2Pos := 1;   //123
   Nst3Pos := 2;
+//  showmessage('Сработал вариант 123');
   end;
 
   if (Nst1 = 1) and (Nst2 = 1) and (Nst4 = 1) and (Nst7 = 0) and (Nst3 = 0) and (Nst5 = 0) and (Nst6 = 0) then
@@ -5077,6 +11328,7 @@ SQLQuery3.Open;
   Nst1Pos := 0;
   Nst2Pos := 1;   //124
   Nst4Pos := 2;
+//  showmessage('Сработал вариант 124');
   end;
 
   if (Nst1 = 1) and (Nst2 = 1) and (Nst5 = 1) and (Nst7 = 0) and (Nst3 = 0) and (Nst4 = 0) and (Nst6 = 0) then
@@ -5084,6 +11336,7 @@ SQLQuery3.Open;
   Nst1Pos := 0;
   Nst2Pos := 1;   //125
   Nst5Pos := 2;
+//  showmessage('Сработал вариант 125');
   end;
 
   if (Nst1 = 1) and (Nst3 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst2 = 0) and (Nst4 = 0) and (Nst5 = 0) then
@@ -5091,6 +11344,7 @@ SQLQuery3.Open;
   Nst1Pos := 0;
   Nst3Pos := 1;   //136
   Nst6Pos := 2;
+//  showmessage('Сработал вариант 136');
   end;
 
   if (Nst1 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst7 = 0) and (Nst2 = 0) and (Nst3 = 0) and (Nst6 = 0) then
@@ -5098,6 +11352,7 @@ SQLQuery3.Open;
   Nst1Pos := 0;
   Nst4Pos := 1;   //145
   Nst5Pos := 2;
+//  showmessage('Сработал вариант 145');
   end;
 
   if (Nst1 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst2 = 0) and (Nst3 = 0) and (Nst5 = 0) then
@@ -5105,6 +11360,7 @@ SQLQuery3.Open;
   Nst1Pos := 0;
   Nst4Pos := 1;   //146
   Nst6Pos := 2;
+//  showmessage('Сработал вариант 146');
   end;
 
   if (Nst1 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst2 = 0) and (Nst3 = 0) and (Nst4 = 0) then
@@ -5112,6 +11368,7 @@ SQLQuery3.Open;
   Nst1Pos := 0;
   Nst5Pos := 1;   //156
   Nst6Pos := 2;
+//  showmessage('Сработал вариант 156');
   end;
 
   if (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst1 = 0) and (Nst5 = 0) and (Nst6 = 0) and (Nst7 = 0) then
@@ -5119,6 +11376,7 @@ SQLQuery3.Open;
   Nst2Pos := 0;
   Nst3Pos := 1;   //234
   Nst4Pos := 2;
+//  showmessage('Сработал вариант 234');
   end;
 
   if (Nst2 = 1) and (Nst3 = 1) and (Nst5 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst4 = 0) and (Nst6 = 0) then
@@ -5126,6 +11384,7 @@ SQLQuery3.Open;
   Nst2Pos := 0;
   Nst3Pos := 1;   //235
   Nst5Pos := 2;
+//  showmessage('Сработал вариант 235');
   end;
 
   if (Nst2 = 1) and (Nst3 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst4 = 0) and (Nst5 = 0) then
@@ -5133,6 +11392,7 @@ SQLQuery3.Open;
   Nst2Pos := 0;
   Nst3Pos := 1;   //236
   Nst6Pos := 2;
+//  showmessage('Сработал вариант 236');
   end;
 
   if (Nst2 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst3 = 0) and (Nst6 = 0) then
@@ -5140,6 +11400,7 @@ SQLQuery3.Open;
   Nst2Pos := 0;
   Nst4Pos := 1;   //245
   Nst5Pos := 2;
+//  showmessage('Сработал вариант 245');
   end;
 
   if (Nst2 = 1) and (Nst4 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst3 = 0) and (Nst5 = 0) then
@@ -5147,6 +11408,7 @@ SQLQuery3.Open;
   Nst2Pos := 0;
   Nst4Pos := 1;   //246
   Nst6Pos := 2;
+//  showmessage('Сработал вариант 246');
   end;
 
   if (Nst2 = 1) and (Nst5 = 1) and (Nst6 = 1) and (Nst7 = 0) and (Nst1 = 0) and (Nst3 = 0) and (Nst4 = 0) then
@@ -5154,6 +11416,7 @@ SQLQuery3.Open;
   Nst2Pos := 0;
   Nst5Pos := 1;   //256
   Nst6Pos := 2;
+//  showmessage('Сработал вариант 256');
   end;
 
  // showmessage('Nst7Pos' + IntToStr(Nst7Pos) + #13 + ' Nst2Pos' + IntToStr(Nst2Pos) + #13 + 'Nst1Pos' + IntToStr(Nst1Pos) + #13 + ' Nst3Pos' + IntToStr(Nst3Pos) + #13 + ' Nst4Pos' + IntToStr(Nst4Pos) + #13 + ' Nst5Pos' + IntToStr(Nst5Pos) + #13 + ' Nst6Pos' + IntToStr(Nst6Pos));
