@@ -7,7 +7,7 @@ object fSettings: TfSettings
   ClientHeight = 330
   ClientWidth = 447
   OnActivate = FormActivate
-  LCLVersion = '1.6.4.0'
+  LCLVersion = '1.8.0.6'
   object PageControl1: TPageControl
     Left = 0
     Height = 280
@@ -128,6 +128,33 @@ object fSettings: TfSettings
         Caption = '* - Обязательные столбцы'
         ParentColor = False
       end
+      object cbRuchFullDisk: TCheckBox
+        Left = 200
+        Height = 19
+        Hint = 'Проверка всего диска может вызывать зависание программы и ошибки! Длина SQL запроса ограничена, а исполняемых файлов может быть слишком много!'
+        Top = 40
+        Width = 193
+        Caption = 'Разрешить указывать весь диск'
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 1
+      end
+      object Label5: TLabel
+        Left = 168
+        Height = 15
+        Top = 8
+        Width = 266
+        Caption = 'По умолчанию запрещено указывать весь диск,'
+        ParentColor = False
+      end
+      object Label6: TLabel
+        Left = 176
+        Height = 15
+        Top = 24
+        Width = 243
+        Caption = 'иначе могут возникать зависания и ошибки'
+        ParentColor = False
+      end
     end
   end
   object Panel1: TPanel
@@ -173,30 +200,27 @@ object fSettings: TfSettings
     DatabaseName = 'Lpro.db'
     KeepConnection = False
     CharSet = 'UTF8'
-    Options = []
-    left = 408
-    top = 32
+    left = 96
+    top = 240
   end
   object SQLTransaction1: TSQLTransaction
     Active = False
     Database = fMian.SQLite3Connection1
-    Options = []
-    left = 320
-    top = 64
+    left = 56
+    top = 240
   end
   object DataSource1: TDataSource
     DataSet = SQLQuery1
-    left = 264
-    top = 40
+    left = 16
+    top = 240
   end
   object SQLQuery1: TSQLQuery
     PacketRecords = -1
     FieldDefs = <>
     Database = fMian.SQLite3Connection1
     Transaction = fMian.SQLTransaction1
-    Options = []
     Params = <>
-    left = 360
-    top = 128
+    left = 136
+    top = 240
   end
 end

@@ -446,9 +446,9 @@ Nst6:=SQLQuery4.FieldByName('RuchSt6').AsInteger;
  if Nst7 = 1 then
 t.add('<td> Путь');
  if Nst2 = 1 then
-t.add('<td> Название');
+t.add('<td> Исходный запрос');
  if Nst1 = 1 then
- t.add('<td> Исходный запрос');
+ t.add('<td> Название');
  if Nst3 = 1 then
 t.add('<td> Тип ПО');
  if Nst4 = 1 then
@@ -533,8 +533,18 @@ Var
      Nst5Pos:Word;
      Nst6Pos:Word;
      Nst1Pos:Word;
+     //для проверки наличия
+     Rez : HRESULT;
+     ClassID: TCLSID;
 begin
-    OO := CreateOleObject('com.sun.star.ServiceManager');
+//начало пробы проверки наличия
+ Rez := CLSIDFromProgID(PWideChar(WideString('com.sun.star.ServiceManager')), ClassID);
+if Rez <> S_OK then begin
+  MessageDlg('LibreOffice не установлен.',mtERROR,[mbok],0);
+  Exit;
+end;
+//конец пробы проверки наличия
+OO := CreateOleObject('com.sun.star.ServiceManager');
   Desktop := OO.createInstance('com.sun.star.frame.Desktop');
   Doc := Desktop.LoadComponentFromURL('private:factory/scalc', '_blank', 0, VarArrayCreate([0, -1], varVariant));
   Sheet := Doc.getSheets.GetByIndex(0);
@@ -1527,14 +1537,14 @@ begin
               end;
               if Nst2 = 1 then
               begin
-              Zagolovki[0][Nst2Pos + 1] := 'Название';
+              Zagolovki[0][Nst2Pos + 1] := 'Исходный запрос';
               Cell := Sheet.getCellByPosition(Nst2Pos + 1, 0);
               Cell.SetString(WideString(UTF8Decode(Zagolovki[0][Nst2Pos + 1])));
               end;
 
               if Nst1 = 1 then
               begin
-              Zagolovki[0][Nst1Pos + 1] := 'Исходный запрос';
+              Zagolovki[0][Nst1Pos + 1] := 'Название';
               Cell := Sheet.getCellByPosition(Nst1Pos + 1, 0);
               Cell.SetString(WideString(UTF8Decode(Zagolovki[0][Nst1Pos + 1])));
               end;
@@ -1607,7 +1617,7 @@ begin
 
 Rez := CLSIDFromProgID(PWideChar(WideString('Excel.Application')), ClassID);
 if Rez <> S_OK then begin
-  MessageDlg('EXCEL не установлен. Поддерживается передача только в EXCEL.',mtERROR,[mbok],0);
+  MessageDlg('EXCEL не установлен.',mtERROR,[mbok],0);
   Exit;
   end;
 ExcelApp := CreateOleObject('Excel.Application');
@@ -1973,6 +1983,10 @@ begin
 end;
 
 procedure TfMian.mBeginSerchClick(Sender: TObject);
+//для определения версии винды
+type
+  TFunc = function(dwOSMajorVersion, dwOSMinorVersion, dwSpMajorVersion,
+    dwSpMinorVersion: DWORD; var pdwReturnedProductType: DWORD): BOOL; stdcall;
 var
    MyList: TStringListUTF8;     // для хранения названий ключей реестра
    MyList2: TStringListUTF8;
@@ -2000,6 +2014,9 @@ var
      Nst5Pos:Word;
      Nst6Pos:Word;
      bitnost:String;
+     Os : OSVERSIONINFO;//для определения версии ос
+     funcGetProductInfo : TFunc;
+     dwType : DWORD;
 begin
 lProgress.Caption:='Пожалуйста, подождите';
 ProgressBar1.Position:=0;
@@ -2017,6 +2034,7 @@ bViewZamPodrob.Enabled:=True;
         SQLTransaction1.CommitRetaining;
 // *}
   MyList2:=TStringListUTF8.Create;
+
 //  MyRegistry:=TRegistry.Create;
 
   bitnost:=GetEnvironmentVariableUTF8('ProgramFiles(x86)');
@@ -2032,6 +2050,8 @@ bViewZamPodrob.Enabled:=True;
   ProgressBar1.StepBy(1);
   MyList4:=TStringListUTF8.Create;
  MyList:=TStringListUTF8.Create;
+
+
 
                                //Reg.KeyExists('\Software\key')
  //if MyRegistry.KeyExists('SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall') then begin              //IsWow64
@@ -2087,6 +2107,8 @@ bViewZamPodrob.Enabled:=True;
   ProgressBar1.StepBy(1);
  //  end
 
+
+
    //   {*
   SQLQuery1.Close;
   SQLQuery1.SQL.Clear;
@@ -2125,6 +2147,8 @@ for N := 0 to MyList2.Count - 1 do
     UTF8Delete(FiltrStr, UTF8Pos(' CC 2015', FiltrStr), UTF8Length(FiltrStr));
     UTF8Delete(FiltrStr, UTF8Pos(' CC 2016', FiltrStr), UTF8Length(FiltrStr));
     UTF8Delete(FiltrStr, UTF8Pos(' CC 2017', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' CC 2018', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' CC 2019', FiltrStr), UTF8Length(FiltrStr));
     UTF8Delete(FiltrStr, UTF8Pos(' 2015.1', FiltrStr), UTF8Length(FiltrStr));
     UTF8Delete(FiltrStr, UTF8Pos(' 2015.2', FiltrStr), UTF8Length(FiltrStr));
     UTF8Delete(FiltrStr, UTF8Pos(' 2015.3', FiltrStr), UTF8Length(FiltrStr));
@@ -2140,11 +2164,23 @@ for N := 0 to MyList2.Count - 1 do
     UTF8Delete(FiltrStr, UTF8Pos(' 2017.3', FiltrStr), UTF8Length(FiltrStr));
     UTF8Delete(FiltrStr, UTF8Pos(' 2017.4', FiltrStr), UTF8Length(FiltrStr));
     UTF8Delete(FiltrStr, UTF8Pos(' 2017.5', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2018.1', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2018.2', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2018.3', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2018.4', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2018.5', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2019.1', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2019.2', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2019.3', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2019.4', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2019.5', FiltrStr), UTF8Length(FiltrStr));
     if (UTF8Pos('Microsoft Visual Studio', FiltrStr)=0) then
     begin
     UTF8Delete(FiltrStr, UTF8Pos(' 2015', FiltrStr), UTF8Length(FiltrStr));
     UTF8Delete(FiltrStr, UTF8Pos(' 2016', FiltrStr), UTF8Length(FiltrStr));
     UTF8Delete(FiltrStr, UTF8Pos(' 2017', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2018', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2019', FiltrStr), UTF8Length(FiltrStr));
     UTF8Delete(FiltrStr, UTF8Pos(' 2007', FiltrStr), UTF8Length(FiltrStr));
     UTF8Delete(FiltrStr, UTF8Pos(' 2008', FiltrStr), UTF8Length(FiltrStr));
     UTF8Delete(FiltrStr, UTF8Pos(' 2009', FiltrStr), UTF8Length(FiltrStr));
@@ -2160,6 +2196,8 @@ for N := 0 to MyList2.Count - 1 do
     UTF8Delete(FiltrStr, UTF8Pos(' 2015', FiltrStr), 5);
     UTF8Delete(FiltrStr, UTF8Pos(' 2016', FiltrStr), 5);
     UTF8Delete(FiltrStr, UTF8Pos(' 2017', FiltrStr), 5);
+    UTF8Delete(FiltrStr, UTF8Pos(' 2018', FiltrStr), 5);
+    UTF8Delete(FiltrStr, UTF8Pos(' 2019', FiltrStr), 5);
     UTF8Delete(FiltrStr, UTF8Pos(' 2007', FiltrStr), 5);
     UTF8Delete(FiltrStr, UTF8Pos(' 2008', FiltrStr), 5);
     UTF8Delete(FiltrStr, UTF8Pos(' 2009', FiltrStr), 5);
@@ -2173,6 +2211,8 @@ for N := 0 to MyList2.Count - 1 do
     UTF8Delete(FiltrStr, UTF8Pos(' (2015', FiltrStr), UTF8Length(FiltrStr));
     UTF8Delete(FiltrStr, UTF8Pos(' (2016', FiltrStr), UTF8Length(FiltrStr));
     UTF8Delete(FiltrStr, UTF8Pos(' (2017', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (2018', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (2019', FiltrStr), UTF8Length(FiltrStr));
     UTF8Delete(FiltrStr, UTF8Pos(' (2007', FiltrStr), UTF8Length(FiltrStr));
     UTF8Delete(FiltrStr, UTF8Pos(' (2008', FiltrStr), UTF8Length(FiltrStr));
     UTF8Delete(FiltrStr, UTF8Pos(' (2009', FiltrStr), UTF8Length(FiltrStr));
@@ -2453,15 +2493,175 @@ ProgressBar1.StepBy(1);
 
     SetLength(MassivAvtoStr, MyFiltrList.Count, 9);
 
+    //пробую добавить версию ОС
+ funcGetProductInfo := TFunc(GetProcAddress(GetModuleHandle('kernel32.dll'), 'GetProductInfo'));
+  funcGetProductInfo(6, 0, 0, 0, dwType);
+ // ShowMessage(IntToStr(dwType));
+ Case dwType of
+       1 :
+         begin
+
+              if ((Win32MinorVersion = 0) and (Win32MajorVersion = 6)) then
+              begin
+              MassivAvtoStr[0][1] := 'Windows Vista Максимальная';
+               MassivAvtoStr[0][0] := 'Windows Vista Максимальная';
+               end;
+               if ((Win32MinorVersion = 1) and (Win32MajorVersion = 6)) then
+               begin
+               MassivAvtoStr[0][1] := 'Windows 7 Максимальная';
+               MassivAvtoStr[0][0] := 'Windows 7 Максимальная';
+               end;
+
+            end;
+   {  B : begin          хз как указать
+
+              if ((Win32MinorVersion = 0) and (Win32MajorVersion = 6)) then
+              begin
+              MassivAvtoStr[0][1] := 'Windows Vista Начальная';
+               MassivAvtoStr[0][0] := 'Windows Vista Начальная';
+               end;
+               if ((Win32MinorVersion = 1) and (Win32MajorVersion = 6)) then
+               begin
+               MassivAvtoStr[0][1] := 'Windows 7 Начальная';
+               MassivAvtoStr[0][0] := 'Windows 7 Начальная';
+               end;
+
+            end;  }
+      3 : begin
+
+              if ((Win32MinorVersion = 0) and (Win32MajorVersion = 6)) then
+              begin
+              MassivAvtoStr[0][1] := 'Windows Vista Домашняя расширенная';
+               MassivAvtoStr[0][0] := 'Windows Vista Домашняя расширенная';
+               end;
+               if ((Win32MinorVersion = 1) and (Win32MajorVersion = 6)) then
+               begin
+               MassivAvtoStr[0][1] := 'Windows 7 Домашняя расширенная';
+               MassivAvtoStr[0][0] := 'Windows 7 Домашняя расширенная';
+               end;
+
+            end;
+    2 : begin
+
+              if ((Win32MinorVersion = 0) and (Win32MajorVersion = 6)) then
+              begin
+              MassivAvtoStr[0][1] := 'Windows Vista Домашняя базовая';
+               MassivAvtoStr[0][0] := 'Windows Vista Домашняя базовая';
+               end;
+               if ((Win32MinorVersion = 1) and (Win32MajorVersion = 6)) then
+               begin
+               MassivAvtoStr[0][1] := 'Windows 7 Домашняя базовая';
+               MassivAvtoStr[0][0] := 'Windows 7 Домашняя базовая';
+               end;
+
+            end;
+    6 : begin
+              if ((Win32MinorVersion = 0) and (Win32MajorVersion = 6)) then
+              begin
+              MassivAvtoStr[0][1] := 'Windows Vista Профессиональная';
+               MassivAvtoStr[0][0] := 'Windows Vista Профессиональная';
+               end;
+               if ((Win32MinorVersion = 1) and (Win32MajorVersion = 6)) then
+               begin
+               MassivAvtoStr[0][1] := 'Windows 7 Профессиональная';
+               MassivAvtoStr[0][0] := 'Windows 7 Профессиональная';
+               end;
+
+            end;
+  else s := '';
+  end;
+
+ if ((Win32MinorVersion = 1) and (Win32MajorVersion = 5)) then
+          begin
+            MassivAvtoStr[0][1] := 'Windows XP';
+               MassivAvtoStr[0][0] := 'Windows XP';
+             end;
+
+ if ((Win32MinorVersion = 0) and (Win32MajorVersion = 10)) then
+          begin
+            MassivAvtoStr[0][1] := 'Windows 10';
+               MassivAvtoStr[0][0] := 'Windows 10';
+             end;
+
+ if ((Win32MinorVersion = 3) and (Win32MajorVersion = 6)) then
+          begin
+            MassivAvtoStr[0][1] := 'Windows 8.1';
+               MassivAvtoStr[0][0] := 'Windows 8.1';
+             end;
+
+ if ((Win32MinorVersion = 2) and (Win32MajorVersion = 6)) then
+          begin
+            MassivAvtoStr[0][1] := 'Windows 8';
+               MassivAvtoStr[0][0] := 'Windows 8';
+             end;
+
+ { подверсии
+  PRODUCT_BUSINESS = $00000006;
+  PRODUCT_BUSINESS_N = $00000010;
+  PRODUCT_CLUSTER_SERVER = $00000012;
+  PRODUCT_DATACENTER_SERVER = $00000008;
+  PRODUCT_DATACENTER_SERVER_CORE = $0000000C;
+  PRODUCT_DATACENTER_SERVER_CORE_V = $00000027;
+  PRODUCT_DATACENTER_SERVER_V = $00000025;
+  PRODUCT_ENTERPRISE = $00000004;
+  PRODUCT_ENTERPRISE_N = $0000001B;
+  PRODUCT_ENTERPRISE_SERVER = $0000000A;
+  PRODUCT_ENTERPRISE_SERVER_CORE = $0000000E;
+  PRODUCT_ENTERPRISE_SERVER_CORE_V = $00000029;
+  PRODUCT_ENTERPRISE_SERVER_IA64 = $0000000F;
+  PRODUCT_ENTERPRISE_SERVER_V = $00000026;
+  PRODUCT_HOME_BASIC = $00000002;
+  PRODUCT_HOME_BASIC_N = $00000005;
+  PRODUCT_HOME_PREMIUM = $00000003;
+  PRODUCT_HOME_PREMIUM_N = $0000001A;
+  PRODUCT_HYPERV = $0000002A;
+  PRODUCT_MEDIUMBUSINESS_SERVER_MANAGEMENT = $0000001E;
+  PRODUCT_MEDIUMBUSINESS_SERVER_MESSAGING = $00000020;
+  PRODUCT_MEDIUMBUSINESS_SERVER_SECURITY = $0000001F;
+  PRODUCT_SERVER_FOR_SMALLBUSINESS = $00000018;
+  PRODUCT_SERVER_FOR_SMALLBUSINESS_V = $00000023;
+  PRODUCT_SERVER_FOUNDATION = $00000021;
+  PRODUCT_SMALLBUSINESS_SERVER = $00000009;
+  PRODUCT_STANDARD_SERVER = $00000007;
+  PRODUCT_STANDARD_SERVER_CORE = $0000000D;
+  PRODUCT_STANDARD_SERVER_CORE_V = $00000028;
+  PRODUCT_STANDARD_SERVER_V = $00000024;
+  PRODUCT_STARTER = $0000000B;
+  PRODUCT_STORAGE_ENTERPRISE_SERVER = $00000017;
+  PRODUCT_STORAGE_EXPRESS_SERVER = $00000014;
+  PRODUCT_STORAGE_STANDARD_SERVER = $00000015;
+  PRODUCT_STORAGE_WORKGROUP_SERVER = $00000016;
+  PRODUCT_UNDEFINED = $00000000;
+  PRODUCT_ULTIMATE = $00000001;
+  PRODUCT_ULTIMATE_N = $0000001C;
+  PRODUCT_WEB_SERVER = $00000011;
+  PRODUCT_WEB_SERVER_CORE = $0000001D;
+  PRODUCT_SMALLBUSINESS_SERVER_PREMIUM = $00000019;
+                                                            }
+  //конец определения версии ос
+
+
     for N := 0 to MyList2.Count - 1 do
   begin
+    if N >= 1 then
+    begin
     MassivAvtoStr[N][1] := MyFiltrList[N];
     MassivAvtoStr[N][0] := MyList2[N];
     MassivAvtoStr[N][7] := MyList4[N];
+    end;
     SQLQuery1.Close;
     SQLQuery1.Active:=false;
     SQLQuery1.SQL.Clear;
+    if N >= 1 then
+    begin
     s := 'SELECT * FROM program WHERE (name LIKE "' + MyFiltrList[N] + '%%")';
+    end;
+
+    if N = 0 then
+    begin
+    s := 'SELECT * FROM program WHERE (name LIKE "' + MassivAvtoStr[N][1] + '%%")';
+    end;
+
     SQLQuery1.SQL.Add(s);
     SQLQuery1.Active:=true;
     MassivAvtoStr[N][8]:= SQLQuery1.FieldByName('id').AsString;
@@ -8755,6 +8955,8 @@ begin
     UTF8Delete(FiltrNameProg, UTF8Pos(' CC 2015', FiltrNameProg), UTF8Length(FiltrNameProg));
     UTF8Delete(FiltrNameProg, UTF8Pos(' CC 2016', FiltrNameProg), UTF8Length(FiltrNameProg));
     UTF8Delete(FiltrNameProg, UTF8Pos(' CC 2017', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' CC 2018', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' CC 2019', FiltrNameProg), UTF8Length(FiltrNameProg));
     UTF8Delete(FiltrNameProg, UTF8Pos(' 2015.1', FiltrNameProg), UTF8Length(FiltrNameProg));
     UTF8Delete(FiltrNameProg, UTF8Pos(' 2015.2', FiltrNameProg), UTF8Length(FiltrNameProg));
     UTF8Delete(FiltrNameProg, UTF8Pos(' 2015.3', FiltrNameProg), UTF8Length(FiltrNameProg));
@@ -8770,9 +8972,21 @@ begin
     UTF8Delete(FiltrNameProg, UTF8Pos(' 2017.3', FiltrNameProg), UTF8Length(FiltrNameProg));
     UTF8Delete(FiltrNameProg, UTF8Pos(' 2017.4', FiltrNameProg), UTF8Length(FiltrNameProg));
     UTF8Delete(FiltrNameProg, UTF8Pos(' 2017.5', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' 2018.1', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' 2018.2', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' 2018.3', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' 2018.4', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' 2018.5', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' 2019.1', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' 2019.2', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' 2019.3', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' 2019.4', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' 2019.5', FiltrNameProg), UTF8Length(FiltrNameProg));
     UTF8Delete(FiltrNameProg, UTF8Pos(' 2015', FiltrNameProg), UTF8Length(FiltrNameProg));
     UTF8Delete(FiltrNameProg, UTF8Pos(' 2016', FiltrNameProg), UTF8Length(FiltrNameProg));
     UTF8Delete(FiltrNameProg, UTF8Pos(' 2017', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' 2018', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' 2019', FiltrNameProg), UTF8Length(FiltrNameProg));
     UTF8Delete(FiltrNameProg, UTF8Pos(' 2007', FiltrNameProg), UTF8Length(FiltrNameProg));
     UTF8Delete(FiltrNameProg, UTF8Pos(' 2008', FiltrNameProg), UTF8Length(FiltrNameProg));
     UTF8Delete(FiltrNameProg, UTF8Pos(' 2009', FiltrNameProg), UTF8Length(FiltrNameProg));
@@ -10558,6 +10772,7 @@ Var
      Nst4Pos:Word;
      Nst5Pos:Word;
      Nst6Pos:Word;
+     Cifra:word;
 Begin
 lProgress.Caption:='Пожалуйста, подождите';
  ProgressBar1.Position:=0;
@@ -10575,6 +10790,7 @@ MyListRuch:=TStringListUTF8.Create;
 //put := path.FileName + '\';
   //No need to create the stringlist; the function does that for you
   MyListRuch := FindAllFiles(put, '*.exe', true); //find e.g. all pascal sourcefiles
+
 
   //пробую сделать сбор названий папок
   //решил закрыть, ибо ввёл доп строку в базу
@@ -10649,8 +10865,9 @@ ProgressBar1.Position:=3;
    FiltrStr:=SQLQuery3.FieldByName('file').AsString;
    if FiltrStr='' then
    begin
-   s := 'SELECT * FROM program WHERE (name LIKE "' + MyFiltrList2[N] + '%%")';
-    SQLQuery3.Close;
+   //s := 'SELECT * FROM program WHERE (name LIKE "' + MyFiltrList2[N] + '%%")';
+   s := 'SELECT * FROM program WHERE (file LIKE "' + MyFiltrList2[N] + '")';
+    SQLQuery3.Close;                          // ТУТ ЗАКОНЧИЛ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     SQLQuery3.Active:=false;
     SQLQuery3.SQL.Clear;
     SQLQuery3.SQL.Add(s);
@@ -10680,9 +10897,10 @@ ProgressBar1.Position:=3;
     if UTF8Pos('Uninstall.exe', MassivRuchStr[N][0])<>0 then continue;
     if UTF8Pos('uninstall.exe', MassivRuchStr[N][0])<>0 then continue;
     if UTF8Pos('uninst.exe', MassivRuchStr[N][0])<>0 then continue;
+    if (UTF8Length(MassivRuchStr[N][1]) < 3) then continue;
     SQLQuery3.ParamByName('pText7').AsString := MassivRuchStr[N][0];   //st7  Путь
-    SQLQuery3.ParamByName('pText2').AsString := MassivRuchStr[N][1];  //st2  Название
-    SQLQuery3.ParamByName('pText').AsString := MassivRuchStr[N][2];  //st1  Исходный запрос
+    SQLQuery3.ParamByName('pText2').AsString := MassivRuchStr[N][1];  //st2  Исходный запрос
+    SQLQuery3.ParamByName('pText').AsString := MassivRuchStr[N][2];  //st1  Название
     SQLQuery3.ParamByName('pText3').AsString := MassivRuchStr[N][3];  //st3  Тип ПО
     SQLQuery3.ParamByName('pText4').AsString := MassivRuchStr[N][4];  //st4  Лицензия
     SQLQuery3.ParamByName('pText5').AsString := MassivRuchStr[N][5];  //st5  Стоимость
@@ -10695,12 +10913,12 @@ ProgressBar1.Position:=3;
 
  //начало постройки запроса согласно настройкам программы
 
-    SQLQuery1.Close;
-    SQLQuery1.Active:=false;
-    SQLQuery1.SQL.Clear;
+    SQLQuery4.Close;
+    SQLQuery4.Active:=false;
+    SQLQuery4.SQL.Clear;
     s := 'select * from setting';
-    SQLQuery1.SQL.Add(s);
-    SQLQuery1.Active:=true;
+    SQLQuery4.SQL.Add(s);
+    SQLQuery4.Active:=true;
 
  {SQLQuery1.SQL.Clear;
  SQLQuery1.SQL.Text:='select * from setting';
@@ -10710,22 +10928,22 @@ ProgressBar1.Position:=3;
  s := '';
  s := 'SELECT ';
 
- Nst7:=SQLQuery1.FieldByName('RuchSt7').AsInteger;
+ Nst7:=SQLQuery4.FieldByName('RuchSt7').AsInteger;
  if Nst7 = 1 then
  s := s + 'st7';    //   путь
 
- Nst2:=SQLQuery1.FieldByName('RuchSt2').AsInteger;
+ Nst2:=SQLQuery4.FieldByName('RuchSt2').AsInteger;
  if (Nst2 = 1) and (Nst7 = 1) then
  s := s + ', st2';     // название
 
  if (Nst2 = 1) and (Nst7 = 0) then
  s := s + ' st2';
 
- Nst1:=SQLQuery1.FieldByName('RuchSt1').AsInteger;
- Nst3:=SQLQuery1.FieldByName('RuchSt3').AsInteger;
- Nst4:=SQLQuery1.FieldByName('RuchSt4').AsInteger;
- Nst5:=SQLQuery1.FieldByName('RuchSt5').AsInteger;
- Nst6:=SQLQuery1.FieldByName('RuchSt6').AsInteger;
+ Nst1:=SQLQuery4.FieldByName('RuchSt1').AsInteger;
+ Nst3:=SQLQuery4.FieldByName('RuchSt3').AsInteger;
+ Nst4:=SQLQuery4.FieldByName('RuchSt4').AsInteger;
+ Nst5:=SQLQuery4.FieldByName('RuchSt5').AsInteger;
+ Nst6:=SQLQuery4.FieldByName('RuchSt6').AsInteger;
 
  if Nst1 = 1 then
  begin
@@ -11429,14 +11647,14 @@ DBGrid2.Columns[Nst7Pos].Width:= 200;
 end;
 if Nst2 = 1 then
 begin
-DBGrid2.Columns[Nst2Pos].Title.Caption:='Название';
-DBGrid2.Columns[Nst2Pos].Width:= 110;
+DBGrid2.Columns[Nst2Pos].Title.Caption:='Исходный запрос';
+DBGrid2.Columns[Nst2Pos].Width:= 80;  // ранее было написано Название
 end;
 
 if Nst1 = 1 then
 begin
-DBGrid2.Columns[Nst1Pos].Title.Caption:='Исходный запрос';
-DBGrid2.Columns[Nst1Pos].Width:= 80;
+DBGrid2.Columns[Nst1Pos].Title.Caption:='Название';
+DBGrid2.Columns[Nst1Pos].Width:= 110;    // ранее было написано Исходный запрос
 end;
 
 if Nst3 = 1 then
@@ -11480,7 +11698,17 @@ DBGrid2.Columns[5].Width:= 120;   }
 end;
 
 procedure TfMian.bUkazKatalogClick(Sender: TObject);
+var
+s:string;
+StRuchFullDisk:Word;
 begin
+  SQLQuery2.Close;
+  SQLQuery2.Active:=false;
+  SQLQuery2.SQL.Clear;
+  s := 'select * from setting';
+  SQLQuery2.SQL.Add(s);
+  SQLQuery2.Active:=true;
+
   //     пытаюсь получить каталог
 path := TSelectDirectoryDialog.Create(Application);
 if path.Execute then leKatalogSearch.Text:= path.FileName;
@@ -11488,6 +11716,9 @@ if path.Execute then leKatalogSearch.Text:= path.FileName;
 //    конец получения каталога
 //showmessage(path.FileName);
 put := path.FileName + '\';
+StRuchFullDisk:=SQLQuery2.FieldByName('RuchFullDisk').AsInteger;
+  if StRuchFullDisk=0 then
+  begin
 if path.FileName = 'C:\' then
 begin
    Application.MessageBox('Пожалуйста, не указывайте для поиска весь диск!!! Для поиска укажите конкретную папку с программами.',
@@ -11514,6 +11745,10 @@ begin
      'Указан весь диск', MB_ICONERROR + MB_OK);
    if path.Execute then leKatalogSearch.Text:= path.FileName;
    end;
+
+ exit;
+  end;
+
 end;
 
 procedure TfMian.bViewZamPodrobClick(Sender: TObject);
@@ -11583,6 +11818,7 @@ var
      MyListLicSog1: TStringList;
      MyListLicSog2: TStringList;
      MyListLicSog3: TStringList;
+     MyListLicSog4: TStringList;
      N:word;
      FiltrStrLicSog:String;
      pathLicSog : TSelectDirectoryDialog;
@@ -11718,9 +11954,11 @@ begin
   MyListLicSog1:=TStringList.Create;
   MyListLicSog2:=TStringList.Create;
   MyListLicSog3:=TStringList.Create;
+  MyListLicSog4:=TStringList.Create;
   MyListLicSog1 := FindAllFiles(putLicSog, 'License*.*', true);
   MyListLicSog2 := FindAllFiles(putLicSog, 'EULA*.*', true);
   MyListLicSog3 := FindAllFiles(putLicSog, 'COPYING*.*', true);
+  MyListLicSog4 := FindAllFiles(putLicSog, 'GPL*.*', true);
  if MyListLicSog1.Count<>0 then
   begin
   for N := 0 to MyListLicSog1.Count - 1 do
@@ -11775,6 +12013,26 @@ begin
     //ComboBox1.Items.Add(MyListLicSog3[N]);
   end;
   end;
+
+    if MyListLicSog4.Count<>0 then
+  begin
+  for N := 0 to MyListLicSog4.Count - 1 do
+  begin
+    FiltrStrLicSog:='';
+    FiltrStrLicSog:=MyListLicSog4[N];
+    if UTF8Pos('.png', FiltrStrLicSog)<>0 then continue;
+    if UTF8Pos('.css', FiltrStrLicSog)<>0 then continue;
+    if UTF8Pos('.dll', FiltrStrLicSog)<>0 then continue;
+    if UTF8Pos('.ini', FiltrStrLicSog)<>0 then continue;
+    if UTF8Pos('.exe', FiltrStrLicSog)<>0 then continue;
+    //Delete(FiltrStrLicSog, Pos('"', FiltrStrLicSog), 1);
+    //UTF8Delete(FiltrStrLicSog, UTF8Pos(putLicSog, FiltrStrLicSog), UTF8Length(putLicSog));
+    ComboBox1.Items.Add(FiltrStrLicSog);
+    //if (ComboBox1.Items.Count<>0) then ComboBox1.ItemIndex:=0;
+    //ComboBox1.Items.Add(MyListLicSog4[N]);
+  end;
+  end;
+
   //if (ComboBox1.Items.Count<>0) then ComboBox1.ItemIndex:=0;
   tsLicenseSogl.Caption:='Лицензионное соглашение ('+ (IntToStr(ComboBox1.Items.Count)) + ')';
   end
@@ -11839,6 +12097,8 @@ begin
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' CC 2015', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' CC 2016', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' CC 2017', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' CC 2018', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' CC 2019', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2015.1', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2015.2', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2015.3', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
@@ -11854,9 +12114,21 @@ begin
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2017.3', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2017.4', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2017.5', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2018.1', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2018.2', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2018.3', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2018.4', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2018.5', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2019.1', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2019.2', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2019.3', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2019.4', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2019.5', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2015', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2016', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2017', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2018', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2019', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2007', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2008', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2009', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
@@ -11868,6 +12140,8 @@ begin
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' (2015', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' (2016', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' (2017', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' (2018', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' (2019', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' (2007', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' (2008', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' (2009', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));

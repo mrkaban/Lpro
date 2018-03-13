@@ -1,17 +1,17 @@
 object fMian: TfMian
-  Left = 278
+  Left = 261
   Height = 440
-  Top = 159
+  Top = 155
   Width = 853
-  Caption = 'Lpro 1.4.5 - Проверка лицензий установленных программ'
+  Caption = 'Lpro 1.4.7 - Проверка лицензий установленных программ'
   ClientHeight = 420
   ClientWidth = 853
   Menu = MainMenu1
   OnClose = FormClose
   OnCreate = FormCreate
   PopupMenu = PopupMenu1
-  Position = poDesktopCenter
-  LCLVersion = '1.6.4.0'
+  Position = poScreenCenter
+  LCLVersion = '1.8.0.6'
   object ToolBar1: TToolBar
     Left = 0
     Height = 26
@@ -60,7 +60,6 @@ object fMian: TfMian
       Left = 26
       Height = 22
       Top = 2
-      Width = 8
       Caption = 'ToolButton1'
       Style = tbsSeparator
     end
@@ -68,7 +67,6 @@ object fMian: TfMian
       Left = 126
       Height = 22
       Top = 2
-      Width = 8
       Caption = 'ToolButton2'
       Style = tbsSeparator
     end
@@ -108,7 +106,6 @@ object fMian: TfMian
       Left = 249
       Height = 22
       Top = 2
-      Width = 8
       Caption = 'ToolButton3'
       Style = tbsSeparator
     end
@@ -156,7 +153,6 @@ object fMian: TfMian
       Left = 372
       Height = 22
       Top = 2
-      Width = 8
       Caption = 'ToolButton4'
       Style = tbsSeparator
     end
@@ -819,6 +815,7 @@ object fMian: TfMian
           Top = 8
           Width = 75
           Caption = 'Regedit'
+          Enabled = False
           OnClick = bRegeditClick
           TabOrder = 9
         end
@@ -3564,7 +3561,6 @@ object fMian: TfMian
     KeepConnection = False
     Transaction = SQLTransaction1
     CharSet = 'UTF8'
-    Options = []
     left = 280
     top = 184
   end
@@ -3573,15 +3569,13 @@ object fMian: TfMian
     FieldDefs = <>
     Database = SQLite3Connection1
     Transaction = SQLTransaction1
-    Options = []
     Params = <>
-    left = 232
-    top = 112
+    left = 744
+    top = 304
   end
   object SQLTransaction1: TSQLTransaction
     Active = False
     Database = SQLite3Connection1
-    Options = []
     left = 344
     top = 112
   end
@@ -3625,7 +3619,6 @@ object fMian: TfMian
   object SQLTransaction3: TSQLTransaction
     Active = False
     Database = SQLite3Connection1
-    Options = []
     left = 744
     top = 64
   end
@@ -3634,10 +3627,9 @@ object fMian: TfMian
     FieldDefs = <>
     Database = SQLite3Connection1
     Transaction = SQLTransaction1
-    Options = []
     Params = <>
-    left = 688
-    top = 64
+    left = 744
+    top = 176
   end
   object DataSource3: TDataSource
     DataSet = SQLQuery3
@@ -3647,7 +3639,6 @@ object fMian: TfMian
   object SQLTransaction4: TSQLTransaction
     Active = False
     Database = SQLite3Connection1
-    Options = []
     left = 584
     top = 120
   end
@@ -3661,7 +3652,6 @@ object fMian: TfMian
     FieldDefs = <>
     Database = SQLite3Connection1
     Transaction = SQLTransaction1
-    Options = []
     Params = <>
     left = 744
     top = 112
@@ -3671,24 +3661,22 @@ object fMian: TfMian
     FieldDefs = <>
     Database = SQLite3Connection1
     Transaction = SQLTransaction1
-    Options = []
     Params = <>
-    left = 416
-    top = 64
+    left = 744
+    top = 240
   end
   object SQLQueryAllVar: TSQLQuery
     PacketRecords = -1
     FieldDefs = <>
     Database = SQLite3Connection1
     Transaction = SQLTransaction1
-    Options = []
     Params = <>
-    left = 496
-    top = 64
+    left = 448
+    top = 168
   end
   object DataSourceAllVar: TDataSource
     DataSet = SQLQueryAllVar
-    left = 552
-    top = 40
+    left = 504
+    top = 96
   end
 end

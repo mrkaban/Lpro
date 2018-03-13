@@ -9,6 +9,11 @@
       <Title Value="Lpro"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
+      <XPManifest>
+        <ExecutionLevel Value="requireAdministrator"/>
+        <TextName Value="ContinentFreedom.Lpro"/>
+        <TextDesc Value="Программа для проверки лицензий установленных программ от КонтинентСвободы.рф."/>
+      </XPManifest>
       <Icon Value="0"/>
     </General>
     <i18n>
@@ -19,7 +24,6 @@
       <MajorVersionNr Value="1"/>
       <MinorVersionNr Value="3"/>
       <Language Value="0419"/>
-      <StringTable ProductVersion=""/>
     </VersionInfo>
     <BuildModes Count="1">
       <Item1 Name="Default" Default="True"/>

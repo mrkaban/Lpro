@@ -19,11 +19,14 @@ type
     cbAvtoUnkProg: TCheckBox;
     cgAvtoKol: TCheckGroup;
     cgRuchKol: TCheckGroup;
+    cbRuchFullDisk: TCheckBox;
     DataSource1: TDataSource;
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
+    Label5: TLabel;
+    Label6: TLabel;
     PageControl1: TPageControl;
     Panel1: TPanel;
     SettingsAvtopoisk: TTabSheet;
@@ -74,6 +77,7 @@ var
   RuchKol4:Integer;
   RuchKol5:Integer;
   RuchKol6:Integer;
+  RuchFullDisk:Integer;
 begin
      //      // очищаем старое содержимое
         SQLQuery1.Close;
@@ -234,11 +238,23 @@ begin
     RuchKol6:=0;
     end;
 
+    if cbRuchFullDisk.Checked = False then
+    begin
+    RuchFullDisk:=0;
+    end;
+
+    if cbRuchFullDisk.Checked = True then
+    begin
+    RuchFullDisk:=1;  // галочка разрешить указать весь диск
+    end;
+
+
+
     SQLQuery1.Close;
     SQLQuery1.SQL.Clear;
     //    Запись
-    SQLQuery1.SQL.Add('insert into setting(ID, AvtoUnkProg, AvtoSt7, AvtoSt2, AvtoSt3, AvtoSt4, AvtoSt5, AvtoSt6, RuchSt7, RuchSt2, RuchSt1, RuchSt3, RuchSt4, RuchSt5, RuchSt6)');
-    SQLQuery1.SQL.Add('Values (:pText, :pText2, :pText3, :pText4, :pText5, :pText6, :pText7, :pText8, :pText9, :pText10, :pText11, :pText12, :pText13, :pText14, :pText15)');
+    SQLQuery1.SQL.Add('insert into setting(ID, AvtoUnkProg, AvtoSt7, AvtoSt2, AvtoSt3, AvtoSt4, AvtoSt5, AvtoSt6, RuchSt7, RuchSt2, RuchSt1, RuchSt3, RuchSt4, RuchSt5, RuchSt6, RuchFullDisk)');
+    SQLQuery1.SQL.Add('Values (:pText, :pText2, :pText3, :pText4, :pText5, :pText6, :pText7, :pText8, :pText9, :pText10, :pText11, :pText12, :pText13, :pText14, :pText15, :pText16)');
     SQLQuery1.ParamByName('pText').AsInteger := ID;
     SQLQuery1.ParamByName('pText2').AsInteger := AvtoUnkProg;
     SQLQuery1.ParamByName('pText3').AsInteger := AvtoKol0;
@@ -254,6 +270,7 @@ begin
     SQLQuery1.ParamByName('pText13').AsInteger := RuchKol4;
     SQLQuery1.ParamByName('pText14').AsInteger := RuchKol5;
     SQLQuery1.ParamByName('pText15').AsInteger := RuchKol6;
+    SQLQuery1.ParamByName('pText16').AsInteger := RuchFullDisk;
     SQLQuery1.ExecSQL;
     Close;
 end;
@@ -444,6 +461,15 @@ begin          // выставляем значения чекбоксов в с
   if N = null then
   cgRuchKol.Checked[6] := False;
 
+  //галочка разрешить указывать весь диск
+   N:=SQLQuery1.FieldByName('RuchFullDisk').AsInteger;
+ if N = 1 then
+  cbRuchFullDisk.Checked := True;
+
+ N:=SQLQuery1.FieldByName('RuchFullDisk').AsInteger;
+ if N = 0 then
+  cbRuchFullDisk.Checked := False;
+
 end;
 
 procedure TfSettings.bAvtoAppleClick(Sender: TObject);
@@ -463,6 +489,7 @@ var
   RuchKol4:Integer;
   RuchKol5:Integer;
   RuchKol6:Integer;
+  RuchFullDisk:Integer;
 begin
      //      // очищаем старое содержимое
         SQLQuery1.Close;
@@ -626,11 +653,22 @@ begin
     RuchKol6:=0;
     end;
 
+    if cbRuchFullDisk.Checked = False then
+    begin
+    RuchFullDisk:=0;
+    end;
+
+    if cbRuchFullDisk.Checked = True then
+    begin
+    RuchFullDisk:=1;  // галочка разрешить указать весь диск
+    end;
+
+
     SQLQuery1.Close;
     SQLQuery1.SQL.Clear;
     //    Запись
-    SQLQuery1.SQL.Add('insert into setting(ID, AvtoUnkProg, AvtoSt7, AvtoSt2, AvtoSt3, AvtoSt4, AvtoSt5, AvtoSt6, RuchSt7, RuchSt2, RuchSt1, RuchSt3, RuchSt4, RuchSt5, RuchSt6)');
-    SQLQuery1.SQL.Add('Values (:pText, :pText2, :pText3, :pText4, :pText5, :pText6, :pText7, :pText8, :pText9, :pText10, :pText11, :pText12, :pText13, :pText14, :pText15)');
+    SQLQuery1.SQL.Add('insert into setting(ID, AvtoUnkProg, AvtoSt7, AvtoSt2, AvtoSt3, AvtoSt4, AvtoSt5, AvtoSt6, RuchSt7, RuchSt2, RuchSt1, RuchSt3, RuchSt4, RuchSt5, RuchSt6, RuchFullDisk)');
+    SQLQuery1.SQL.Add('Values (:pText, :pText2, :pText3, :pText4, :pText5, :pText6, :pText7, :pText8, :pText9, :pText10, :pText11, :pText12, :pText13, :pText14, :pText15, :pText16)');
     SQLQuery1.ParamByName('pText').AsInteger := ID;
     SQLQuery1.ParamByName('pText2').AsInteger := AvtoUnkProg;
     SQLQuery1.ParamByName('pText3').AsInteger := AvtoKol0;
@@ -646,6 +684,7 @@ begin
     SQLQuery1.ParamByName('pText13').AsInteger := RuchKol4;
     SQLQuery1.ParamByName('pText14').AsInteger := RuchKol5;
     SQLQuery1.ParamByName('pText15').AsInteger := RuchKol6;
+    SQLQuery1.ParamByName('pText16').AsInteger := RuchFullDisk;
     SQLQuery1.ExecSQL;
 end;
 
