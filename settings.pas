@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, sqlite3conn, sqldb, db, FileUtil, Forms, Controls,
-  Graphics, Dialogs, ComCtrls, StdCtrls, CheckLst, ExtCtrls;
+  Graphics, Dialogs, ComCtrls, StdCtrls, CheckLst, ExtCtrls, Types;
 
 type
 
@@ -16,30 +16,48 @@ type
     bAvtoApple: TButton;
     bAvtoCancel: TButton;
     bAvtoOk: TButton;
+    bUserdbAddtobase: TButton;
+    bUserdbSyncdb: TButton;
     cbAvtoUnkProg: TCheckBox;
     cgAvtoKol: TCheckGroup;
     cgRuchKol: TCheckGroup;
     cbRuchFullDisk: TCheckBox;
     DataSource1: TDataSource;
+    DataSourceUserDB: TDataSource;
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
     Label5: TLabel;
     Label6: TLabel;
+    Label7: TLabel;
+    Label8: TLabel;
+    leUserdbFile: TLabeledEdit;
+    leUserDBZamena: TLabeledEdit;
+    leUserdbCena: TLabeledEdit;
+    leUserDBLicense: TLabeledEdit;
+    leUserdbType: TLabeledEdit;
+    leUserDBName: TLabeledEdit;
     PageControl1: TPageControl;
     Panel1: TPanel;
     SettingsAvtopoisk: TTabSheet;
     SQLite3Connection1: TSQLite3Connection;
+    SQLite3ConnUserDB: TSQLite3Connection;
     SQLQuery1: TSQLQuery;
+    SQLQuerUserDB: TSQLQuery;
     SQLTransaction1: TSQLTransaction;
+    SQLTransUserDB: TSQLTransaction;
     TabSheet1: TTabSheet;
+    TabSheet2: TTabSheet;
     procedure bAvtoAppleClick(Sender: TObject);
     procedure bAvtoCancelClick(Sender: TObject);
     procedure bAvtoOkClick(Sender: TObject);
+    procedure bUserdbAddtobaseClick(Sender: TObject);
+    procedure bUserdbSyncdbClick(Sender: TObject);
     procedure cgAvtoKolItemClick(Sender: TObject; Index: integer);
     procedure cgRuchKolItemClick(Sender: TObject; Index: integer);
     procedure FormActivate(Sender: TObject);
+
   private
     { private declarations }
   public
@@ -275,6 +293,130 @@ begin
     Close;
 end;
 
+procedure TfSettings.bUserdbAddtobaseClick(Sender: TObject);
+var
+   UserDBName:string;
+   UserdbType:string;
+   UserDBLicense:string;
+   UserdbCena:string;
+   UserDBZamena:string;
+   UserdbFile:string;
+begin
+    if leUserDBName.Text = '' then
+    begin
+    showmessage('Пожалуйста, введите название программы.');
+    exit;
+    end;
+    if leUserDBName.Text = Null then
+    begin
+    showmessage('Пожалуйста, введите название программы.');
+    exit;
+    end;
+
+    if leUserdbType.Text = '' then
+    begin
+    showmessage('Пожалуйста, укажите Тип программы.');
+    exit;
+    end;
+
+    if leUserdbType.Text = Null then
+    begin
+    showmessage('Пожалуйста, укажите Тип программы.');
+    exit;
+    end;
+
+    UserDBName := leUserDBName.Text;
+    UserdbType := leUserdbType.Text;
+    UserDBLicense := leUserDBLicense.Text;
+    UserdbCena := leUserdbCena.Text;
+    UserDBZamena := leUserDBZamena.Text;
+    UserdbFile := leUserdbFile.Text;
+//  запись
+
+    SQLQuerUserDB.Close;
+    SQLQuerUserDB.SQL.Clear;
+    SQLQuerUserDB.SQL.Add('insert into UserProgram(name, type, license, cena, zamena, file)');
+    SQLQuerUserDB.SQL.Add('Values (:pText, :pText2, :pText3, :pText4, :pText5, :pText6)');
+    SQLQuerUserDB.ParamByName('pText').AsString := UserDBName;
+    SQLQuerUserDB.ParamByName('pText2').AsString := UserdbType;
+    SQLQuerUserDB.ParamByName('pText3').AsString := UserDBLicense;
+    SQLQuerUserDB.ParamByName('pText4').AsString := UserdbCena;
+    SQLQuerUserDB.ParamByName('pText5').AsString := UserDBZamena;
+    SQLQuerUserDB.ParamByName('pText6').AsString := UserdbFile;
+    SQLQuerUserDB.ExecSQL;
+    SQLTransUserDB.CommitRetaining;
+
+end;
+
+procedure TfSettings.bUserdbSyncdbClick(Sender: TObject);
+var
+MassivUserSync: array of array of string;
+KolVoEl:integer;
+N:integer;
+kkk:String;
+begin
+    //  Удаляю пользовательские записи из основной базы
+    kkk := '1000';
+    SQLQuery1.Close;
+        SQLQuery1.SQL.Text := 'DELETE FROM program WHERE (ID LIKE "' + kkk + '%%")';
+        SQLQuery1.ExecSQL;
+        SQLTransaction1.CommitRetaining;
+    //s := 'SELECT * FROM program WHERE (name LIKE "' + MyFiltrList[N] + '%%")';
+   { SQLQuery1.Close;
+      SQLQuery1.Active:=false;
+      SQLQuery1.SQL.Clear;
+      SQLQuery1.SQL.Add('DELETE FROM program WHERE (ID LIKE "' + kkk + '%%")');
+      SQLQuery1.Active:=true;     }
+
+    // узнаю количество записей в базе
+    SQLQuerUserDB.Close;
+      SQLQuerUserDB.Active:=false;
+      SQLQuerUserDB.SQL.Clear;
+      SQLQuerUserDB.SQL.Add('SELECT Count (*) as cnt From UserProgram');
+      SQLQuerUserDB.Active:=true;
+      KolVoEl:= StrToInt(SQLQuerUserDB.FieldByName('cnt').AsString);
+
+      SQLQuery1.Close;
+  SQLQuery1.SQL.Clear;
+  SQLQuery1.SQL.Add('insert into Program(name, type, license, cena, zamena, file, ID)');
+  SQLQuery1.SQL.Add('Values (:pText, :pText2, :pText3, :pText4, :pText5, :pText6, :pText7)');
+
+//     showmessage(IntToStr(KolVoEl));
+  //SetLength(MassivUserSync, KolVoEl, 6);
+
+      SQLQuerUserDB.Close;
+      SQLQuerUserDB.Active:=false;
+      SQLQuerUserDB.SQL.Clear;
+      SQLQuerUserDB.SQL.Add('SELECT * FROM UserProgram');
+      SQLQuerUserDB.Open;
+      SetLength(MassivUserSync, KolVoEl, 6);
+      SQLQuerUserDB.First;
+      N := 0;
+   While not  SQLQuerUserDB.Eof do
+   begin
+      MassivUserSync[N][0]:= SQLQuerUserDB.FieldByName('name').AsString;
+      MassivUserSync[N][1]:= SQLQuerUserDB.FieldByName('type').AsString;
+      MassivUserSync[N][2]:= SQLQuerUserDB.FieldByName('license').AsString;
+      MassivUserSync[N][3]:= SQLQuerUserDB.FieldByName('cena').AsString;
+      MassivUserSync[N][4]:= SQLQuerUserDB.FieldByName('zamena').AsString;
+      MassivUserSync[N][5]:= SQLQuerUserDB.FieldByName('file').AsString;
+  //    showmessage(MassivUserSync[N][0]);
+      SQLQuerUserDB.Next;
+      SQLQuerUserDB.ExecSQL;;
+      SQLQuery1.ParamByName('pText').AsString := MassivUserSync[N][0];
+    SQLQuery1.ParamByName('pText2').AsString := MassivUserSync[N][1];
+    SQLQuery1.ParamByName('pText3').AsString := MassivUserSync[N][2];
+    SQLQuery1.ParamByName('pText4').AsString := MassivUserSync[N][3];
+    SQLQuery1.ParamByName('pText5').AsString := MassivUserSync[N][4];
+    SQLQuery1.ParamByName('pText6').AsString := MassivUserSync[N][5];
+    SQLQuery1.ParamByName('pText7').AsInteger := N + 10000;
+    SQLQuery1.ExecSQL;
+      N := N + 1;
+    end;
+
+showmessage('Синхронизация пользовательской базы с основной базой данных завершена.');
+end;
+
 procedure TfSettings.cgAvtoKolItemClick(Sender: TObject; Index: integer);
 var
   n2:integer;
@@ -471,6 +613,8 @@ begin          // выставляем значения чекбоксов в с
   cbRuchFullDisk.Checked := False;
 
 end;
+
+
 
 procedure TfSettings.bAvtoAppleClick(Sender: TObject);
 var

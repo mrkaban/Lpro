@@ -879,7 +879,7 @@ object fAbout: TfAbout
       Height = 21
       Top = 41
       Width = 37
-      Caption = '1.4.7'
+      Caption = '1.4.8'
       Font.CharSet = RUSSIAN_CHARSET
       Font.Height = -19
       Font.Name = 'Times New Roman'

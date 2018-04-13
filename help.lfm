@@ -8,7 +8,7 @@ object fHelp: TfHelp
   ClientWidth = 890
   OnCreate = FormCreate
   Position = poMainFormCenter
-  LCLVersion = '1.6.0.4'
+  LCLVersion = '1.8.0.6'
   object IpHtmlPanel1: TIpHtmlPanel
     Left = 200
     Height = 513
@@ -24,11 +24,15 @@ object fHelp: TfHelp
     PrintSettings.MarginTop = 0.5
     PrintSettings.MarginRight = 0.5
     PrintSettings.MarginBottom = 0.5
+    PrintSettings.Preview.Left = 480
+    PrintSettings.Preview.Top = 270
+    PrintSettings.Preview.Width = 1440
+    PrintSettings.Preview.Height = 810
     TabOrder = 0
   end
   object RGrazdeli: TRadioGroup
     Left = 8
-    Height = 201
+    Height = 224
     Top = 0
     Width = 185
     AutoFill = True
@@ -40,7 +44,7 @@ object fHelp: TfHelp
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 181
+    ClientHeight = 204
     ClientWidth = 181
     ItemIndex = 0
     Items.Strings = (
@@ -52,6 +56,7 @@ object fHelp: TfHelp
       'Установленное ПО'
       'Поиск в базе'
       'Подбор замены'
+      'Настройки'
       'Возможные ошибки'
     )
     OnSelectionChanged = RGrazdeliSelectionChanged

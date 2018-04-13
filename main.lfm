@@ -3,7 +3,7 @@ object fMian: TfMian
   Height = 440
   Top = 155
   Width = 853
-  Caption = 'Lpro 1.4.7 - Проверка лицензий установленных программ'
+  Caption = 'Lpro 1.4.8 - Проверка лицензий установленных программ'
   ClientHeight = 420
   ClientWidth = 853
   Menu = MainMenu1
@@ -275,7 +275,7 @@ object fMian: TfMian
             Left = 0
             Height = 23
             Top = 16
-            Width = 184
+            Width = 176
             EditLabel.AnchorSideLeft.Control = leNamePodrob
             EditLabel.AnchorSideRight.Control = leNamePodrob
             EditLabel.AnchorSideRight.Side = asrBottom
@@ -283,25 +283,25 @@ object fMian: TfMian
             EditLabel.Left = 0
             EditLabel.Height = 15
             EditLabel.Top = -2
-            EditLabel.Width = 184
+            EditLabel.Width = 176
             EditLabel.Caption = 'Название из БД'
             EditLabel.ParentColor = False
             ReadOnly = True
             TabOrder = 0
           end
           object leIshName: TLabeledEdit
-            Left = 192
+            Left = 184
             Height = 23
             Top = 16
-            Width = 256
+            Width = 232
             EditLabel.AnchorSideLeft.Control = leIshName
             EditLabel.AnchorSideRight.Control = leIshName
             EditLabel.AnchorSideRight.Side = asrBottom
             EditLabel.AnchorSideBottom.Control = leIshName
-            EditLabel.Left = 192
+            EditLabel.Left = 184
             EditLabel.Height = 15
             EditLabel.Top = -2
-            EditLabel.Width = 256
+            EditLabel.Width = 232
             EditLabel.Caption = 'Исходное название'
             EditLabel.ParentColor = False
             ReadOnly = True
@@ -355,7 +355,7 @@ object fMian: TfMian
             TabOrder = 4
           end
           object leVersionPodrob: TLabeledEdit
-            Left = 456
+            Left = 424
             Height = 23
             Top = 16
             Width = 72
@@ -363,7 +363,7 @@ object fMian: TfMian
             EditLabel.AnchorSideRight.Control = leVersionPodrob
             EditLabel.AnchorSideRight.Side = asrBottom
             EditLabel.AnchorSideBottom.Control = leVersionPodrob
-            EditLabel.Left = 456
+            EditLabel.Left = 424
             EditLabel.Height = 15
             EditLabel.Top = -2
             EditLabel.Width = 72
@@ -391,7 +391,7 @@ object fMian: TfMian
             TabOrder = 6
           end
           object leInstallDatePodrob: TLabeledEdit
-            Left = 536
+            Left = 504
             Height = 23
             Top = 16
             Width = 88
@@ -399,7 +399,7 @@ object fMian: TfMian
             EditLabel.AnchorSideRight.Control = leInstallDatePodrob
             EditLabel.AnchorSideRight.Side = asrBottom
             EditLabel.AnchorSideBottom.Control = leInstallDatePodrob
-            EditLabel.Left = 536
+            EditLabel.Left = 504
             EditLabel.Height = 15
             EditLabel.Top = -2
             EditLabel.Width = 88
@@ -409,7 +409,7 @@ object fMian: TfMian
             TabOrder = 7
           end
           object leTypePoPodrob: TLabeledEdit
-            Left = 592
+            Left = 680
             Height = 23
             Top = 56
             Width = 152
@@ -417,7 +417,7 @@ object fMian: TfMian
             EditLabel.AnchorSideRight.Control = leTypePoPodrob
             EditLabel.AnchorSideRight.Side = asrBottom
             EditLabel.AnchorSideBottom.Control = leTypePoPodrob
-            EditLabel.Left = 592
+            EditLabel.Left = 680
             EditLabel.Height = 15
             EditLabel.Top = 38
             EditLabel.Width = 152
@@ -427,36 +427,36 @@ object fMian: TfMian
             TabOrder = 8
           end
           object leLicensePodrob: TLabeledEdit
-            Left = 632
+            Left = 600
             Height = 23
             Top = 16
-            Width = 112
+            Width = 96
             EditLabel.AnchorSideLeft.Control = leLicensePodrob
             EditLabel.AnchorSideRight.Control = leLicensePodrob
             EditLabel.AnchorSideRight.Side = asrBottom
             EditLabel.AnchorSideBottom.Control = leLicensePodrob
-            EditLabel.Left = 632
+            EditLabel.Left = 600
             EditLabel.Height = 15
             EditLabel.Top = -2
-            EditLabel.Width = 112
+            EditLabel.Width = 96
             EditLabel.Caption = 'Лицензия'
             EditLabel.ParentColor = False
             ReadOnly = True
             TabOrder = 9
           end
           object leStoimostPodrob: TLabeledEdit
-            Left = 752
+            Left = 704
             Height = 23
             Top = 16
-            Width = 80
+            Width = 72
             EditLabel.AnchorSideLeft.Control = leStoimostPodrob
             EditLabel.AnchorSideRight.Control = leStoimostPodrob
             EditLabel.AnchorSideRight.Side = asrBottom
             EditLabel.AnchorSideBottom.Control = leStoimostPodrob
-            EditLabel.Left = 752
+            EditLabel.Left = 704
             EditLabel.Height = 15
             EditLabel.Top = -2
-            EditLabel.Width = 80
+            EditLabel.Width = 72
             EditLabel.Caption = 'Стоимость'
             EditLabel.ParentColor = False
             ReadOnly = True
@@ -491,21 +491,30 @@ object fMian: TfMian
             ParentColor = False
           end
           object leIDPodrob: TLabeledEdit
-            Left = 752
+            Left = 784
             Height = 23
-            Top = 56
-            Width = 80
+            Top = 16
+            Width = 48
             EditLabel.AnchorSideLeft.Control = leIDPodrob
             EditLabel.AnchorSideRight.Control = leIDPodrob
             EditLabel.AnchorSideRight.Side = asrBottom
             EditLabel.AnchorSideBottom.Control = leIDPodrob
-            EditLabel.Left = 752
+            EditLabel.Left = 784
             EditLabel.Height = 15
-            EditLabel.Top = 38
-            EditLabel.Width = 80
+            EditLabel.Top = -2
+            EditLabel.Width = 48
             EditLabel.Caption = 'ID в базе'
             EditLabel.ParentColor = False
             TabOrder = 13
+          end
+          object bAvtoDel: TButton
+            Left = 592
+            Height = 25
+            Top = 56
+            Width = 75
+            Caption = 'Удалить'
+            OnClick = bAvtoDelClick
+            TabOrder = 14
           end
         end
         object tsLicenseSogl: TTabSheet
@@ -3598,6 +3607,7 @@ object fMian: TfMian
   object SelectDirectoryDialog1: TSelectDirectoryDialog
     Title = 'Пожалуйста, укажите каталог для сохранения установочного файла программы'
     FileName = 'Lpro.exe'
+    Options = [ofAllowMultiSelect, ofEnableSizing, ofViewDetail]
     left = 168
     top = 136
   end
@@ -3671,7 +3681,7 @@ object fMian: TfMian
     Database = SQLite3Connection1
     Transaction = SQLTransaction1
     Params = <>
-    left = 448
+    left = 456
     top = 168
   end
   object DataSourceAllVar: TDataSource

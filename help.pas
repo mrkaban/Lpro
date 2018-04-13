@@ -49,7 +49,8 @@ begin
         5 : IpHtmlPanel1.OpenURL(expandLocalHtmlFileName('help/Install-PO.html'));
         6 : IpHtmlPanel1.OpenURL(expandLocalHtmlFileName('help/Poisk-v-baze.html'));
         7 : IpHtmlPanel1.OpenURL(expandLocalHtmlFileName('help/Zamena.html'));
-        8 : IpHtmlPanel1.OpenURL(expandLocalHtmlFileName('help/Vozmozh-Oshibki.html'));
+        8 : IpHtmlPanel1.OpenURL(expandLocalHtmlFileName('help/Settings.html'));
+        9 : IpHtmlPanel1.OpenURL(expandLocalHtmlFileName('help/Vozmozh-Oshibki.html'));
       end;
 end;
 

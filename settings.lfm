@@ -133,8 +133,8 @@ object fSettings: TfSettings
         Height = 19
         Hint = 'Проверка всего диска может вызывать зависание программы и ошибки! Длина SQL запроса ограничена, а исполняемых файлов может быть слишком много!'
         Top = 40
-        Width = 193
-        Caption = 'Разрешить указывать весь диск'
+        Width = 205
+        Caption = 'Разрешить указывать весь раздел'
         ParentShowHint = False
         ShowHint = True
         TabOrder = 1
@@ -153,6 +153,147 @@ object fSettings: TfSettings
         Top = 24
         Width = 243
         Caption = 'иначе могут возникать зависания и ошибки'
+        ParentColor = False
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'База данных'
+      ClientHeight = 252
+      ClientWidth = 439
+      object Label7: TLabel
+        Left = 48
+        Height = 15
+        Top = 8
+        Width = 334
+        Caption = 'В данной вкладке можно подключить свою базу программ. '
+        ParentColor = False
+      end
+      object leUserDBName: TLabeledEdit
+        Left = 8
+        Height = 23
+        Top = 48
+        Width = 176
+        EditLabel.AnchorSideLeft.Control = leUserDBName
+        EditLabel.AnchorSideRight.Control = leUserDBName
+        EditLabel.AnchorSideRight.Side = asrBottom
+        EditLabel.AnchorSideBottom.Control = leUserDBName
+        EditLabel.Left = 8
+        EditLabel.Height = 15
+        EditLabel.Top = 30
+        EditLabel.Width = 176
+        EditLabel.Caption = 'Название программы'
+        EditLabel.ParentColor = False
+        TabOrder = 0
+      end
+      object leUserdbType: TLabeledEdit
+        Left = 200
+        Height = 23
+        Top = 48
+        Width = 128
+        EditLabel.AnchorSideLeft.Control = leUserdbType
+        EditLabel.AnchorSideRight.Control = leUserdbType
+        EditLabel.AnchorSideRight.Side = asrBottom
+        EditLabel.AnchorSideBottom.Control = leUserdbType
+        EditLabel.Left = 200
+        EditLabel.Height = 15
+        EditLabel.Top = 30
+        EditLabel.Width = 128
+        EditLabel.Caption = 'Тип ПО'
+        EditLabel.ParentColor = False
+        TabOrder = 1
+      end
+      object leUserDBLicense: TLabeledEdit
+        Left = 344
+        Height = 23
+        Top = 48
+        Width = 80
+        EditLabel.AnchorSideLeft.Control = leUserDBLicense
+        EditLabel.AnchorSideRight.Control = leUserDBLicense
+        EditLabel.AnchorSideRight.Side = asrBottom
+        EditLabel.AnchorSideBottom.Control = leUserDBLicense
+        EditLabel.Left = 344
+        EditLabel.Height = 15
+        EditLabel.Top = 30
+        EditLabel.Width = 80
+        EditLabel.Caption = 'Лицензия'
+        EditLabel.ParentColor = False
+        TabOrder = 2
+      end
+      object leUserdbCena: TLabeledEdit
+        Left = 8
+        Height = 23
+        Top = 96
+        Width = 88
+        EditLabel.AnchorSideLeft.Control = leUserdbCena
+        EditLabel.AnchorSideRight.Control = leUserdbCena
+        EditLabel.AnchorSideRight.Side = asrBottom
+        EditLabel.AnchorSideBottom.Control = leUserdbCena
+        EditLabel.Left = 8
+        EditLabel.Height = 15
+        EditLabel.Top = 78
+        EditLabel.Width = 88
+        EditLabel.Caption = 'Цена'
+        EditLabel.ParentColor = False
+        TabOrder = 3
+      end
+      object leUserDBZamena: TLabeledEdit
+        Left = 112
+        Height = 23
+        Top = 96
+        Width = 128
+        EditLabel.AnchorSideLeft.Control = leUserDBZamena
+        EditLabel.AnchorSideRight.Control = leUserDBZamena
+        EditLabel.AnchorSideRight.Side = asrBottom
+        EditLabel.AnchorSideBottom.Control = leUserDBZamena
+        EditLabel.Left = 112
+        EditLabel.Height = 15
+        EditLabel.Top = 78
+        EditLabel.Width = 128
+        EditLabel.Caption = 'Замена'
+        EditLabel.ParentColor = False
+        TabOrder = 4
+      end
+      object leUserdbFile: TLabeledEdit
+        Left = 256
+        Height = 23
+        Top = 96
+        Width = 168
+        EditLabel.AnchorSideLeft.Control = leUserdbFile
+        EditLabel.AnchorSideRight.Control = leUserdbFile
+        EditLabel.AnchorSideRight.Side = asrBottom
+        EditLabel.AnchorSideBottom.Control = leUserdbFile
+        EditLabel.Left = 256
+        EditLabel.Height = 15
+        EditLabel.Top = 78
+        EditLabel.Width = 168
+        EditLabel.Caption = 'Имя файла (без расширения)'
+        EditLabel.ParentColor = False
+        TabOrder = 5
+      end
+      object bUserdbAddtobase: TButton
+        Left = 128
+        Height = 25
+        Top = 128
+        Width = 187
+        Caption = 'Добавить в базу пользователя'
+        OnClick = bUserdbAddtobaseClick
+        TabOrder = 6
+      end
+      object bUserdbSyncdb: TButton
+        Left = 112
+        Height = 25
+        Top = 200
+        Width = 216
+        Caption = 'Синхронизировать с основной базой'
+        OnClick = bUserdbSyncdbClick
+        TabOrder = 7
+      end
+      object Label8: TLabel
+        Left = 8
+        Height = 30
+        Top = 160
+        Width = 403
+        Caption = 'После обновления основной базы и изменений в пользователькой базе,'#13#10'необходимо синхронизировать с основной базой данных'
         ParentColor = False
       end
     end
@@ -222,5 +363,34 @@ object fSettings: TfSettings
     Params = <>
     left = 136
     top = 240
+  end
+  object SQLite3ConnUserDB: TSQLite3Connection
+    Connected = False
+    LoginPrompt = False
+    DatabaseName = 'User-DB.db'
+    KeepConnection = False
+    Transaction = SQLTransUserDB
+    CharSet = 'UTF8'
+    left = 312
+    top = 216
+  end
+  object DataSourceUserDB: TDataSource
+    DataSet = SQLQuerUserDB
+    left = 344
+    top = 208
+  end
+  object SQLTransUserDB: TSQLTransaction
+    Active = False
+    Database = SQLite3ConnUserDB
+    left = 272
+    top = 208
+  end
+  object SQLQuerUserDB: TSQLQuery
+    FieldDefs = <>
+    Database = SQLite3ConnUserDB
+    Transaction = SQLTransUserDB
+    Params = <>
+    left = 400
+    top = 232
   end
 end

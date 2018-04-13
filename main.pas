@@ -26,6 +26,7 @@ type
     bOpenKatPodrob: TButton;
     bInstViewZam: TButton;
     bInstpoSokrtiZapros: TButton;
+    bAvtoDel: TButton;
     bViewZamPodrob: TButton;
     cbZamenaPodrob: TComboBox;
     ComboBox1: TComboBox;
@@ -159,6 +160,7 @@ type
     panHelp: TToolButton;
     procedure AvtoPoiskPageContextPopup(Sender: TObject; MousePos: TPoint;
       var Handled: Boolean);
+    procedure bAvtoDelClick(Sender: TObject);
     procedure bDeinstrallClick(Sender: TObject);
     procedure bExplorerClick(Sender: TObject);
     procedure bInstpoSokrtiZaprosClick(Sender: TObject);
@@ -214,6 +216,7 @@ type
       put:string;                  //  для ручного поиска
           MyRegistry2: TRegistry;
     UninstallKey: String;
+    AvtoUninstallKey: String;
     MyList3: TStringListUTF8;     // для хранения названий ключей реестра Installed
     nilAvtoSearch : Byte;
     putLicSog:string;
@@ -868,13 +871,13 @@ OO := CreateOleObject('com.sun.star.ServiceManager');
     if PageControl1.ActivePageindex=1 then
       begin
 
- Nst7:=SQLQuery1.FieldByName('RuchSt7').AsInteger;
- Nst2:=SQLQuery1.FieldByName('RuchSt2').AsInteger;
- Nst1:=SQLQuery1.FieldByName('RuchSt1').AsInteger;
- Nst3:=SQLQuery1.FieldByName('RuchSt3').AsInteger;
- Nst4:=SQLQuery1.FieldByName('RuchSt4').AsInteger;
- Nst5:=SQLQuery1.FieldByName('RuchSt5').AsInteger;
- Nst6:=SQLQuery1.FieldByName('RuchSt6').AsInteger;
+ Nst7:=SQLQuery4.FieldByName('RuchSt7').AsInteger;
+ Nst2:=SQLQuery4.FieldByName('RuchSt2').AsInteger;
+ Nst1:=SQLQuery4.FieldByName('RuchSt1').AsInteger;
+ Nst3:=SQLQuery4.FieldByName('RuchSt3').AsInteger;
+ Nst4:=SQLQuery4.FieldByName('RuchSt4').AsInteger;
+ Nst5:=SQLQuery4.FieldByName('RuchSt5').AsInteger;
+ Nst6:=SQLQuery4.FieldByName('RuchSt6').AsInteger;
 
    //заполняем заголовки колонок и меняем ширину колонок
 
@@ -2405,6 +2408,9 @@ for N := 0 to MyList2.Count - 1 do
     UTF8Delete(FiltrStr, UTF8Pos(' 7-', FiltrStr), UTF8Length(FiltrStr));
     UTF8Delete(FiltrStr, UTF8Pos(' 8-', FiltrStr), UTF8Length(FiltrStr));
     UTF8Delete(FiltrStr, UTF8Pos(' 9-', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (учебная', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (Учебная', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (Учебная', FiltrStr), UTF8Length(FiltrStr));
     if N=1 then ProgressBar1.StepBy(1);
     // 11.11
     if UTF8Pos('.', FiltrStr)<>0 then
@@ -10490,6 +10496,17 @@ begin
 
 end;
 
+procedure TfMian.bAvtoDelClick(Sender: TObject);
+begin
+ if AvtoUninstallKey = '' then
+begin
+ Application.MessageBox('Не найден путь к деинсталлятору! Возможно, не выбран ключ реестра. В противном случае, не удалось подгрузить эти данные из реестра.',
+    'Не найден путь к деинсталлятору', MB_ICONERROR + MB_OK);
+ Exit;
+end;
+if ShellExecute(0,nil, PChar(AvtoUninstallKey),nil,nil,1) = 0 then;
+end;
+
 procedure TfMian.bDeinstrallClick(Sender: TObject);
 begin
  if UninstallKey = '' then
@@ -10778,20 +10795,29 @@ lProgress.Caption:='Пожалуйста, подождите';
  ProgressBar1.Position:=0;
 ProgressBar1.Min := 0;
 ProgressBar1.Max := 5;
+
+
+// проверяю не нажали ли отмену при указании каталога
+ if leKatalogSearch.Text = '' then
+ begin
+ ShowMessage('Указанный каталог не существует! Пожалуйста, укажите существующий каталог!');
+ exit;
+  end;
  // ProgressBar1.StepBy(1);
  if not(DirectoryExists(put)) then
  begin
  ShowMessage('Указанный каталог не существует! Пожалуйста, укажите существующий каталог!');
  exit;
   end;
+
+
 MyListRuch:=TStringListUTF8.Create;
  ProgressBar1.Position:=1;
 //начало файлового поиска
 //put := path.FileName + '\';
+// UTF8Delete(FiltrStr, UTF8Pos(' v9', FiltrStr), UTF8Length(FiltrStr));
   //No need to create the stringlist; the function does that for you
-  MyListRuch := FindAllFiles(put, '*.exe', true); //find e.g. all pascal sourcefiles
-
-
+  MyListRuch := FindAllFiles(put, '*.exe', true);
   //пробую сделать сбор названий папок
   //решил закрыть, ибо ввёл доп строку в базу
 {  if FindFirst(put + '*', faDirectory, searchResult) = 0 then
@@ -10828,6 +10854,28 @@ for N := 0 to MyListRuch.Count - 1 do
     //UTF8Delete(FiltrStr, UTF8Pos('\', FiltrStr), UTF8Pos('\', FiltrStr));
     UTF8Delete(FiltrStr, 1, UTF8Pos('\', FiltrStr));
     UTF8Delete(FiltrStr, UTF8Pos('.exe', FiltrStr), UTF8Length(FiltrStr));
+
+    if UTF8Pos('\', FiltrStr) > 0 then
+    UTF8Delete(FiltrStr, 1, UTF8Pos('\', FiltrStr));
+
+    if UTF8Pos('\', FiltrStr) > 0 then
+    UTF8Delete(FiltrStr, 1, UTF8Pos('\', FiltrStr));     // для обхода большого уровня вложенности
+
+    if UTF8Pos('\', FiltrStr) > 0 then
+    UTF8Delete(FiltrStr, 1, UTF8Pos('\', FiltrStr));
+
+    if UTF8Pos('\', FiltrStr) > 0 then
+    UTF8Delete(FiltrStr, 1, UTF8Pos('\', FiltrStr));
+
+    if UTF8Pos('\', FiltrStr) > 0 then
+    UTF8Delete(FiltrStr, 1, UTF8Pos('\', FiltrStr));
+
+    if UTF8Pos('\', FiltrStr) > 0 then
+    UTF8Delete(FiltrStr, 1, UTF8Pos('\', FiltrStr));
+
+    if UTF8Pos('\', FiltrStr) > 0 then
+    UTF8Delete(FiltrStr, 1, UTF8Pos('\', FiltrStr));
+
  //   showmessage(FiltrStr);
     MyFiltrList2.Add(FiltrStr);
   end;
@@ -10866,14 +10914,13 @@ ProgressBar1.Position:=3;
    if FiltrStr='' then
    begin
    //s := 'SELECT * FROM program WHERE (name LIKE "' + MyFiltrList2[N] + '%%")';
-   s := 'SELECT * FROM program WHERE (file LIKE "' + MyFiltrList2[N] + '")';
+   s := 'SELECT * FROM program WHERE (name LIKE "' + MyFiltrList2[N] + '")';
     SQLQuery3.Close;                          // ТУТ ЗАКОНЧИЛ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     SQLQuery3.Active:=false;
     SQLQuery3.SQL.Clear;
     SQLQuery3.SQL.Add(s);
     SQLQuery3.Active:=true;
    end;
-
   //  MassivRuchStr[N][0]:= SQLQuery1.FieldByName('id').AsString;
     MassivRuchStr[N][2]:= SQLQuery3.FieldByName('name').AsString;
     MassivRuchStr[N][3]:= SQLQuery3.FieldByName('type').AsString;
@@ -11702,6 +11749,7 @@ var
 s:string;
 StRuchFullDisk:Word;
 begin
+  s:='';
   SQLQuery2.Close;
   SQLQuery2.Active:=false;
   SQLQuery2.SQL.Clear;
@@ -11709,39 +11757,45 @@ begin
   SQLQuery2.SQL.Add(s);
   SQLQuery2.Active:=true;
 
+
   //     пытаюсь получить каталог
 path := TSelectDirectoryDialog.Create(Application);
 if path.Execute then leKatalogSearch.Text:= path.FileName;
+
+
 //FreeAndNil(path);
 //    конец получения каталога
 //showmessage(path.FileName);
+
+
 put := path.FileName + '\';
+
 StRuchFullDisk:=SQLQuery2.FieldByName('RuchFullDisk').AsInteger;
   if StRuchFullDisk=0 then
   begin
 if path.FileName = 'C:\' then
 begin
-   Application.MessageBox('Пожалуйста, не указывайте для поиска весь диск!!! Для поиска укажите конкретную папку с программами.',
+   Application.MessageBox('Пожалуйста, не указывайте для поиска весь диск!!! Для поиска укажите конкретную папку с программами. Данное ограничение можно отключить в настройках.',
     'Указан весь диск', MB_ICONERROR + MB_OK);
   if path.Execute then leKatalogSearch.Text:= path.FileName;
   end;
 
  if path.FileName = 'D:\' then
 begin
-   Application.MessageBox('Пожалуйста, не указывайте для поиска весь диск!!! Для поиска укажите конкретную папку с программами.',
+   Application.MessageBox('Пожалуйста, не указывайте для поиска весь диск!!! Для поиска укажите конкретную папку с программами. Данное ограничение можно отключить в настройках.',
     'Указан весь диск', MB_ICONERROR + MB_OK);
   if path.Execute then leKatalogSearch.Text:= path.FileName;
   end;
 
  if path.FileName = 'F:\' then
  begin
-    Application.MessageBox('Пожалуйста, не указывайте для поиска весь диск!!! Для поиска укажите конкретную папку с программами.',
+    Application.MessageBox('Пожалуйста, не указывайте для поиска весь диск!!! Для поиска укажите конкретную папку с программами. Данное ограничение можно отключить в настройках.',
      'Указан весь диск', MB_ICONERROR + MB_OK);
    if path.Execute then leKatalogSearch.Text:= path.FileName;
    end;
  if path.FileName = 'J:\' then
  begin
-    Application.MessageBox('Пожалуйста, не указывайте для поиска весь диск!!! Для поиска укажите конкретную папку с программами.',
+    Application.MessageBox('Пожалуйста, не указывайте для поиска весь диск!!! Для поиска укажите конкретную папку с программами. Данное ограничение можно отключить в настройках.',
      'Указан весь диск', MB_ICONERROR + MB_OK);
    if path.Execute then leKatalogSearch.Text:= path.FileName;
    end;
@@ -11906,6 +11960,7 @@ begin
     leKatalogPodrob.Text:=CP1251ToUTF8(MyRegistry.ReadString('InstallLocation'));
     leRazrabPodrob.Text:=CP1251ToUTF8(MyRegistry.ReadString('Publisher'));
     leInstallDatePodrob.Text:=CP1251ToUTF8(MyRegistry.ReadString('InstallDate'));
+    AvtoUninstallKey:=CP1251ToUTF8(MyRegistry.ReadString('UninstallString'));
 
 // заполняем combobox с заменами
     cbZamenaPodrob.Clear;
