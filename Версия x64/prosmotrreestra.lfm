@@ -1,0 +1,84 @@
+object fProsmotrReestra: TfProsmotrReestra
+  Left = 329
+  Height = 520
+  Top = 235
+  Width = 897
+  Caption = 'Просмотр реестра'
+  ClientHeight = 520
+  ClientWidth = 897
+  OnActivate = FormActivate
+  OnDeactivate = FormDeactivate
+  OnDestroy = FormDestroy
+  LCLVersion = '1.6.4.0'
+  object values: TListView
+    Left = 288
+    Height = 520
+    Top = 0
+    Width = 609
+    Align = alClient
+    AutoWidthLastColumn = True
+    Columns = <    
+      item
+        AutoSize = True
+        Caption = 'Параметр'
+        Width = 70
+      end    
+      item
+        Caption = 'Тип'
+        Width = 60
+      end    
+      item
+        Caption = 'Значение'
+        Width = 475
+      end>
+    ColumnClick = False
+    ReadOnly = True
+    TabOrder = 0
+    ViewStyle = vsReport
+  end
+  object keys: TTreeView
+    Left = 0
+    Height = 520
+    Top = 0
+    Width = 288
+    Align = alLeft
+    DefaultItemHeight = 18
+    ReadOnly = True
+    TabOrder = 1
+    OnChange = keysChange
+    OnExpanding = keysExpanding
+    Options = [tvoAutoItemHeight, tvoHideSelection, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+  end
+  object SQLQuery1: TSQLQuery
+    PacketRecords = -1
+    FieldDefs = <>
+    Database = fMian.SQLite3Connection1
+    Transaction = fMian.SQLTransaction1
+    Options = []
+    Params = <>
+    left = 388
+    top = 156
+  end
+  object SQLTransaction1: TSQLTransaction
+    Active = False
+    Database = fMian.SQLite3Connection1
+    Options = []
+    left = 348
+    top = 92
+  end
+  object DataSource1: TDataSource
+    DataSet = SQLQuery1
+    left = 292
+    top = 68
+  end
+  object SQLite3Connection1: TSQLite3Connection
+    Connected = False
+    LoginPrompt = False
+    DatabaseName = 'Lpro.db'
+    KeepConnection = False
+    CharSet = 'UTF8'
+    Options = []
+    left = 436
+    top = 60
+  end
+end

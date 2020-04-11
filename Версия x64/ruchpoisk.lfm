@@ -1,0 +1,95 @@
+object fRuchPoisk: TfRuchPoisk
+  Left = 625
+  Height = 255
+  Top = 463
+  Width = 764
+  Caption = 'Ручной поиск следов программ в указанной папке'
+  ClientHeight = 255
+  ClientWidth = 764
+  OnCreate = FormCreate
+  LCLVersion = '1.6.2.0'
+  object bRuchPoisk: TButton
+    Left = 464
+    Height = 25
+    Top = 8
+    Width = 75
+    Caption = 'Поиск'
+    OnClick = bRuchPoiskClick
+    TabOrder = 0
+  end
+  object DBGrid1: TDBGrid
+    Left = 0
+    Height = 219
+    Top = 40
+    Width = 764
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    Color = clWindow
+    Columns = <>
+    DataSource = DataSource3
+    TabOrder = 1
+  end
+  object bUkazKatalog: TButton
+    Left = 560
+    Height = 25
+    Top = 6
+    Width = 104
+    Caption = 'Указать каталог'
+    OnClick = bUkazKatalogClick
+    TabOrder = 2
+  end
+  object leKatalogSearch: TLabeledEdit
+    Left = 120
+    Height = 23
+    Top = 8
+    Width = 320
+    EditLabel.AnchorSideTop.Control = leKatalogSearch
+    EditLabel.AnchorSideTop.Side = asrCenter
+    EditLabel.AnchorSideRight.Control = leKatalogSearch
+    EditLabel.AnchorSideBottom.Control = leKatalogSearch
+    EditLabel.AnchorSideBottom.Side = asrBottom
+    EditLabel.Left = 10
+    EditLabel.Height = 15
+    EditLabel.Top = 12
+    EditLabel.Width = 107
+    EditLabel.Caption = 'Каталог для поиска'
+    EditLabel.ParentColor = False
+    LabelPosition = lpLeft
+    ParentBidiMode = False
+    TabOrder = 3
+  end
+  object SQLite3Connection1: TSQLite3Connection
+    Connected = False
+    LoginPrompt = False
+    DatabaseName = 'Lpro.db'
+    KeepConnection = False
+    CharSet = 'UTF8'
+    Options = []
+    left = 520
+    top = 104
+  end
+  object SQLTransaction3: TSQLTransaction
+    Active = False
+    Database = fMian.SQLite3Connection1
+    Options = []
+    left = 624
+    top = 104
+  end
+  object DataSource3: TDataSource
+    DataSet = SQLQuery3
+    left = 520
+    top = 176
+  end
+  object SQLQuery3: TSQLQuery
+    FieldDefs = <>
+    Database = fMian.SQLite3Connection1
+    Transaction = fMian.SQLTransaction1
+    Options = []
+    Params = <>
+    left = 624
+    top = 184
+  end
+  object SelectDirectoryDialog1: TSelectDirectoryDialog
+    left = 344
+    top = 72
+  end
+end
