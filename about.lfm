@@ -1,7 +1,7 @@
 object fAbout: TfAbout
   Left = 411
   Height = 272
-  Top = 336
+  Top = 340
   Width = 363
   BorderStyle = bsToolWindow
   Caption = 'О программе'
@@ -849,7 +849,7 @@ object fAbout: TfAbout
     6F420000000049454E44AE426082
   }
   Position = poMainFormCenter
-  LCLVersion = '1.8.0.6'
+  LCLVersion = '2.0.2.0'
   object Panel1: TPanel
     Left = 0
     Height = 242
@@ -879,7 +879,7 @@ object fAbout: TfAbout
       Height = 21
       Top = 41
       Width = 37
-      Caption = '1.4.8'
+      Caption = '1.5.0'
       Font.CharSet = RUSSIAN_CHARSET
       Font.Height = -19
       Font.Name = 'Times New Roman'

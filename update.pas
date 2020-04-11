@@ -5,7 +5,7 @@ unit Update;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  Classes, LazUTF8, LConvEncoding, StdCtrls, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   ComCtrls, IdHTTP, Windows, IdSSL, IdSSLOpenSSL;
 
 type
@@ -71,16 +71,10 @@ begin
 ProgressBar1.Position:=0;
 ProgressBar1.Min := 0;
 ProgressBar1.Max := 10;
-  { if lVersionBase.Caption='' then
-    begin
-    AssignFile(FileVerBase, UTF8ToSys('base.txt'));
-  Reset(FileVerBase);
-  Read(FileVerBase, VerBase);
-   lVersionBase.Caption:=VerBase;
-  //CloseFile(FileVerBase);
-    end; }
+
   try
    version:=IdHTTP1.Get('https://xn--90abhbolvbbfgb9aje4m.xn--p1ai/images/lpro-base-version.txt');
+
    if version=lVersionBase.Caption then
     begin
      ProgressBar1.StepBy(10);
@@ -159,6 +153,7 @@ begin
   ProgressBar1.Max := 10;
    try
     version:=IdHTTP1.Get('https://xn--90abhbolvbbfgb9aje4m.xn--p1ai/images/lpro-version.txt');
+   // version:='1.4.99';
     if version=lVersionProgram.Caption then
      begin
       ProgressBar1.StepBy(10);

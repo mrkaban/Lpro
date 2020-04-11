@@ -2,12 +2,13 @@
 <CONFIG>
   <ProjectSession>
     <PathDelim Value="\"/>
-    <Version Value="10"/>
+    <Version Value="11"/>
     <BuildModes Active="Default"/>
-    <Units Count="51">
+    <Units Count="53">
       <Unit0>
         <Filename Value="LegalProgram.lpr"/>
         <IsPartOfProject Value="True"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="-1"/>
         <CursorPos Y="29"/>
         <UsageCount Value="200"/>
@@ -19,10 +20,9 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Main"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="-1"/>
-        <TopLine Value="2397"/>
-        <CursorPos X="44" Y="2413"/>
+        <TopLine Value="594"/>
+        <CursorPos X="24" Y="601"/>
         <UsageCount Value="200"/>
       </Unit1>
       <Unit2>
@@ -34,7 +34,7 @@
         <UnitName Value="About"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="18"/>
-        <CursorPos X="42" Y="23"/>
+        <CursorPos X="79" Y="35"/>
         <UsageCount Value="200"/>
       </Unit2>
       <Unit3>
@@ -82,7 +82,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="608"/>
         <CursorPos X="38" Y="417"/>
-        <UsageCount Value="171"/>
+        <UsageCount Value="200"/>
       </Unit6>
       <Unit7>
         <Filename Value="help.pas"/>
@@ -91,9 +91,9 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <EditorIndex Value="-1"/>
-        <TopLine Value="26"/>
-        <CursorPos X="35" Y="43"/>
-        <UsageCount Value="130"/>
+        <TopLine Value="30"/>
+        <CursorPos X="79" Y="54"/>
+        <UsageCount Value="167"/>
       </Unit7>
       <Unit8>
         <Filename Value="settings.pas"/>
@@ -102,9 +102,9 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <EditorIndex Value="-1"/>
-        <TopLine Value="377"/>
-        <CursorPos X="47" Y="400"/>
-        <UsageCount Value="89"/>
+        <TopLine Value="629"/>
+        <CursorPos X="7" Y="638"/>
+        <UsageCount Value="126"/>
       </Unit8>
       <Unit9>
         <Filename Value="prosmotrreestra.pas"/>
@@ -116,7 +116,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="168"/>
         <CursorPos Y="91"/>
-        <UsageCount Value="66"/>
+        <UsageCount Value="103"/>
       </Unit9>
       <Unit10>
         <Filename Value="findfirst.pas"/>
@@ -126,7 +126,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="13"/>
         <CursorPos X="6" Y="42"/>
-        <UsageCount Value="12"/>
+        <UsageCount Value="11"/>
       </Unit10>
       <Unit11>
         <Filename Value="C:\lazarus\lcl\grids.pas"/>
@@ -134,28 +134,28 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="3540"/>
         <CursorPos X="60" Y="3548"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="8"/>
       </Unit11>
       <Unit12>
         <Filename Value="KAZip.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="127"/>
         <CursorPos X="24" Y="144"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="8"/>
       </Unit12>
       <Unit13>
         <Filename Value="BDSInetUpdater.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="20"/>
         <CursorPos X="31" Y="37"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="8"/>
       </Unit13>
       <Unit14>
         <Filename Value="C:\lazarus\components\indy\IdAboutVCL.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="57"/>
         <CursorPos X="3" Y="75"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="8"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit14>
       <Unit15>
@@ -163,7 +163,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="58"/>
         <CursorPos X="71" Y="71"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="8"/>
       </Unit15>
       <Unit16>
         <Filename Value="C:\lazarus\components\sqlite\sqlitecomponenteditor.pas"/>
@@ -174,21 +174,21 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="300"/>
         <CursorPos Y="332"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="8"/>
       </Unit16>
       <Unit17>
         <Filename Value="ulazautoupdate.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="27"/>
         <CursorPos X="68" Y="36"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="8"/>
       </Unit17>
       <Unit18>
         <Filename Value="aboutlazautoupdateunit.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="13"/>
         <CursorPos X="51" Y="27"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="8"/>
       </Unit18>
       <Unit19>
         <Filename Value="propedits.pp"/>
@@ -196,7 +196,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="18"/>
         <CursorPos X="17" Y="32"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="8"/>
       </Unit19>
       <Unit20>
         <Filename Value="frmselectprops.pas"/>
@@ -204,7 +204,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="233"/>
         <CursorPos X="35" Y="242"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="8"/>
       </Unit20>
       <Unit21>
         <Filename Value="idewindowintf.pas"/>
@@ -212,26 +212,26 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="500"/>
         <CursorPos X="13" Y="514"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="8"/>
       </Unit21>
       <Unit22>
         <Filename Value="ideoptionsintf.pas"/>
         <UnitName Value="IDEWindowIntf"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="6" Y="12"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="8"/>
       </Unit22>
       <Unit23>
         <Filename Value="lconvencoding.pas"/>
         <UnitName Value="LConvEncoding"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="2" Y="14"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="8"/>
       </Unit23>
       <Unit24>
         <Filename Value="about.lfm"/>
         <EditorIndex Value="-1"/>
-        <UsageCount Value="1"/>
+        <UsageCount Value="10"/>
         <DefaultSyntaxHighlighter Value="LFM"/>
       </Unit24>
       <Unit25>
@@ -240,7 +240,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="692"/>
         <CursorPos X="39" Y="702"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit25>
       <Unit26>
         <Filename Value="C:\lazarus\lcl\dbgrids.pas"/>
@@ -248,25 +248,25 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="468"/>
         <CursorPos X="27" Y="2501"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit26>
       <Unit27>
         <Filename Value="..\REAKTIV\zurnaR.lpr"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="59" Y="8"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit27>
       <Unit28>
         <Filename Value="\\MRKABAN-PC\Users\mrKaban\AppData\Local\Temp\Temp1_Lpro-source.zip\main.pas"/>
         <UnitName Value="Main"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="288"/>
-        <UsageCount Value="1"/>
+        <UsageCount Value="10"/>
       </Unit28>
       <Unit29>
         <Filename Value="main.lfm"/>
         <EditorIndex Value="-1"/>
-        <UsageCount Value="1"/>
+        <UsageCount Value="10"/>
         <DefaultSyntaxHighlighter Value="LFM"/>
       </Unit29>
       <Unit30>
@@ -276,49 +276,49 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="8"/>
         <CursorPos X="3" Y="36"/>
-        <UsageCount Value="11"/>
+        <UsageCount Value="10"/>
       </Unit30>
       <Unit31>
         <Filename Value="ruchpoisk.lfm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <EditorIndex Value="-1"/>
-        <UsageCount Value="1"/>
+        <UsageCount Value="10"/>
         <DefaultSyntaxHighlighter Value="LFM"/>
       </Unit31>
       <Unit32>
         <Filename Value="C:\lazarus\source\demo\http\Unit1.pas"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="50"/>
-        <UsageCount Value="1"/>
+        <UsageCount Value="10"/>
       </Unit32>
       <Unit33>
         <Filename Value="C:\lazarus\fpc\3.0.0\source\rtl\objpas\sysutils\filutilh.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="72"/>
         <CursorPos X="3" Y="89"/>
-        <UsageCount Value="1"/>
+        <UsageCount Value="10"/>
       </Unit33>
       <Unit34>
         <Filename Value="C:\lazarus\fpc\3.0.0\source\rtl\inc\objpash.inc"/>
         <EditorIndex Value="-1"/>
         <TopLine Value="174"/>
         <CursorPos X="8" Y="188"/>
-        <UsageCount Value="3"/>
+        <UsageCount Value="2"/>
       </Unit34>
       <Unit35>
         <Filename Value="C:\lazarus\components\lazutils\fileutil.pas"/>
         <UnitName Value="FileUtil"/>
         <EditorIndex Value="-1"/>
-        <TopLine Value="262"/>
-        <CursorPos X="51" Y="297"/>
-        <UsageCount Value="5"/>
+        <TopLine Value="49"/>
+        <CursorPos Y="63"/>
+        <UsageCount Value="15"/>
       </Unit35>
       <Unit36>
         <Filename Value="C:\lazarus\fpc\3.0.0\source\rtl\objpas\sysutils\osutilsh.inc"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="10" Y="26"/>
-        <UsageCount Value="6"/>
+        <UsageCount Value="5"/>
       </Unit36>
       <Unit37>
         <Filename Value="C:\lazarus\lcl\lazhelphtml.pas"/>
@@ -326,7 +326,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="70"/>
         <CursorPos X="25" Y="85"/>
-        <UsageCount Value="6"/>
+        <UsageCount Value="5"/>
       </Unit37>
       <Unit38>
         <Filename Value="htmlhelp2viewer.pas"/>
@@ -337,7 +337,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="43"/>
         <CursorPos X="3" Y="63"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit38>
       <Unit39>
         <Filename Value="iphtml.pas"/>
@@ -345,12 +345,12 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="31"/>
         <CursorPos X="3" Y="79"/>
-        <UsageCount Value="6"/>
+        <UsageCount Value="5"/>
       </Unit39>
       <Unit40>
         <Filename Value="poiskvbaze.lfm"/>
         <EditorIndex Value="-1"/>
-        <UsageCount Value="8"/>
+        <UsageCount Value="7"/>
         <DefaultSyntaxHighlighter Value="LFM"/>
       </Unit40>
       <Unit41>
@@ -362,7 +362,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="92"/>
         <CursorPos X="58" Y="110"/>
-        <UsageCount Value="8"/>
+        <UsageCount Value="7"/>
       </Unit41>
       <Unit42>
         <Filename Value="..\Lpro 1.4.0\main.pas"/>
@@ -370,7 +370,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="817"/>
         <CursorPos Y="826"/>
-        <UsageCount Value="7"/>
+        <UsageCount Value="6"/>
       </Unit42>
       <Unit43>
         <Filename Value="..\Lpro 1.4.1.4\main.pas"/>
@@ -378,7 +378,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="873"/>
         <CursorPos X="69" Y="1254"/>
-        <UsageCount Value="7"/>
+        <UsageCount Value="6"/>
       </Unit43>
       <Unit44>
         <Filename Value="D:\Downloads\UberRegedit\UberRegeditSrc\Main.pas"/>
@@ -386,7 +386,7 @@
         <WindowIndex Value="-1"/>
         <TopLine Value="49"/>
         <CursorPos X="72" Y="29"/>
-        <UsageCount Value="7"/>
+        <UsageCount Value="6"/>
       </Unit44>
       <Unit45>
         <Filename Value="E:\lazarus\components\codetools\basiccodetools.pas"/>
@@ -394,19 +394,19 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="25"/>
         <CursorPos X="22" Y="43"/>
-        <UsageCount Value="8"/>
+        <UsageCount Value="7"/>
       </Unit45>
       <Unit46>
         <Filename Value="OOTable.pas"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="126" Y="14"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="8"/>
       </Unit46>
       <Unit47>
         <Filename Value="OOObject.pas"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="4" Y="17"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="8"/>
       </Unit47>
       <Unit48>
         <Filename Value="C:\Users\MrKaban\Desktop\просмотр реестра\unit1.pas"/>
@@ -417,12 +417,12 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="24"/>
         <CursorPos X="5" Y="213"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="8"/>
       </Unit48>
       <Unit49>
         <Filename Value="C:\Users\MrKaban\Desktop\просмотр реестра\unit1.lfm"/>
         <EditorIndex Value="-1"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="8"/>
         <DefaultSyntaxHighlighter Value="LFM"/>
       </Unit49>
       <Unit50>
@@ -431,12 +431,32 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="320"/>
         <CursorPos X="10" Y="339"/>
-        <UsageCount Value="9"/>
+        <UsageCount Value="8"/>
       </Unit50>
+      <Unit51>
+        <Filename Value="C:\lazarus\ide\lmessages.pp"/>
+        <UnitName Value="LMessages"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="214"/>
+        <CursorPos X="2" Y="230"/>
+        <UsageCount Value="9"/>
+      </Unit51>
+      <Unit52>
+        <Filename Value="C:\lazarus\lcl\forms.pp"/>
+        <UnitName Value="Forms"/>
+        <EditorIndex Value="-1"/>
+        <TopLine Value="1657"/>
+        <CursorPos X="25" Y="1657"/>
+        <UsageCount Value="9"/>
+      </Unit52>
     </Units>
     <General>
       <ActiveWindowIndexAtStart Value="-1"/>
     </General>
     <JumpHistory HistoryIndex="-1"/>
+    <RunParams>
+      <FormatVersion Value="2"/>
+      <Modes Count="0" ActiveMode="default"/>
+    </RunParams>
   </ProjectSession>
 </CONFIG>

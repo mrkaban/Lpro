@@ -1,19 +1,19 @@
 object fHelp: TfHelp
-  Left = 262
-  Height = 508
+  Left = 279
+  Height = 577
   Top = 264
-  Width = 890
+  Width = 1237
   Caption = 'Справка'
-  ClientHeight = 508
-  ClientWidth = 890
+  ClientHeight = 577
+  ClientWidth = 1237
   OnCreate = FormCreate
   Position = poMainFormCenter
-  LCLVersion = '1.8.0.6'
+  LCLVersion = '2.0.2.0'
   object IpHtmlPanel1: TIpHtmlPanel
     Left = 200
-    Height = 513
+    Height = 582
     Top = 0
-    Width = 687
+    Width = 1034
     Anchors = [akTop, akLeft, akRight, akBottom]
     DataProvider = IpFileDataProvider1
     FixedTypeface = 'Times New Roman'
@@ -32,7 +32,7 @@ object fHelp: TfHelp
   end
   object RGrazdeli: TRadioGroup
     Left = 8
-    Height = 224
+    Height = 352
     Top = 0
     Width = 185
     AutoFill = True
@@ -44,7 +44,7 @@ object fHelp: TfHelp
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 204
+    ClientHeight = 332
     ClientWidth = 181
     ItemIndex = 0
     Items.Strings = (
@@ -53,17 +53,19 @@ object fHelp: TfHelp
       'Типы лицензий программ'
       'Автоматический поиск'
       'Ручной поиск'
+      'Медиа поиск'
       'Установленное ПО'
       'Поиск в базе'
       'Подбор замены'
       'Настройки'
+      'Парк компьютеров'
       'Возможные ошибки'
     )
     OnSelectionChanged = RGrazdeliSelectionChanged
     TabOrder = 1
   end
   object IpFileDataProvider1: TIpFileDataProvider
-    left = 80
-    top = 248
+    left = 72
+    top = 336
   end
 end

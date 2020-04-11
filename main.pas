@@ -5,13 +5,14 @@ unit Main;
 interface
 
 uses
-  Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, Menus, Grids,
-  StdCtrls, About, PoiskVBaze, help, Settings,
-  PodborZameni, sqlite3conn, sqldb, db, LCLType, winpeimagereader, elfreader, machoreader,
+  Classes, Windows, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
+  Menus, Grids, StdCtrls, About, PoiskVBaze, help, Settings, PodborZameni,
+  sqlite3conn, sqldb, db, LCLType, winpeimagereader, elfreader, machoreader,
   LCLIntF, Clipbrd, DBGrids, DbCtrls, ExtCtrls, ComCtrls, LazHelpHTML, LazUTF8,
-  lconvencoding, Registry, ComObj, Windows, StrUtils, ActiveX,
-  IdHTTP, lazutf8classes, HelpIntfs, LResources, LCLProc, Types, FileCtrl,
-  LazFileUtils, LazUtils, RichMemo, Messages, ShellApi, Variants, ProsmotrReestra;
+  lconvencoding, Registry, ComObj, StrUtils, ActiveX, IdHTTP, lazutf8classes,
+  HelpIntfs, LResources, LCLProc, Types, FileCtrl, Buttons, ComboEx,
+  LazFileUtils, LazUtils, RichMemo, Messages, ShellApi, Variants,
+  ProsmotrReestra;
 
 type
 
@@ -21,27 +22,35 @@ type
     bExplorer: TButton;
     bRegedit: TButton;
     bRuchPoisk: TButton;
+    bMediaPoisk: TButton;
     bSearch: TButton;
     bUkazKatalog: TButton;
     bOpenKatPodrob: TButton;
     bInstViewZam: TButton;
     bInstpoSokrtiZapros: TButton;
     bAvtoDel: TButton;
+    bUkazKatalogMedia: TButton;
     bViewZamPodrob: TButton;
     cbZamenaPodrob: TComboBox;
     ComboBox1: TComboBox;
     cbInstallZam: TComboBox;
     DataSource1: TDataSource;
+    DataSourceMedia: TDataSource;
     DataSourceAllVar: TDataSource;
     DataSource3: TDataSource;
     DataSource4: TDataSource;
     DBGrid1: TDBGrid;
     DBGrid2: TDBGrid;
     DBGrid3: TDBGrid;
+    DBGrid4: TDBGrid;
     DBGridAllVar: TDBGrid;
     FD: TFontDialog;
     IdHTTP1: TIdHTTP;
     ImageList1: TImageList;
+    leKatMediaSearch: TLabeledEdit;
+    lePodtvGdeIskat: TLabeledEdit;
+    lePodtvCheIshu: TLabeledEdit;
+    lePodtvGde: TLabeledEdit;
     leIDPodrob: TLabeledEdit;
     lAvtoPodrobZamena: TLabel;
     lZamena: TLabel;
@@ -77,6 +86,7 @@ type
     PageControl1: TPageControl;
     PageControl2: TPageControl;
     Panel1: TPanel;
+    Panel2: TPanel;
     PanelInstalled: TPanel;
     pPeredatExcel: TMenuItem;
     pExportHTML: TMenuItem;
@@ -125,6 +135,7 @@ type
     SQLQuery2: TSQLQuery;
     SQLQuery3: TSQLQuery;
     SQLQuery4: TSQLQuery;
+    SQLQueryMedia: TSQLQuery;
     SQLQueryAllVar: TSQLQuery;
     SQLTransaction1: TSQLTransaction;
     AvtoPoiskPage: TTabSheet;
@@ -132,8 +143,10 @@ type
     SQLTransaction3: TSQLTransaction;
     InstallPoPage: TTabSheet;
     SQLTransaction4: TSQLTransaction;
+    MediaPoisk: TTabSheet;
+    tsPodtver: TTabSheet;
     ToolButton5: TToolButton;
-    ToolButton6: TToolButton;
+    panExpLibre: TToolButton;
     tsLicenseSogl: TTabSheet;
     tsVseVarianti: TTabSheet;
     tsPodrobnosti: TTabSheet;
@@ -165,10 +178,12 @@ type
     procedure bExplorerClick(Sender: TObject);
     procedure bInstpoSokrtiZaprosClick(Sender: TObject);
     procedure bInstViewZamClick(Sender: TObject);
+    procedure bMediaPoiskClick(Sender: TObject);
     procedure bOpenKatPodrobClick(Sender: TObject);
     procedure bRegeditClick(Sender: TObject);
     procedure bRuchPoiskClick(Sender: TObject);
     procedure bUkazKatalogClick(Sender: TObject);
+    procedure bUkazKatalogMediaClick(Sender: TObject);
     procedure bViewZamPodrobClick(Sender: TObject);
     procedure ComboBox1Change(Sender: TObject);
     procedure DBGrid1CellClick(Column: TColumn);
@@ -178,8 +193,10 @@ type
     procedure DBGrid2DrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
     procedure DBGrid2TitleClick(Column: TColumn);
+    procedure DBGrid4TitleClick(Column: TColumn);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
+    procedure FormResize(Sender: TObject);
     procedure leKatalogSearchChange(Sender: TObject);
     procedure leKluchPodrobChange(Sender: TObject);
     procedure ListBox1SelectionChange(Sender: TObject; User: boolean);
@@ -258,16 +275,29 @@ begin
     Stream := TFileStream.Create(filename, fmCreate);
     S := '';
     for I := 0 to DBGrid1.Columns.Count - 1 do
-     if DBGrid1.Columns[I].Visible=true then S := S + TColumn(DBGrid1.Columns[I]).Title.Caption + Delim;
-     S := UTF8ToCP1251(S + CHR(13));
+   //if DBGrid1.Columns[I].Visible=true then S := S + TColumn(DBGrid1.Columns[I]).Title.Caption + Delim;
+  if DBGrid1.Columns[I].Visible=true then S := S + Trim(TColumn(DBGrid1.Columns[I]).Title.Caption) + Delim;
+    S := UTF8ToCP1251(S + CHR(13));
+
+    //пробую убрать запятую
+    S  := StringReplace(S, ',', '', [rfReplaceAll, rfIgnoreCase]);
+
+    //
      Stream.Write(PChar(S)^, Length(S));
      while not DBGrid1.DataSource.DataSet.Eof do
       begin
        S := '';
        for I := 0 to DBGrid1.Columns.Count - 1 do
-        if DBGrid1.Columns[I].Visible=true then S := S + TColumn(DBGrid1.Columns[I]).Field.AsString + Delim;
-
+      //  if DBGrid1.Columns[I].Visible=true then S := S + TColumn(DBGrid1.Columns[I]).Field.AsString + Delim;
+    if DBGrid1.Columns[I].Visible=true then S := S + Trim(TColumn(DBGrid1.Columns[I]).Field.AsString) + Delim;
        S := UTF8ToCP1251(S + CHR(13));
+
+       
+    //пробую убрать запятую
+    S  := StringReplace(S, ',', '', [rfReplaceAll, rfIgnoreCase]);
+
+    //
+
        Stream.Write(PChar(S)^, Length(S));
        DBGrid1.DataSource.DataSet.Next();
       end;
@@ -301,6 +331,36 @@ begin
    Stream.Free();
 //   if FileExists(filename) then OpenDocument(filename);    //открытие документа после сохранения
   end;
+  end;
+
+  // если открыт медиа поиск
+  if PageControl1.ActivePageindex=3 then
+  begin
+  SD.FileName:=filename;
+  if SD.Execute then
+   begin
+    filename:=SD.FileName;
+    Stream := TFileStream.Create(filename, fmCreate);
+    S := '';
+    for I := 0 to DBGrid4.Columns.Count - 1 do
+     if DBGrid4.Columns[I].Visible=true then S := S + TColumn(DBGrid4.Columns[I]).Title.Caption + Delim;
+     S := UTF8ToCP1251(S + CHR(13));
+     Stream.Write(PChar(S)^, Length(S));
+     while not DBGrid4.DataSource.DataSet.Eof do
+      begin
+       S := '';
+       for I := 0 to DBGrid4.Columns.Count - 1 do
+        if DBGrid4.Columns[I].Visible=true then S := S + TColumn(DBGrid4.Columns[I]).Field.AsString + Delim;
+
+       S := UTF8ToCP1251(S + CHR(13));
+       Stream.Write(PChar(S)^, Length(S));
+       DBGrid4.DataSource.DataSet.Next();
+      end;
+   Stream.Free();
+//   if FileExists(filename) then OpenDocument(filename);    //открытие документа после сохранения
+  end;
+
+
   end;
 
 
@@ -364,12 +424,14 @@ if SD2.Execute then
  filename:=SD2.FileName;
 t:=TStringList.Create;
 DBGrid1.DataSource.DataSet.first;
+
+// filename:='Lpro[' + p4 + ']' + FormatDateTime('hh-nn_dd-mm-yyyy', Now) +'.html';
 t.add('<html>');
 t.add('<head>');
 t.add('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">');
 t.add('</head>');
 t.add('<h1 align=center>Lpro - Проверка лицензий установленных программ</h1>');
-t.add('<h2 align=center>Имя компьютера: ' + p1 + '</h2>');
+t.add('<h2 align=center>Имя компьютера: ' + p1 + ' в ' + FormatDateTime('hh:nn dd.mm.yyyy', Now) + '</h2>');
 t.add('<html>');
 t.add('<table border=1 align=center>');
 //    подружаю из базы 1 или 0 для колонок
@@ -433,7 +495,7 @@ t.add('<head>');
 t.add('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">');
 t.add('</head>');
 t.add('<h1 align=center>Lpro - Проверка лицензий установленных программ</h1>');
-t.add('<h2 align=center>Имя компьютера: ' + p1 + '</h2>');
+t.add('<h2 align=center>Имя компьютера: ' + p1 + ' в ' + FormatDateTime('hh:nn dd.mm.yyyy', Now) + '</h2>');
 t.add('<html>');
 t.add('<table border=1 align=center>');
 //
@@ -483,6 +545,53 @@ end;
 DBGrid2.DataSource.DataSet.first;
       FreeMem(p1);
       end;
+
+   // если открыт медиа поиск
+   if PageControl1.ActivePageindex=3 then
+      begin
+SD2.FileName:=filename;
+if SD2.Execute then
+ begin
+ filename:=SD2.FileName;
+t:=TStringList.Create;
+DBGrid4.DataSource.DataSet.first;
+t.add('<html>');
+t.add('<head>');
+t.add('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">');
+t.add('</head>');
+t.add('<h1 align=center>Lpro - Проверка лицензий установленных программ</h1>');
+t.add('<h2 align=center>Имя компьютера: ' + p1 + ' в ' + FormatDateTime('hh:nn dd.mm.yyyy', Now) + '</h2>');
+t.add('<html>');
+t.add('<table border=1 align=center>');
+//
+
+ t.add('<tr>');
+t.add('<td> Путь');
+t.add('<td> Размер');
+t.add('</tr>');
+//
+t.add('<tr>');
+for i:=2 to DBGrid4.DataSource.DataSet.Fields.Count-1 do
+t.add('<td>'+DBGrid4.DataSource.DataSet.fields[i].fieldname);
+t.add('</tr>');
+while not DBGrid4.DataSource.DataSet.eof do
+begin
+s:='<tr>';
+for i:=0 to DBGrid4.DataSource.DataSet.Fields.Count-1 do
+ s:=s+'<td>'+DBGrid4.DataSource.DataSet.fields[i].AsString;
+s:=s+'</tr>';
+t.add(SysToUTF8(s));     //   UTF8ToCP1251
+DBGrid4.DataSource.DataSet.next;
+end;
+t.add('</table>');
+t.add('<p align=center>Официальный сайт: <a href="http://xn--90abhbolvbbfgb9aje4m.xn--p1ai/">КонтинентСвободы.рф</a></p>');
+t.add('</html>');
+t.savetofile(filename);
+end;
+DBGrid4.DataSource.DataSet.first;
+      FreeMem(p1);
+      end;
+
 
 end;
 
@@ -1600,7 +1709,35 @@ OO := CreateOleObject('com.sun.star.ServiceManager');
       end;
 
 
+  // если открыт медиа поиск
+    if PageControl1.ActivePageindex=3 then
+      begin
+	  SetLength(Zagolovki, 1, 3);
 
+                Zagolovki[0][1] := 'Путь';
+                Cell := Sheet.getCellByPosition(1, 0);
+                Cell.SetString(WideString(UTF8Decode(Zagolovki[0][1])));
+
+              Zagolovki[0][2] := 'Размер';
+              Cell := Sheet.getCellByPosition(2, 0);
+              Cell.SetString(WideString(UTF8Decode(Zagolovki[0][2])));
+
+              ds := DBGrid4.DataSource.DataSet;
+              ds.First; j := 1; // с какой строки начинать вставлять в CALC
+              while not ds.EOF do
+              begin
+                for i := 1 to ds.FieldCount do
+                begin
+                  Cell := Sheet.getCellByPosition(i, j);
+                  if i = 0 then
+                   Cell.SetString(WideString(UTF8Decode(ds.Fields.Fields[i].AsString)));
+                  if i > 0 then
+                  Cell.SetString(WideString(UTF8Decode(ds.Fields.Fields[i - 1].AsString)));
+                end;
+                ds.Next; inc(j);
+              end;
+
+      end;
 
 end;
 
@@ -1667,6 +1804,32 @@ ExcelApp.Visible := true;
 
       end;
 
+    // если открыт медиа поиск
+    if PageControl1.ActivePageindex=3 then
+      begin
+Rez := CLSIDFromProgID(PWideChar(WideString('Excel.Application')), ClassID);
+if Rez <> S_OK then begin
+  MessageDlg('EXCEL не установлен. Поддерживается передача только в EXCEL.',mtERROR,[mbok],0);
+  Exit;
+  end;
+ExcelApp := CreateOleObject('Excel.Application');
+ExcelApp.Visible := False;
+ExcelApp.WorkBooks.Add(-4167);
+ExcelApp.WorkBooks[1].WorkSheets[1].name := 'Export';
+sheet:=ExcelApp.WorkBooks[1].WorkSheets['Export'];
+index:=1; //Загоняем с первой строки
+DBGrid4.DataSource.DataSet.First;
+for i:=1 to DBGrid4.DataSource.DataSet.RecordCount do
+begin
+for j:=1 to DBGrid4.DataSource.DataSet.FieldCount do
+sheet.cells[index,j]:=DBGrid4.DataSource.DataSet.fields[j-1].AsWideString;
+inc(index);
+DBGrid4.DataSource.DataSet.Next;
+end;
+ExcelApp.Visible := true;
+
+      end;
+
 end;
 
 procedure TfMian.mPodborZameniClick(Sender: TObject);
@@ -1682,10 +1845,30 @@ end;
 
 procedure TfMian.mShriftClick(Sender: TObject);
 begin
+    if PageControl1.ActivePageindex=0 then   // автопоиск
+      begin
     //сначала диалогу присваиваем шрифт:
   FD.Font:= DBGrid1.Font;
   //если диалог прошел успешно, меняем шрифт:
   if FD.Execute then DBGrid1.Font:= FD.Font;
+  end;
+
+    if PageControl1.ActivePageindex=1 then      //ручной
+      begin
+    //сначала диалогу присваиваем шрифт:
+  FD.Font:= DBGrid2.Font;
+  //если диалог прошел успешно, меняем шрифт:
+  if FD.Execute then DBGrid2.Font:= FD.Font;
+  end;
+
+    if PageControl1.ActivePageindex=3 then         //медиа
+      begin
+    //сначала диалогу присваиваем шрифт:
+  FD.Font:= DBGrid4.Font;
+  //если диалог прошел успешно, меняем шрифт:
+  if FD.Execute then DBGrid4.Font:= FD.Font;
+  end;
+
 end;
 
 
@@ -1696,7 +1879,7 @@ end;
 
 procedure TfMian.PageControl1Change(Sender: TObject);
 begin
-if PageControl1.ActivePageindex=1 then
+if PageControl1.ActivePageindex=1 then      //ручной
  begin
      mBeginSerch.Enabled := False;
      mOchistit.Enabled := False;
@@ -1715,11 +1898,13 @@ if PageControl1.ActivePageindex=1 then
      mExport.Enabled := True;
      mExportHTML.Enabled := True;
      mPeredatExcel.Enabled := True;
+     mPeredatLibreOffice.Enabled := True;
      panExportCSV.Enabled := True;
      panExportHTML.Enabled := True;
      panPeredatExcel.Enabled := True;
+     panExpLibre.Enabled := True;
  end;
-if PageControl1.ActivePageindex=2 then
+if PageControl1.ActivePageindex=2 then    // установленные программы
  begin
      mBeginSerch.Enabled := False;
      mOchistit.Enabled := False;
@@ -1738,11 +1923,13 @@ if PageControl1.ActivePageindex=2 then
      mExport.Enabled := False;
      mExportHTML.Enabled := False;
      mPeredatExcel.Enabled := False;
+     mPeredatLibreOffice.Enabled := False;
      panExportCSV.Enabled := False;
      panExportHTML.Enabled := False;
      panPeredatExcel.Enabled := False;
+     panExpLibre.Enabled := False;
  end;
-if PageControl1.ActivePageindex=0 then
+if PageControl1.ActivePageindex=0 then  //автопоиск
  begin
      mBeginSerch.Enabled := True;
      mOchistit.Enabled := True;
@@ -1761,10 +1948,40 @@ if PageControl1.ActivePageindex=0 then
      mExport.Enabled := True;
      mExportHTML.Enabled := True;
      mPeredatExcel.Enabled := True;
+     mPeredatLibreOffice.Enabled := True;
      panExportCSV.Enabled := True;
      panExportHTML.Enabled := True;
      panPeredatExcel.Enabled := True;
+     panExpLibre.Enabled := True;
  end;
+
+
+if PageControl1.ActivePageindex=3 then     // медиа поиск
+ begin
+     mBeginSerch.Enabled := True;
+     mOchistit.Enabled := True;
+     panBeginSerch.Enabled := True;
+     panOchistit.Enabled := True;
+     panSort00.Enabled := False;
+     panSort01.Enabled := False;
+     panSort02.Enabled := False;
+     panSort03.Enabled := False;
+     panSort04.Enabled := False;
+     mSort00.Enabled := False;
+     mSort01.Enabled := False;
+     mSort02.Enabled := False;
+     mSort03.Enabled := False;
+     mSort04.Enabled := False;
+     mExport.Enabled := True;
+     mExportHTML.Enabled := True;
+     mPeredatExcel.Enabled := True;
+     mPeredatLibreOffice.Enabled := True;
+     panExportCSV.Enabled := True;
+     panExportHTML.Enabled := True;
+     panPeredatExcel.Enabled := True;
+     panExpLibre.Enabled := True;
+ end;
+
 end;
 
 
@@ -1814,71 +2031,6 @@ var                                    //    отключил пункт в ме
   Memo1.SelectAll;
   Memo1.CopyToClipboard;
 
-
-
-
-
-
-     {*
-     s := '';
-       for j := 0 to DBGrid1.Columns.Count - 1 do
-         s := s + DBGrid1.Columns.Items[j].Title.Caption + #9;
-       s := s + #13 + #10;
-       if not DBGrid1.DataSource.DataSet.active then
-       begin
-         ShowMessage('Нет выборки!!!');
-         Exit;
-       end;
-       try
-         DBGrid1.Visible := False; //Делаем грид невидимым, чтобы не тратилось время
-         //на его перерисовку при прокрутке DataSet - просто и
-         //эффективно
-         bm := DBGrid1.DataSource.DataSet.GetBookmark; // для того чтобы не
-         // потерять текущую запись
-         DBGrid1.DataSource.DataSet.First;
-         while not DBGrid1.DataSource.DataSet.EOF do
-         begin
-           s2 := '';
-           for j := 0 to DBGrid1.Columns.Count - 1 do
-           begin
-             s2 := s2 + DBGrid1.Columns.Items[j].Field.AsString + #9;
-           end;
-           s := s + s2 + #13 + #10;
-           DBGrid1.DataSource.DataSet.Next;
-         end;
-         //Переключаем клавиатуру "в русский режим",
-         //иначе - проблемы с кодировкой
-         GetMem(pch, 100);
-         GetMem(pch1, 100);
-         GetKeyboardLayoutName(pch);
-         StrCopy(pch1, pch);
-         while pch <> '00000419' do
-         begin
-           ActivateKeyboardLayout(HKL_NEXT, 0);
-           GetKeyboardLayoutName(pch);
-           if strComp(pch, pch1) = 0 then
-             //Круг замкнулся - нет такого языка '00000419'
-             StrCopy(pch, '00000419');
-         end;
-
-         clipboard.AsText := s; //Данные - в буфер!!!
-
-         //Возвращаем режим клавиатуры
-         while strComp(pch, pch1) <> 0 do
-         begin
-           ActivateKeyboardLayout(HKL_NEXT, 0);
-           GetKeyboardLayoutName(pch);
-         end;
-
-         FreeMem(pch);
-         FreeMem(pch1);
-
-         DBGrid1.DataSource.DataSet.GotoBookmark(bm);
-         //ShowMessage('Данные успешно скопированы в буфер обмена.');
-       finally
-         DBGrid1.Visible := True;
-       end;
-   *}
 end;
 
 procedure TfMian.JumpToKey(Key: string);
@@ -1928,6 +2080,7 @@ var
      i := i + 1;
    until i = n;
 end;
+
 
 procedure TfMian.rVetkaReestraSelectionChanged(Sender: TObject);
 var
@@ -1986,7 +2139,7 @@ begin
 end;
 
 procedure TfMian.mBeginSerchClick(Sender: TObject);
-//для определения версии винды
+//для определения версии винды     //автопоиск
 type
   TFunc = function(dwOSMajorVersion, dwOSMinorVersion, dwSpMajorVersion,
     dwSpMinorVersion: DWORD; var pdwReturnedProductType: DWORD): BOOL; stdcall;
@@ -2152,6 +2305,9 @@ for N := 0 to MyList2.Count - 1 do
     UTF8Delete(FiltrStr, UTF8Pos(' CC 2017', FiltrStr), UTF8Length(FiltrStr));
     UTF8Delete(FiltrStr, UTF8Pos(' CC 2018', FiltrStr), UTF8Length(FiltrStr));
     UTF8Delete(FiltrStr, UTF8Pos(' CC 2019', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' CC 2020', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' CC 2021', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' CC 2022', FiltrStr), UTF8Length(FiltrStr));
     UTF8Delete(FiltrStr, UTF8Pos(' 2015.1', FiltrStr), UTF8Length(FiltrStr));
     UTF8Delete(FiltrStr, UTF8Pos(' 2015.2', FiltrStr), UTF8Length(FiltrStr));
     UTF8Delete(FiltrStr, UTF8Pos(' 2015.3', FiltrStr), UTF8Length(FiltrStr));
@@ -2177,6 +2333,21 @@ for N := 0 to MyList2.Count - 1 do
     UTF8Delete(FiltrStr, UTF8Pos(' 2019.3', FiltrStr), UTF8Length(FiltrStr));
     UTF8Delete(FiltrStr, UTF8Pos(' 2019.4', FiltrStr), UTF8Length(FiltrStr));
     UTF8Delete(FiltrStr, UTF8Pos(' 2019.5', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2020.1', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2020.2', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2020.3', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2020.4', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2020.5', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2021.1', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2021.2', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2021.3', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2021.4', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2021.5', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2022.1', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2022.2', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2022.3', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2022.4', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2022.5', FiltrStr), UTF8Length(FiltrStr));
     if (UTF8Pos('Microsoft Visual Studio', FiltrStr)=0) then
     begin
     UTF8Delete(FiltrStr, UTF8Pos(' 2015', FiltrStr), UTF8Length(FiltrStr));
@@ -2192,6 +2363,9 @@ for N := 0 to MyList2.Count - 1 do
     UTF8Delete(FiltrStr, UTF8Pos(' 2012', FiltrStr), UTF8Length(FiltrStr));
     UTF8Delete(FiltrStr, UTF8Pos(' 2013', FiltrStr), UTF8Length(FiltrStr));
     UTF8Delete(FiltrStr, UTF8Pos(' 2014', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2020', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2021', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2022', FiltrStr), UTF8Length(FiltrStr));
     end;
 
     if (UTF8Pos('Microsoft Visual Studio', FiltrStr)>=1) then
@@ -2209,6 +2383,9 @@ for N := 0 to MyList2.Count - 1 do
     UTF8Delete(FiltrStr, UTF8Pos(' 2012', FiltrStr), 5);
     UTF8Delete(FiltrStr, UTF8Pos(' 2013', FiltrStr), 5);
     UTF8Delete(FiltrStr, UTF8Pos(' 2014', FiltrStr), 5);
+    UTF8Delete(FiltrStr, UTF8Pos(' 2020', FiltrStr), 5);
+    UTF8Delete(FiltrStr, UTF8Pos(' 2021', FiltrStr), 5);
+    UTF8Delete(FiltrStr, UTF8Pos(' 2022', FiltrStr), 5);
     end;
 
     UTF8Delete(FiltrStr, UTF8Pos(' (2015', FiltrStr), UTF8Length(FiltrStr));
@@ -2224,6 +2401,9 @@ for N := 0 to MyList2.Count - 1 do
     UTF8Delete(FiltrStr, UTF8Pos(' (2012', FiltrStr), UTF8Length(FiltrStr));
     UTF8Delete(FiltrStr, UTF8Pos(' (2013', FiltrStr), UTF8Length(FiltrStr));
     UTF8Delete(FiltrStr, UTF8Pos(' (2014', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (2020', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (2021', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (2022', FiltrStr), UTF8Length(FiltrStr));
     UTF8Delete(FiltrStr, UTF8Pos(' (v0', FiltrStr), UTF8Length(FiltrStr));
     UTF8Delete(FiltrStr, UTF8Pos(' (v1', FiltrStr), UTF8Length(FiltrStr));
     UTF8Delete(FiltrStr, UTF8Pos(' (v2', FiltrStr), UTF8Length(FiltrStr));
@@ -2411,7 +2591,20 @@ for N := 0 to MyList2.Count - 1 do
     UTF8Delete(FiltrStr, UTF8Pos(' (учебная', FiltrStr), UTF8Length(FiltrStr));
     UTF8Delete(FiltrStr, UTF8Pos(' (Учебная', FiltrStr), UTF8Length(FiltrStr));
     UTF8Delete(FiltrStr, UTF8Pos(' (Учебная', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 10', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 11', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 12', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 13', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 14', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 15', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 16', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 17', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 18', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 19', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (только удаление', FiltrStr), UTF8Length(FiltrStr));
+
     if N=1 then ProgressBar1.StepBy(1);
+
     // 11.11
     if UTF8Pos('.', FiltrStr)<>0 then
     begin
@@ -2472,16 +2665,11 @@ for N := 0 to MyList2.Count - 1 do
     end;
     end;
     end;
-  {  if UTF8Pos('Microsoft Visual C++', FiltrStr)=1 then
+
+     if Length(FiltrStr) > 0 then
     begin
-    showmessage(FiltrStr);
-    //FiltrStr:='Delete';
-    end
-    else
-    begin
-    MyFiltrList.Add(FiltrStr);
-    end; }
      MyFiltrList.Add(FiltrStr);
+     end;
   end;
 ProgressBar1.StepBy(1);
 //конец фильтра
@@ -2728,10 +2916,6 @@ SQLQuery1.First;
     SQLQuery1.SQL.Add(s);
     SQLQuery1.Active:=true;
 
- {SQLQuery1.SQL.Clear;
- SQLQuery1.SQL.Text:='select * from setting';
- SQLQuery1.Open;
- SQLQuery1.First; }
 
  s := '';
  s := 'SELECT ';
@@ -4179,6 +4363,7 @@ DBGrid2.Columns[Nst6Pos].Width:= 130;
 end;
 
       end;
+
 end;
 
 procedure TfMian.mSort01Click(Sender: TObject);
@@ -4202,28 +4387,7 @@ begin
      //если автопоиск
      if PageControl1.ActivePageindex=0 then
       begin
-     {s := '';
-     s := 'SELECT st7, st2, st3, st4, st5, st6 FROM test order by st3 DESC';
 
-     SQLQuery1.Close;
-     SQLQuery1.Active:=false;
-     SQLQuery1.SQL.Clear;
-     SQLQuery1.SQL.Add(s);
-     SQLQuery1.Active:=true;
-     SQLQuery1.Open;
-     //заполняем заголовки колонок и меняем ширину колонок
-     DBGrid1.Columns[0].Title.Caption:='Исходное название';
-     DBGrid1.Columns[1].Title.Caption:='Название в БД';
-     DBGrid1.Columns[2].Title.Caption:='Тип ПО';
-     DBGrid1.Columns[3].Title.Caption:='Лицензия';
-     DBGrid1.Columns[4].Title.Caption:='Стоимость';
-     DBGrid1.Columns[5].Title.Caption:='Замена';
-     DBGrid1.Columns[0].Width:= 200;
-     DBGrid1.Columns[1].Width:= 110;
-     DBGrid1.Columns[2].Width:= 150;
-     DBGrid1.Columns[3].Width:= 110;
-     DBGrid1.Columns[4].Width:= 90;
-     DBGrid1.Columns[5].Width:= 150;}
 
       SQLQuery2.Close;
     SQLQuery2.Active:=false;
@@ -4541,28 +4705,7 @@ end;
      //если ручной поиск
      if PageControl1.ActivePageindex=1 then
       begin
-   {   s := '';
-     s := 'SELECT st7, st2, st3, st4, st5, st6 FROM ruch order by st3  DESC';
 
-     SQLQuery3.Close;
-     SQLQuery3.Active:=false;
-     SQLQuery3.SQL.Clear;
-     SQLQuery3.SQL.Add(s);
-     SQLQuery3.Active:=true;
-     SQLQuery3.Open;
-     //заполняем заголовки колонок и меняем ширину колонок
-     DBGrid2.Columns[0].Title.Caption:='Исходное название';
-     DBGrid2.Columns[1].Title.Caption:='Название в БД';
-     DBGrid2.Columns[2].Title.Caption:='Тип ПО';
-     DBGrid2.Columns[3].Title.Caption:='Лицензия';
-     DBGrid2.Columns[4].Title.Caption:='Стоимость';
-     DBGrid2.Columns[5].Title.Caption:='Замена';
-     DBGrid2.Columns[0].Width:= 200;
-     DBGrid2.Columns[1].Width:= 110;
-     DBGrid2.Columns[2].Width:= 150;
-     DBGrid2.Columns[3].Width:= 110;
-     DBGrid2.Columns[4].Width:= 90;
-     DBGrid2.Columns[5].Width:= 150; }
 
           //начало постройки запроса согласно настройкам программы
 
@@ -4573,10 +4716,7 @@ end;
     SQLQuery1.SQL.Add(s);
     SQLQuery1.Active:=true;
 
- {SQLQuery1.SQL.Clear;
- SQLQuery1.SQL.Text:='select * from setting';
- SQLQuery1.Open;
- SQLQuery1.First; }
+
 
  s := '';
  s := 'SELECT ';
@@ -5355,28 +5495,7 @@ begin
      //если автопоиск
      if PageControl1.ActivePageindex=0 then
       begin
-      {s := '';
-      s := 'SELECT st7, st2, st3, st4, st5, st6 FROM test order by st4  DESC';
 
-      SQLQuery1.Close;
-      SQLQuery1.Active:=false;
-      SQLQuery1.SQL.Clear;
-      SQLQuery1.SQL.Add(s);
-      SQLQuery1.Active:=true;
-      SQLQuery1.Open;
-      //заполняем заголовки колонок и меняем ширину колонок
-      DBGrid1.Columns[0].Title.Caption:='Исходное название';
-      DBGrid1.Columns[1].Title.Caption:='Название в БД';
-      DBGrid1.Columns[2].Title.Caption:='Тип ПО';
-      DBGrid1.Columns[3].Title.Caption:='Лицензия';
-      DBGrid1.Columns[4].Title.Caption:='Стоимость';
-      DBGrid1.Columns[5].Title.Caption:='Замена';
-      DBGrid1.Columns[0].Width:= 200;
-      DBGrid1.Columns[1].Width:= 110;
-      DBGrid1.Columns[2].Width:= 150;
-      DBGrid1.Columns[3].Width:= 110;
-      DBGrid1.Columns[4].Width:= 90;
-      DBGrid1.Columns[5].Width:= 150; }
 
       SQLQuery2.Close;
     SQLQuery2.Active:=false;
@@ -5693,28 +5812,7 @@ end;
      //если ручной
      if PageControl1.ActivePageindex=1 then
       begin
-   {   s := '';
-      s := 'SELECT st7, st2, st3, st4, st5, st6 FROM ruch order by st4  DESC';
 
-      SQLQuery3.Close;
-      SQLQuery3.Active:=false;
-      SQLQuery3.SQL.Clear;
-      SQLQuery3.SQL.Add(s);
-      SQLQuery3.Active:=true;
-      SQLQuery3.Open;
-      //заполняем заголовки колонок и меняем ширину колонок
-      DBGrid2.Columns[0].Title.Caption:='Исходное название';
-      DBGrid2.Columns[1].Title.Caption:='Название в БД';
-      DBGrid2.Columns[2].Title.Caption:='Тип ПО';
-      DBGrid2.Columns[3].Title.Caption:='Лицензия';
-      DBGrid2.Columns[4].Title.Caption:='Стоимость';
-      DBGrid2.Columns[5].Title.Caption:='Замена';
-      DBGrid2.Columns[0].Width:= 200;
-      DBGrid2.Columns[1].Width:= 110;
-      DBGrid2.Columns[2].Width:= 150;
-      DBGrid2.Columns[3].Width:= 110;
-      DBGrid2.Columns[4].Width:= 90;
-      DBGrid2.Columns[5].Width:= 150;   }
           //начало постройки запроса согласно настройкам программы
 
     SQLQuery1.Close;
@@ -5724,10 +5822,6 @@ end;
     SQLQuery1.SQL.Add(s);
     SQLQuery1.Active:=true;
 
- {SQLQuery1.SQL.Clear;
- SQLQuery1.SQL.Text:='select * from setting';
- SQLQuery1.Open;
- SQLQuery1.First; }
 
  s := '';
  s := 'SELECT ';
@@ -6506,28 +6600,7 @@ begin
      //если автопоиск
      if PageControl1.ActivePageindex=0 then
       begin
-     { s := '';
-      s := 'SELECT st7, st2, st3, st4, st5, st6 FROM test order by st5 DESC';
 
-      SQLQuery1.Close;
-      SQLQuery1.Active:=false;
-      SQLQuery1.SQL.Clear;
-      SQLQuery1.SQL.Add(s);
-      SQLQuery1.Active:=true;
-      SQLQuery1.Open;
-      //заполняем заголовки колонок и меняем ширину колонок
-      DBGrid1.Columns[0].Title.Caption:='Исходное название';
-      DBGrid1.Columns[1].Title.Caption:='Название в БД';
-      DBGrid1.Columns[2].Title.Caption:='Тип ПО';
-      DBGrid1.Columns[3].Title.Caption:='Лицензия';
-      DBGrid1.Columns[4].Title.Caption:='Стоимость';
-      DBGrid1.Columns[5].Title.Caption:='Замена';
-      DBGrid1.Columns[0].Width:= 200;
-      DBGrid1.Columns[1].Width:= 110;
-      DBGrid1.Columns[2].Width:= 150;
-      DBGrid1.Columns[3].Width:= 110;
-      DBGrid1.Columns[4].Width:= 90;
-      DBGrid1.Columns[5].Width:= 150;  }
 
     SQLQuery2.Close;
     SQLQuery2.Active:=false;
@@ -6844,28 +6917,7 @@ end;
          //если ручной
      if PageControl1.ActivePageindex=1 then
       begin
-   {   s := '';
-      s := 'SELECT st7, st2, st3, st4, st5, st6 FROM ruch order by st5  DESC';
 
-      SQLQuery3.Close;
-      SQLQuery3.Active:=false;
-      SQLQuery3.SQL.Clear;
-      SQLQuery3.SQL.Add(s);
-      SQLQuery3.Active:=true;
-      SQLQuery3.Open;
-      //заполняем заголовки колонок и меняем ширину колонок
-      DBGrid2.Columns[0].Title.Caption:='Исходное название';
-      DBGrid2.Columns[1].Title.Caption:='Название в БД';
-      DBGrid2.Columns[2].Title.Caption:='Тип ПО';
-      DBGrid2.Columns[3].Title.Caption:='Лицензия';
-      DBGrid2.Columns[4].Title.Caption:='Стоимость';
-      DBGrid2.Columns[5].Title.Caption:='Замена';
-      DBGrid2.Columns[0].Width:= 200;
-      DBGrid2.Columns[1].Width:= 110;
-      DBGrid2.Columns[2].Width:= 150;
-      DBGrid2.Columns[3].Width:= 110;
-      DBGrid2.Columns[4].Width:= 90;
-      DBGrid2.Columns[5].Width:= 150;    }
 
           //начало постройки запроса согласно настройкам программы
 
@@ -6876,10 +6928,7 @@ end;
     SQLQuery1.SQL.Add(s);
     SQLQuery1.Active:=true;
 
- {SQLQuery1.SQL.Clear;
- SQLQuery1.SQL.Text:='select * from setting';
- SQLQuery1.Open;
- SQLQuery1.First; }
+
 
  s := '';
  s := 'SELECT ';
@@ -7657,28 +7706,7 @@ begin
 //если автопоиск
      if PageControl1.ActivePageindex=0 then
       begin
-     { s := '';
-      s := 'SELECT st7, st2, st3, st4, st5, st6 FROM test order by st6 DESC';
 
-      SQLQuery1.Close;
-      SQLQuery1.Active:=false;
-      SQLQuery1.SQL.Clear;
-      SQLQuery1.SQL.Add(s);
-      SQLQuery1.Active:=true;
-      SQLQuery1.Open;
-      //заполняем заголовки колонок и меняем ширину колонок
-      DBGrid1.Columns[0].Title.Caption:='Исходное название';
-      DBGrid1.Columns[1].Title.Caption:='Название в БД';
-      DBGrid1.Columns[2].Title.Caption:='Тип ПО';
-      DBGrid1.Columns[3].Title.Caption:='Лицензия';
-      DBGrid1.Columns[4].Title.Caption:='Стоимость';
-      DBGrid1.Columns[5].Title.Caption:='Замена';
-      DBGrid1.Columns[0].Width:= 200;
-      DBGrid1.Columns[1].Width:= 110;
-      DBGrid1.Columns[2].Width:= 150;
-      DBGrid1.Columns[3].Width:= 110;
-      DBGrid1.Columns[4].Width:= 90;
-      DBGrid1.Columns[5].Width:= 150;  }
 
     SQLQuery2.Close;
     SQLQuery2.Active:=false;
@@ -7996,28 +8024,7 @@ end;
      //если ручной
      if PageControl1.ActivePageindex=1 then
       begin
-    {  s := '';
-      s := 'SELECT st7, st2, st3, st4, st5, st6 FROM ruch order by st6  DESC';
 
-      SQLQuery3.Close;
-      SQLQuery3.Active:=false;
-      SQLQuery3.SQL.Clear;
-      SQLQuery3.SQL.Add(s);
-      SQLQuery3.Active:=true;
-      SQLQuery3.Open;
-      //заполняем заголовки колонок и меняем ширину колонок
-      DBGrid2.Columns[0].Title.Caption:='Исходное название';
-      DBGrid2.Columns[1].Title.Caption:='Название в БД';
-      DBGrid2.Columns[2].Title.Caption:='Тип ПО';
-      DBGrid2.Columns[3].Title.Caption:='Лицензия';
-      DBGrid2.Columns[4].Title.Caption:='Стоимость';
-      DBGrid2.Columns[5].Title.Caption:='Замена';
-      DBGrid2.Columns[0].Width:= 200;
-      DBGrid2.Columns[1].Width:= 110;
-      DBGrid2.Columns[2].Width:= 150;
-      DBGrid2.Columns[3].Width:= 110;
-      DBGrid2.Columns[4].Width:= 90;
-      DBGrid2.Columns[5].Width:= 150;     }
 
           //начало постройки запроса согласно настройкам программы
 
@@ -8028,10 +8035,6 @@ end;
     SQLQuery1.SQL.Add(s);
     SQLQuery1.Active:=true;
 
- {SQLQuery1.SQL.Clear;
- SQLQuery1.SQL.Text:='select * from setting';
- SQLQuery1.Open;
- SQLQuery1.First; }
 
  s := '';
  s := 'SELECT ';
@@ -8807,6 +8810,11 @@ end;
 
 
 procedure TfMian.FormCreate(Sender: TObject);
+// для параметров
+ type
+  TFunc = function(dwOSMajorVersion, dwOSMinorVersion, dwSpMajorVersion,
+    dwSpMinorVersion: DWORD; var pdwReturnedProductType: DWORD): BOOL; stdcall;
+// для параметров
 var
  // attr: Integer;
  // s: string;
@@ -8816,7 +8824,41 @@ var
    NameKey: string;
    FullKey: String;
    bitnost: String;
+   // для параметров
+   MyList: TStringListUTF8;     // для хранения названий ключей реестра
+   MyList2: TStringListUTF8;
+   MyList4: TStringListUTF8;
+   MyRegistry: TRegistry;
+   MassivAvtoStr: array of array of string;
+     s: string;
+     i2:Integer;
+     p1:Integer;
+     p2:Integer;
+     p3:String;
+ FiltrStr: string;
+   Str2: string;
+     N:Word; // было Integer    // для записи в базу списка
+     Nst7:Word;
+     Nst2:Word;   // для загрузки из базы настроек
+     Nst3:Word;   // какие нужно загружать столбцы в автопоиске
+     Nst4:Word;
+     Nst5:Word;
+     Nst6:Word;
+     Nst7Pos:Word; // переменные для определения позиций колонок
+     Nst2Pos:Word; // необходимо для заполнения заголовков и изменения ширины
+     Nst3Pos:Word;
+     Nst4Pos:Word;
+     Nst5Pos:Word;
+     Nst6Pos:Word;
+     bitnost2:String;
+     Os : OSVERSIONINFO;//для определения версии ос
+     funcGetProductInfo : TFunc;
+     dwType : DWORD;
+
 begin
+
+
+
   //attr := FileGetAttr('c:\Autoexec.bat');
   //if (attr and faReadOnly) <> 0 then s := s + 'Read-Only';
   FileSetAttr('Lpro.db',128);
@@ -8863,6 +8905,1035 @@ begin
      //     MyRegistry.CloseKey;
 // MyRegistry.Free;
 
+
+// Пробую сделать запуск с параметрами - начало
+
+  if ParamStr(1) = '-A' then
+    begin
+  //   showmessage('Сработал параметр автопоиска с сохранением отчета в HTML');
+
+
+      lProgress.Caption:='Пожалуйста, подождите';
+ProgressBar1.Position:=0;
+ProgressBar1.Min := 0;
+ProgressBar1.Max := 10;
+Cursor:= crHourGlass;
+bOpenKatPodrob.Enabled:=True;
+cbZamenaPodrob.Enabled:=True;
+bViewZamPodrob.Enabled:=True;
+ bSearch.Visible:=False;    //скрываем кнопку начать поиск
+ //  {*     // очищаем старое содержимое
+        SQLQuery1.Close;                               // очиска таблицы в базе, в которую
+        SQLQuery1.SQL.Text := 'delete from install';    //  записывается список программ
+        SQLQuery1.ExecSQL;
+        SQLTransaction1.CommitRetaining;
+// *}
+  MyList2:=TStringListUTF8.Create;
+
+//  MyRegistry:=TRegistry.Create;
+
+  bitnost2:=GetEnvironmentVariableUTF8('ProgramFiles(x86)');
+  if bitnost2 <> '' then
+  begin
+   MyRegistry:=TRegistry.Create(KEY_WOW64_64KEY);
+  end
+     else
+     begin
+     MyRegistry:=TRegistry.Create;
+     end;
+
+  ProgressBar1.StepBy(1);
+  MyList4:=TStringListUTF8.Create;
+ MyList:=TStringListUTF8.Create;
+
+
+
+                               //Reg.KeyExists('\Software\key')
+ //if MyRegistry.KeyExists('SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall') then begin              //IsWow64
+ //  showmessage('ключ существует');
+  with MyRegistry do
+        begin
+        RootKey:=HKEY_LOCAL_MACHINE;
+        OpenKeyReadOnly('Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\');
+        GetKeyNames(MyList);
+        CloseKey;
+        for i2:=0 to MyList.Count-1 do
+           begin
+           RootKey:=HKEY_LOCAL_MACHINE;
+           OpenKeyReadOnly('Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\'+
+           MyList[i2]);
+           Str2:=ReadString('DisplayName');
+           if (Str2<>'') AND (UTF8Pos('Microsoft Visual C++', Str2)<1) AND (UTF8Pos('Visual C++', Str2)<1) then
+           begin
+        {   if UTF8Pos('Microsoft Visual C++', Str)=1 then
+           begin
+           continue;
+           end;   }
+       //    Memo1.Lines.Add(SysToUTF8(ReadString('DisplayName')));
+           MyList2.Add(CP1251ToUTF8(ReadString('DisplayName')));
+           MyList4.Add('Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\'+MyList[i2]);
+           end;
+           CloseKey;
+           end;
+
+        RootKey:=HKEY_LOCAL_MACHINE;
+        OpenKeyReadOnly('Software\Microsoft\Windows\CurrentVersion\Uninstall\');
+        GetKeyNames(MyList);
+        CloseKey;
+        for i2:=0 to MyList.Count-1 do
+           begin
+           RootKey:=HKEY_LOCAL_MACHINE;
+           OpenKeyReadOnly('Software\Microsoft\Windows\CurrentVersion\Uninstall\'+
+           MyList[i2]);
+           Str2:=ReadString('DisplayName');
+           if (Str2<>'') AND (UTF8Pos('Microsoft Visual C++', Str2)<1) AND (UTF8Pos('Visual C++', Str2)<1) then
+           begin
+         {  if UTF8Pos('Microsoft Visual C++', Str)=1 then
+           begin
+           continue;
+           end; }
+       //    Memo1.Lines.Add(SysToUTF8(ReadString('DisplayName')));
+           MyList2.Add(CP1251ToUTF8(ReadString('DisplayName')));
+           MyList4.Add('Software\Microsoft\Windows\CurrentVersion\Uninstall\'+MyList[i2]);
+           end;
+           CloseKey;
+           end;
+          end;
+  ProgressBar1.StepBy(1);
+ //  end
+
+
+
+   //   {*
+  SQLQuery1.Close;
+  SQLQuery1.SQL.Clear;
+  SQLQuery1.SQL.Add('insert into install(text)');     //    Запись полученного списка прог в базу
+  SQLQuery1.SQL.Add('Values (:pText)');
+  for N := 0 to MyList2.Count - 1 do
+  begin
+    SQLQuery1.ParamByName('pText').AsString := MyList2[N];
+    SQLQuery1.ExecSQL;
+  end;
+  SQLTransaction1.CommitRetaining;
+  ProgressBar1.StepBy(1);
+   //новый вариант
+  SQLQuery1.SQL.Clear;
+SQLQuery1.SQL.Text:='select text from install';
+SQLQuery1.Open;
+SQLQuery1.First;
+MyList2.clear;                   // пытался из базы получать список прог
+while not SQLQuery1.Eof do
+begin
+  MyList2.Add(SQLQuery1.FieldByName('text').AsString);
+  SQLQuery1.Next;
+end;
+SQLQuery1.Close;
+ProgressBar1.StepBy(1);
+
+//Пытаюсь фильтровать названия программ от версий
+MyFiltrList:=TStringListUTF8.Create;
+for N := 0 to MyList2.Count - 1 do
+  begin
+    FiltrStr:=MyList2[N];
+    UTF8Delete(FiltrStr, UTF8Pos(' CC', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' CS', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' cc', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' cs', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' CC 2015', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' CC 2016', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' CC 2017', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' CC 2018', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' CC 2019', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' CC 2020', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' CC 2021', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' CC 2022', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2015.1', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2015.2', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2015.3', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2015.4', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2015.5', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2016.1', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2016.2', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2016.3', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2016.4', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2016.5', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2017.1', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2017.2', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2017.3', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2017.4', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2017.5', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2018.1', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2018.2', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2018.3', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2018.4', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2018.5', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2019.1', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2019.2', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2019.3', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2019.4', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2019.5', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2020.1', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2020.2', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2020.3', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2020.4', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2020.5', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2021.1', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2021.2', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2021.3', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2021.4', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2021.5', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2022.1', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2022.2', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2022.3', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2022.4', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2022.5', FiltrStr), UTF8Length(FiltrStr));
+    if (UTF8Pos('Microsoft Visual Studio', FiltrStr)=0) then
+    begin
+    UTF8Delete(FiltrStr, UTF8Pos(' 2015', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2016', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2017', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2018', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2019', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2007', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2008', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2009', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2010', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2011', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2012', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2013', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2014', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2020', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2021', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2022', FiltrStr), UTF8Length(FiltrStr));
+    end;
+
+    if (UTF8Pos('Microsoft Visual Studio', FiltrStr)>=1) then
+    begin
+    UTF8Delete(FiltrStr, UTF8Pos(' 2015', FiltrStr), 5);
+    UTF8Delete(FiltrStr, UTF8Pos(' 2016', FiltrStr), 5);
+    UTF8Delete(FiltrStr, UTF8Pos(' 2017', FiltrStr), 5);
+    UTF8Delete(FiltrStr, UTF8Pos(' 2018', FiltrStr), 5);
+    UTF8Delete(FiltrStr, UTF8Pos(' 2019', FiltrStr), 5);
+    UTF8Delete(FiltrStr, UTF8Pos(' 2007', FiltrStr), 5);
+    UTF8Delete(FiltrStr, UTF8Pos(' 2008', FiltrStr), 5);
+    UTF8Delete(FiltrStr, UTF8Pos(' 2009', FiltrStr), 5);
+    UTF8Delete(FiltrStr, UTF8Pos(' 2010', FiltrStr), 5);
+    UTF8Delete(FiltrStr, UTF8Pos(' 2011', FiltrStr), 5);
+    UTF8Delete(FiltrStr, UTF8Pos(' 2012', FiltrStr), 5);
+    UTF8Delete(FiltrStr, UTF8Pos(' 2013', FiltrStr), 5);
+    UTF8Delete(FiltrStr, UTF8Pos(' 2014', FiltrStr), 5);
+    UTF8Delete(FiltrStr, UTF8Pos(' 2020', FiltrStr), 5);
+    UTF8Delete(FiltrStr, UTF8Pos(' 2021', FiltrStr), 5);
+    UTF8Delete(FiltrStr, UTF8Pos(' 2022', FiltrStr), 5);
+    end;
+
+    UTF8Delete(FiltrStr, UTF8Pos(' (2015', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (2016', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (2017', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (2018', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (2019', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (2007', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (2008', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (2009', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (2010', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (2011', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (2012', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (2013', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (2014', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (2020', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (2021', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (2022', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (v0', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (v1', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (v2', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (v3', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (v4', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (v5', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (v6', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (v7', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (v8', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (v9', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' v0', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' v1', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' v2', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' v3', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' v4', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' v5', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' v6', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' v7', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' v8', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' v9', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' v 0.', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' v 1.', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' v 2.', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' v 3.', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' v 4.', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' v 5.', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' v 6.', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' v 7.', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' v 8.', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' v 9.', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' v.0', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' v.1', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' v.2', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' v.3', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' v.4', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' v.5', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' v.6', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' v.7', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' v.8', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' v.9', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' v. 0', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' v. 1', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' v. 2', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' v. 3', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' v. 4', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' v. 5', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' v. 6', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' v. 7', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' v. 8', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' v. 9', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(', версия', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (версия', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (Версия', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(', version', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (version', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (Version', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' версия', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' version', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' Версия', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' Version', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' Ver.', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' ver.', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (Version', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (x64', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' x64', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (x86', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' x86', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos('-x64', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' - 64 bit', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (32-разрядная', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (32-Bit', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (32-bit', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (32 bit', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (64-разрядная', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (64-Bit', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (64-bit', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (64 bit', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 64-bit', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 32-bit', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos('64-bit', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos('32-bit', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 64 bit', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 32 bit', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (V0', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (V1', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (V2', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (V3', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (V4', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (V5', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (V6', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (V7', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (V8', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (V9', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' V0', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' V1', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' V2', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' V3', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' V4', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' V5', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' V6', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' V7', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' V8', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' V9', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' V.0', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' V.1', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' V.2', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' V.3', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' V.4', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' V.5', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' V.6', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' V.7', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' V.8', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' V.9', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' V. 0', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' V. 1', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' V. 2', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' V. 3', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' V. 4', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' V. 5', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' V. 6', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' V. 7', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' V. 8', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' V. 9', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos('_64b', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 64b', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' Trial', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' trial', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' demo', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' Demo', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (Trial', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (trial', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (demo', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (Demo', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' with update', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' with Update', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' With Update', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' With update', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (build', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (Build', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (0.', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (1.', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (2.', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (3.', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (4.', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (5.', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (6.', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (7.', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (8.', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (9.', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (10.', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' -0.', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' -1.', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' -2.', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' -3.', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' -4.', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' -5.', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' -6.', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' -7.', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' -8.', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' -9.', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' XE8', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' XE2', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' XE4', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' XE6', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos('™', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos('-64', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' X5', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' X6', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' x5', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' x6', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (remove', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (Remove', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' [rev', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' - English', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 0-', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 1-', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 2-', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 3-', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 4-', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 5-', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 6-', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 7-', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 8-', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 9-', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (учебная', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (Учебная', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (Учебная', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 10', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 11', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 12', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 13', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 14', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 15', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 16', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 17', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 18', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' 19', FiltrStr), UTF8Length(FiltrStr));
+    UTF8Delete(FiltrStr, UTF8Pos(' (только удаление', FiltrStr), UTF8Length(FiltrStr));
+
+    if N=1 then ProgressBar1.StepBy(1);
+
+    // 11.11
+    if UTF8Pos('.', FiltrStr)<>0 then
+    begin
+    for p1 := 0 to 100 do
+    begin
+     for p2 := 0 to 100 do
+    begin
+    p3:=' ' + IntToStr(p1) + '.' + IntToStr(p2);
+    UTF8Delete(FiltrStr, UTF8Pos(p3, FiltrStr), UTF8Length(FiltrStr));
+    end;
+    end;
+    end;
+    //11.11
+    if UTF8Pos('.', FiltrStr)<>0 then
+    begin
+    for p1 := 0 to 100 do
+    begin
+     for p2 := 0 to 100 do
+    begin
+    p3:=IntToStr(p1) + '.' + IntToStr(p2);
+    UTF8Delete(FiltrStr, UTF8Pos(p3, FiltrStr), UTF8Length(FiltrStr));
+    end;
+    end;
+    end;
+    //-11.11
+    if UTF8Pos('.', FiltrStr)<>0 then
+    begin
+    for p1 := 0 to 100 do
+    begin
+     for p2 := 0 to 100 do
+    begin
+    p3:='-' + IntToStr(p1) + '.' + IntToStr(p2);
+    UTF8Delete(FiltrStr, UTF8Pos(p3, FiltrStr), UTF8Length(FiltrStr));
+    end;
+    end;
+    end;
+     // -11.
+     if UTF8Pos('.', FiltrStr)<>0 then
+    begin
+    for p1 := 0 to 100 do
+    begin
+     for p2 := 0 to 100 do
+    begin
+    p3:='-' + IntToStr(p1) + '.';
+    UTF8Delete(FiltrStr, UTF8Pos(p3, FiltrStr), UTF8Length(FiltrStr));
+    end;
+    end;
+    end;
+     // (11.
+    if UTF8Pos('.', FiltrStr)<>0 then
+    begin
+    for p1 := 0 to 100 do
+    begin
+     for p2 := 0 to 100 do
+    begin
+    p3:='(' + IntToStr(p1) + '.';
+    UTF8Delete(FiltrStr, UTF8Pos(p3, FiltrStr), UTF8Length(FiltrStr));
+    end;
+    end;
+    end;
+
+  {  if UTF8Pos('Microsoft Visual C++', FiltrStr)=1 then
+    begin
+    showmessage(FiltrStr);
+    //FiltrStr:='Delete';
+    end                     UTF8Pos('', FiltrStr)<>0
+    else
+    begin
+    MyFiltrList.Add(FiltrStr);
+    end; }
+     if Length(FiltrStr) > 0 then
+    begin
+     MyFiltrList.Add(FiltrStr);
+     end;
+  end;
+ProgressBar1.StepBy(1);
+//конец фильтра
+
+         //пробую удалить кавычки
+  MyFiltrList.Text  := StringReplace(MyFiltrList.Text, '"', '', [rfReplaceAll, rfIgnoreCase]);
+
+  //showmessage('MyList2' + (IntToStr(MyList2.Count - 1)) + #13 + 'MyList3' + (IntToStr(MyList3.Count - 1)) + #13 + 'MyFiltrList' + (IntToStr(MyFiltrList.Count - 1)));
+
+  //начало обработки массива
+        SQLQuery1.Close;          // очиска таблицы в базе, в которую
+        SQLQuery1.SQL.Text := 'delete from test';    //  записывается список программ
+        SQLQuery1.ExecSQL;
+        SQLTransaction1.CommitRetaining;
+
+    SetLength(MassivAvtoStr, MyFiltrList.Count, 9);
+
+    //пробую добавить версию ОС
+ funcGetProductInfo := TFunc(GetProcAddress(GetModuleHandle('kernel32.dll'), 'GetProductInfo'));
+  funcGetProductInfo(6, 0, 0, 0, dwType);
+ // ShowMessage(IntToStr(dwType));
+ Case dwType of
+       1 :
+         begin
+
+              if ((Win32MinorVersion = 0) and (Win32MajorVersion = 6)) then
+              begin
+              MassivAvtoStr[0][1] := 'Windows Vista Максимальная';
+               MassivAvtoStr[0][0] := 'Windows Vista Максимальная';
+               end;
+               if ((Win32MinorVersion = 1) and (Win32MajorVersion = 6)) then
+               begin
+               MassivAvtoStr[0][1] := 'Windows 7 Максимальная';
+               MassivAvtoStr[0][0] := 'Windows 7 Максимальная';
+               end;
+
+            end;
+
+      3 : begin
+
+              if ((Win32MinorVersion = 0) and (Win32MajorVersion = 6)) then
+              begin
+              MassivAvtoStr[0][1] := 'Windows Vista Домашняя расширенная';
+               MassivAvtoStr[0][0] := 'Windows Vista Домашняя расширенная';
+               end;
+               if ((Win32MinorVersion = 1) and (Win32MajorVersion = 6)) then
+               begin
+               MassivAvtoStr[0][1] := 'Windows 7 Домашняя расширенная';
+               MassivAvtoStr[0][0] := 'Windows 7 Домашняя расширенная';
+               end;
+
+            end;
+    2 : begin
+
+              if ((Win32MinorVersion = 0) and (Win32MajorVersion = 6)) then
+              begin
+              MassivAvtoStr[0][1] := 'Windows Vista Домашняя базовая';
+               MassivAvtoStr[0][0] := 'Windows Vista Домашняя базовая';
+               end;
+               if ((Win32MinorVersion = 1) and (Win32MajorVersion = 6)) then
+               begin
+               MassivAvtoStr[0][1] := 'Windows 7 Домашняя базовая';
+               MassivAvtoStr[0][0] := 'Windows 7 Домашняя базовая';
+               end;
+
+            end;
+    6 : begin
+              if ((Win32MinorVersion = 0) and (Win32MajorVersion = 6)) then
+              begin
+              MassivAvtoStr[0][1] := 'Windows Vista Профессиональная';
+               MassivAvtoStr[0][0] := 'Windows Vista Профессиональная';
+               end;
+               if ((Win32MinorVersion = 1) and (Win32MajorVersion = 6)) then
+               begin
+               MassivAvtoStr[0][1] := 'Windows 7 Профессиональная';
+               MassivAvtoStr[0][0] := 'Windows 7 Профессиональная';
+               end;
+
+            end;
+  else s := '';
+  end;
+
+ if ((Win32MinorVersion = 1) and (Win32MajorVersion = 5)) then
+          begin
+            MassivAvtoStr[0][1] := 'Windows XP';
+               MassivAvtoStr[0][0] := 'Windows XP';
+             end;
+
+ if ((Win32MinorVersion = 0) and (Win32MajorVersion = 10)) then
+          begin
+            MassivAvtoStr[0][1] := 'Windows 10';
+               MassivAvtoStr[0][0] := 'Windows 10';
+             end;
+
+ if ((Win32MinorVersion = 3) and (Win32MajorVersion = 6)) then
+          begin
+            MassivAvtoStr[0][1] := 'Windows 8.1';
+               MassivAvtoStr[0][0] := 'Windows 8.1';
+             end;
+
+ if ((Win32MinorVersion = 2) and (Win32MajorVersion = 6)) then
+          begin
+            MassivAvtoStr[0][1] := 'Windows 8';
+               MassivAvtoStr[0][0] := 'Windows 8';
+             end;
+
+
+
+
+    for N := 0 to MyList2.Count - 1 do
+  begin
+    if N >= 1 then
+    begin
+    MassivAvtoStr[N][1] := MyFiltrList[N];
+    MassivAvtoStr[N][0] := MyList2[N];
+    MassivAvtoStr[N][7] := MyList4[N];
+    end;
+    SQLQuery1.Close;
+    SQLQuery1.Active:=false;
+    SQLQuery1.SQL.Clear;
+    if N >= 1 then
+    begin
+    s := 'SELECT * FROM program WHERE (name LIKE "' + MyFiltrList[N] + '%%")';
+    end;
+
+    if N = 0 then
+    begin
+    s := 'SELECT * FROM program WHERE (name LIKE "' + MassivAvtoStr[N][1] + '%%")';
+    end;
+
+    SQLQuery1.SQL.Add(s);
+    SQLQuery1.Active:=true;
+    MassivAvtoStr[N][8]:= SQLQuery1.FieldByName('id').AsString;
+    MassivAvtoStr[N][2]:= SQLQuery1.FieldByName('name').AsString;
+    MassivAvtoStr[N][3]:= SQLQuery1.FieldByName('type').AsString;
+    MassivAvtoStr[N][4]:= SQLQuery1.FieldByName('license').AsString;
+    MassivAvtoStr[N][5]:= SQLQuery1.FieldByName('cena').AsString;
+    MassivAvtoStr[N][6]:= SQLQuery1.FieldByName('zamena').AsString;
+  end;
+    //
+
+
+ ProgressBar1.StepBy(1);
+  SQLQuery1.Close;
+  SQLQuery1.SQL.Clear;
+  //    Запись полученного списка прог в базу
+  SQLQuery1.SQL.Add('insert into test(st1, st2, st7, st3, st4, st5, st6, st8, st9)');
+  SQLQuery1.SQL.Add('Values (:pText, :pText2, :pText7, :pText3, :pText4, :pText5, :pText6, :pText8, :pText9)');
+  for N := 0 to High(MassivAvtoStr) do
+  begin
+    SQLQuery1.ParamByName('pText').AsString := MassivAvtoStr[N][1];   //st1
+    SQLQuery1.ParamByName('pText2').AsString := MassivAvtoStr[N][2];  //st2 name
+    SQLQuery1.ParamByName('pText7').AsString := MassivAvtoStr[N][0];  //st7
+    SQLQuery1.ParamByName('pText3').AsString := MassivAvtoStr[N][3];  //st3 type
+    SQLQuery1.ParamByName('pText4').AsString := MassivAvtoStr[N][4];  //st4 license
+    SQLQuery1.ParamByName('pText5').AsString := MassivAvtoStr[N][5];  //st5 cena
+    SQLQuery1.ParamByName('pText6').AsString := MassivAvtoStr[N][6];  //st6 zamena
+    SQLQuery1.ParamByName('pText8').AsString := MassivAvtoStr[N][7];  //st8
+    SQLQuery1.ParamByName('pText9').AsString := MassivAvtoStr[N][8];  //st9
+    SQLQuery1.ExecSQL;
+  end;
+
+
+ //пробую удалять пустые строки из таблицы тест
+
+SQLQuery1.SQL.Clear;
+SQLQuery1.SQL.Text:='select * from setting';
+SQLQuery1.Open;
+SQLQuery1.First;
+
+ N:=SQLQuery1.FieldByName('AvtoUnkProg').AsInteger;
+ if N = 1 then
+ begin
+ s := 'delete from test where st3=''''';
+ SQLQuery1.Close;
+ SQLQuery1.SQL.Text := s;
+ SQLQuery1.ExecSQL;
+ SQLTransaction1.CommitRetaining;
+ end;
+ // конец удаления пустых строк
+
+ //начало постройки запроса согласно настройкам программы
+
+    SQLQuery1.Close;
+    SQLQuery1.Active:=false;
+    SQLQuery1.SQL.Clear;
+    s := 'select * from setting';
+    SQLQuery1.SQL.Add(s);
+    SQLQuery1.Active:=true;
+
+ {SQLQuery1.SQL.Clear;
+ SQLQuery1.SQL.Text:='select * from setting';
+ SQLQuery1.Open;
+ SQLQuery1.First; }
+
+ s := '';
+ s := 'SELECT ';
+
+ Nst7:=SQLQuery1.FieldByName('AvtoSt7').AsInteger;
+ if Nst7 = 1 then
+ s := s + 'st7';    // исходное название
+
+ Nst2:=SQLQuery1.FieldByName('AvtoSt2').AsInteger;
+ if (Nst2 = 1) and (Nst7 = 1) then
+ s := s + ', st2';     // название в бд
+
+ Nst2:=SQLQuery1.FieldByName('AvtoSt2').AsInteger;
+ if (Nst2 = 1) and (Nst7 = 0) then
+ s := s + ' st2';
+
+ Nst3:=SQLQuery1.FieldByName('AvtoSt3').AsInteger;
+ Nst4:=SQLQuery1.FieldByName('AvtoSt4').AsInteger;
+ Nst5:=SQLQuery1.FieldByName('AvtoSt5').AsInteger;
+ Nst6:=SQLQuery1.FieldByName('AvtoSt6').AsInteger;
+
+ if Nst3 = 1 then
+ s := s + ', st3';      // тип по
+
+ if Nst4 = 1 then
+ s := s + ', st4';       // лицензия
+
+ if Nst5 = 1 then
+ s := s + ', st5';       // стоимость
+
+ if Nst6 = 1 then
+ s := s + ', st6';       // замена
+
+ s := s + ' FROM test';
+ //конец постройки запроса
+
+ // s := '';    оригинал запроса
+ // s := 'SELECT st7, st2, st3, st4, st5, st6 FROM test';
+  //конец обработки массива
+ ProgressBar1.StepBy(1);
+
+  MyList.Free;
+  MyList2.Free;
+  MyList4.Free;
+SQLQuery1.Close;
+SQLQuery1.Active:=false;
+SQLQuery1.SQL.Clear;
+SQLQuery1.SQL.Add(s);
+SQLQuery1.Active:=true;
+SQLQuery1.Open;
+if nilAvtoSearch<>1 then nilAvtoSearch:=1;
+ProgressBar1.StepBy(1);
+            //заполняем заголовки колонок и меняем ширину колонок
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //723456
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+  Nst6Pos := 5;
+  end;
+
+  if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) then
+  begin
+  Nst2Pos := 0;    //23456
+  Nst3Pos := 1;
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+  end;
+
+  if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) then
+  begin
+  Nst2Pos := 0;    //2456
+  Nst4Pos := 1;
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+  end;
+
+  if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 0) and (Nst5 = 1) and (Nst6 = 1) then
+  begin
+  Nst2Pos := 0;   //2356
+  Nst3Pos := 1;
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+  end;
+
+  if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 0) and (Nst6 = 1) then
+  begin
+  Nst2Pos := 0;   //2346
+  Nst3Pos := 1;
+  Nst4Pos := 2;
+  Nst6Pos := 3;
+  end;
+
+  if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;   //2345
+  Nst3Pos := 1;
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 1) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72456
+  Nst4Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 0) and (Nst5 = 1) and (Nst6 = 1) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72356
+  Nst3Pos := 2;
+  Nst5Pos := 3;
+  Nst6Pos := 4;
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 0) and (Nst6 = 1) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72346
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst6Pos := 4;
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72345
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  Nst5Pos := 4;
+  end;
+
+  if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 1) and (Nst6 = 1) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //7256
+  Nst5Pos := 2;
+  Nst6Pos := 3;
+  end;
+
+   if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 1) and (Nst6 = 1) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //7246
+  Nst4Pos := 2;
+  Nst6Pos := 3;
+  end;
+
+   if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //7234
+  Nst3Pos := 2;
+  Nst4Pos := 3;
+  end;
+
+   if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 0) and (Nst5 = 1) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //7235
+  Nst3Pos := 2;
+  Nst5Pos := 3;
+  end;
+
+   if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 1) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //7236
+  Nst3Pos := 2;
+  Nst6Pos := 3;
+  end;
+
+   if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //723
+  Nst3Pos := 2;
+  end;
+
+   if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 1) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //724
+  Nst4Pos := 2;
+  end;
+
+   if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 1) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //725
+  Nst5Pos := 2;
+  end;
+
+   if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 1) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //726
+  Nst6Pos := 2;
+  end;
+
+   if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 1) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //234
+  Nst4Pos := 2;
+  end;
+
+   if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 0) and (Nst5 = 1) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //235
+  Nst5Pos := 2;
+  end;
+
+   if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 1) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //236
+  Nst6Pos := 2;
+  end;
+
+   if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 1) and (Nst5 = 1) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst4Pos := 1;   //245
+  Nst5Pos := 2;
+  end;
+
+   if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 1) and (Nst5 = 0) and (Nst6 = 1) then
+  begin
+  Nst2Pos := 0;
+  Nst4Pos := 1;   //246
+  Nst6Pos := 2;
+  end;
+
+   if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 1) and (Nst6 = 1) then
+  begin
+  Nst2Pos := 0;
+  Nst5Pos := 1;   //256
+  Nst6Pos := 2;
+  end;
+
+   if (Nst7 = 1) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst7Pos := 0;
+  Nst2Pos := 1;   //72
+  end;
+
+   if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 1) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst3Pos := 1;   //23
+  end;
+
+   if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 1) and (Nst5 = 0) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst4Pos := 1;   //24
+  end;
+
+   if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 1) and (Nst6 = 0) then
+  begin
+  Nst2Pos := 0;
+  Nst5Pos := 1;   //25
+  end;
+
+   if (Nst7 = 0) and (Nst2 = 1) and (Nst3 = 0) and (Nst4 = 0) and (Nst5 = 0) and (Nst6 = 1) then
+  begin
+  Nst2Pos := 0;
+  Nst6Pos := 1;   //26
+  end;
+
+if Nst7 = 1 then
+begin
+DBGrid1.Columns[Nst7Pos].Title.Caption:='Исходное название';
+DBGrid1.Columns[Nst7Pos].Width:= 200;
+end;
+if Nst2 = 1 then
+begin
+DBGrid1.Columns[Nst2Pos].Title.Caption:='Название в БД';
+DBGrid1.Columns[Nst2Pos].Width:= 110;
+end;
+if Nst3 = 1 then
+begin
+DBGrid1.Columns[Nst3Pos].Title.Caption:='Тип ПО';
+DBGrid1.Columns[Nst3Pos].Width:= 150;
+end;
+if Nst4 = 1 then
+begin
+DBGrid1.Columns[Nst4Pos].Title.Caption:='Лицензия';
+DBGrid1.Columns[Nst4Pos].Width:= 110;
+end;
+if Nst5 = 1 then
+begin
+DBGrid1.Columns[Nst5Pos].Title.Caption:='Стоимость';
+DBGrid1.Columns[Nst5Pos].Width:= 90;
+end;
+if Nst6 = 1 then
+begin
+DBGrid1.Columns[Nst6Pos].Title.Caption:='Замена';
+DBGrid1.Columns[Nst6Pos].Width:= 150;
+end;
+ProgressBar1.StepBy(1);
+lProgress.Caption:='Готово';
+MyFiltrList.free;
+
+   // конец запуска с параметрами
+end;
+end;
+
+procedure TfMian.FormResize(Sender: TObject);
+begin
+//  DBGrid1.Width:=fMian.ClientWidth - 300; пытался автоматически измениять ширину
 end;
 
 procedure TfMian.leKatalogSearchChange(Sender: TObject);
@@ -8914,20 +9985,7 @@ begin
   end;
   leFullPathKey.Text:=FullKey + leKeyName.Text + '\';
 
-  {
-  MyRegistry:=TRegistry.Create;
- MyRegistry.RootKey:=HKEY_LOCAL_MACHINE;  //  lKeyName.Caption
- If MyRegistry.OpenKey(PChar(FullKey + leKeyName.Text + '\'), False) Then
-   Begin
-    leDisplayName.Text:=CP1251ToUTF8(MyRegistry.ReadString('DisplayName'));
-    leVersionProg.Text:=CP1251ToUTF8(MyRegistry.ReadString('DisplayVersion'));
-    leKatalog.Text:=CP1251ToUTF8(MyRegistry.ReadString('InstallLocation'));
-    leRazrab.Text:=CP1251ToUTF8(MyRegistry.ReadString('Publisher'));
-    UninstallKey:=CP1251ToUTF8(MyRegistry.ReadString('UninstallString'));
-   End;
- // MyRegistry.CloseKey;
- //MyRegistry.Free;
- }
+
  //начало другого реестра
     MyRegistry2.RootKey:=HKEY_LOCAL_MACHINE;
     MyRegistry2.OpenKeyReadOnly(PChar(FullKey + leKeyName.Text + '\'));
@@ -8963,6 +10021,9 @@ begin
     UTF8Delete(FiltrNameProg, UTF8Pos(' CC 2017', FiltrNameProg), UTF8Length(FiltrNameProg));
     UTF8Delete(FiltrNameProg, UTF8Pos(' CC 2018', FiltrNameProg), UTF8Length(FiltrNameProg));
     UTF8Delete(FiltrNameProg, UTF8Pos(' CC 2019', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' CC 2020', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' CC 2021', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' CC 2022', FiltrNameProg), UTF8Length(FiltrNameProg));
     UTF8Delete(FiltrNameProg, UTF8Pos(' 2015.1', FiltrNameProg), UTF8Length(FiltrNameProg));
     UTF8Delete(FiltrNameProg, UTF8Pos(' 2015.2', FiltrNameProg), UTF8Length(FiltrNameProg));
     UTF8Delete(FiltrNameProg, UTF8Pos(' 2015.3', FiltrNameProg), UTF8Length(FiltrNameProg));
@@ -8988,6 +10049,21 @@ begin
     UTF8Delete(FiltrNameProg, UTF8Pos(' 2019.3', FiltrNameProg), UTF8Length(FiltrNameProg));
     UTF8Delete(FiltrNameProg, UTF8Pos(' 2019.4', FiltrNameProg), UTF8Length(FiltrNameProg));
     UTF8Delete(FiltrNameProg, UTF8Pos(' 2019.5', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' 2020.1', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' 2020.2', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' 2020.3', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' 2020.4', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' 2020.5', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' 2021.1', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' 2021.2', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' 2021.3', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' 2021.4', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' 2021.5', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' 2022.1', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' 2022.2', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' 2022.3', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' 2022.4', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' 2022.5', FiltrNameProg), UTF8Length(FiltrNameProg));
     UTF8Delete(FiltrNameProg, UTF8Pos(' 2015', FiltrNameProg), UTF8Length(FiltrNameProg));
     UTF8Delete(FiltrNameProg, UTF8Pos(' 2016', FiltrNameProg), UTF8Length(FiltrNameProg));
     UTF8Delete(FiltrNameProg, UTF8Pos(' 2017', FiltrNameProg), UTF8Length(FiltrNameProg));
@@ -9001,6 +10077,9 @@ begin
     UTF8Delete(FiltrNameProg, UTF8Pos(' 2012', FiltrNameProg), UTF8Length(FiltrNameProg));
     UTF8Delete(FiltrNameProg, UTF8Pos(' 2013', FiltrNameProg), UTF8Length(FiltrNameProg));
     UTF8Delete(FiltrNameProg, UTF8Pos(' 2014', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' 2020', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' 2021', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' 2022', FiltrNameProg), UTF8Length(FiltrNameProg));
     UTF8Delete(FiltrNameProg, UTF8Pos(' (v0', FiltrNameProg), UTF8Length(FiltrNameProg));
     UTF8Delete(FiltrNameProg, UTF8Pos(' (v1', FiltrNameProg), UTF8Length(FiltrNameProg));
     UTF8Delete(FiltrNameProg, UTF8Pos(' (v2', FiltrNameProg), UTF8Length(FiltrNameProg));
@@ -9164,6 +10243,14 @@ begin
     UTF8Delete(FiltrNameProg, UTF8Pos(' XE6', FiltrNameProg), UTF8Length(FiltrNameProg));
     UTF8Delete(FiltrNameProg, UTF8Pos('™', FiltrNameProg), UTF8Length(FiltrNameProg));
     UTF8Delete(FiltrNameProg, UTF8Pos('-64', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' (только удаление', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' (учебная', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' (Учебная', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' (Учебная', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' (remove', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' (Remove', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' [rev', FiltrNameProg), UTF8Length(FiltrNameProg));
+    UTF8Delete(FiltrNameProg, UTF8Pos(' - English', FiltrNameProg), UTF8Length(FiltrNameProg));
     // 11.11
     for p1 := 0 to 100 do
     begin
@@ -9268,8 +10355,135 @@ procedure TfMian.DBGrid1DrawColumnCell(Sender: TObject; const Rect: TRect;
 var
    Nst3:Word;
    s:string;
+
+
+   //для сохранения html в параметрах
+     t:TStringList;
+    i3:Integer;
+    s3:string;
+    filename : String;
+    //Для имени пк
+    i1: DWORD;
+    p4: PChar;
+    N1st7:Word;
+    N1st1:Word;
+    N1st2:Word;
+    N1st3:Word;
+    N1st4:Word;
+    N1st5:Word;
+    N1st6:Word;
+    ZapParAvto : String;
+begin
+// теперь пробую сохранить отчет в html в рамках запуска с парамтерами
+if ParamStr(1) = '-A' then
 begin
 
+
+
+i1:=255;
+GetMem(p4, i1);
+GetComputerName(p4, i1);
+
+
+//подгружаем настройки для определения заголовков колонок
+ SQLQuery4.Close;
+ SQLQuery4.Active:=false;
+ SQLQuery4.SQL.Clear;
+ s3 := 'select * from setting';
+ SQLQuery4.SQL.Add(s3);
+ SQLQuery4.Active:=true;
+
+
+// если открыт авто поиск
+ if PageControl1.ActivePageindex=0 then
+   begin
+
+   ZapParAvto:=SQLQuery4.FieldByName('ZapParAvto').AsString;
+
+   if Not(DirectoryExists(ZapParAvto)) then
+ begin
+    if ((UTF8Pos('\\', ZapParAvto)) > 0)  then
+        begin
+    filename:=ZapParAvto + '\Lpro[' + p4 + ']' + FormatDateTime('hh-nn_dd-mm-yyyy', Now) +'.html';
+        end
+    else
+     begin
+     filename:='Lpro[' + p4 + ']' + FormatDateTime('hh-nn_dd-mm-yyyy', Now) +'.html';
+     end;
+   end
+    else
+     begin
+     ZapParAvto:=SQLQuery4.FieldByName('ZapParAvto').AsString;
+ if (ZapParAvto <> Null) or (ZapParAvto <> '') then
+    begin
+    filename:=ZapParAvto + '\Lpro[' + p4 + ']' + FormatDateTime('hh-nn_dd-mm-yyyy', Now) +'.html';
+    end;
+     end;
+
+
+  // filename:='Lpro[' + p4 + ']' + FormatDateTime('hh-nn_dd-mm-yyyy', Now) +'.html';
+t:=TStringList.Create;
+DBGrid1.DataSource.DataSet.first;
+t.add('<html>');
+t.add('<head>');
+t.add('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">');
+t.add('</head>');
+t.add('<h1 align=center>Lpro - Проверка лицензий установленных программ</h1>');
+t.add('<h2 align=center>Имя компьютера: ' + p4 + ' в ' + FormatDateTime('hh:nn dd-mm-yyyy', Now) + '</h2>');
+t.add('<html>');
+t.add('<table border=1 align=center>');
+//    подружаю из базы 1 или 0 для колонок
+
+N1st7:=SQLQuery4.FieldByName('AvtoSt7').AsInteger;
+N1st2:=SQLQuery4.FieldByName('AvtoSt2').AsInteger;
+N1st3:=SQLQuery4.FieldByName('AvtoSt3').AsInteger;
+N1st4:=SQLQuery4.FieldByName('AvtoSt4').AsInteger;
+N1st5:=SQLQuery4.FieldByName('AvtoSt5').AsInteger;
+N1st6:=SQLQuery4.FieldByName('AvtoSt6').AsInteger;
+
+//
+t.add('<tr>');
+if N1st7 = 1 then
+t.add('<td> Исходное название');
+if N1st2 = 1 then
+t.add('<td> Название в БД');
+if N1st3 = 1 then
+t.add('<td> Тип ПО');
+if N1st4 = 1 then
+t.add('<td> Лицензия');
+if N1st5 = 1 then
+t.add('<td> Стоимость');
+if N1st6 = 1 then
+t.add('<td> Замена');
+t.add('</tr>');
+//
+t.add('<tr>');
+for i3:=6 to DBGrid1.DataSource.DataSet.Fields.Count-1 do
+t.add('<td>'+DBGrid1.DataSource.DataSet.fields[i3].fieldname);
+t.add('</tr>');
+while not DBGrid1.DataSource.DataSet.eof do
+begin
+s3:='<tr>';
+for i3:=0 to DBGrid1.DataSource.DataSet.Fields.Count-1 do
+s3:=s3+'<td>'+DBGrid1.DataSource.DataSet.fields[i3].AsString;
+s3:=s3+'</tr>';
+t.add(SysToUTF8(s3));     //   UTF8ToCp4251
+DBGrid1.DataSource.DataSet.next;
+end;
+t.add('</table>');
+t.add('<p align=center>Официальный сайт: <a href="http://xn--90abhbolvbbfgb9aje4m.xn--p4ai/">КонтинентСвободы.рф</a></p>');
+t.add('</html>');
+t.savetofile(filename);
+//end;
+DBGrid1.DataSource.DataSet.first;
+
+   end;
+
+
+ fMian.Close;
+
+ end;
+// конец сохранения в html параметров
 
     // проверяем настройки столбцов
     SQLQuery2.Close;
@@ -9311,6 +10525,7 @@ if DBGrid1.DataSource.DataSet.FieldByName('st3').AsString = 'Платное ПО
    DBGrid1.DefaultDrawColumnCell(Rect, DataCol, Column, State);
   end;
    end;
+
 end;
 
 procedure TfMian.DBGrid1TitleClick(Column: TColumn);
@@ -9684,6 +10899,8 @@ if DBGrid2.DataSource.DataSet.FieldByName('st3').AsString = 'Платное ПО
    DBGrid2.Canvas.Font.Color := RGB(255, 0, 0);
    DBGrid2.DefaultDrawColumnCell(Rect, DataCol, Column, State);
   end;
+
+
 end;
 
 procedure TfMian.DBGrid2TitleClick(Column: TColumn);
@@ -9713,10 +10930,6 @@ stCol := Column.FieldName;
     SQLQuery1.SQL.Add(s);
     SQLQuery1.Active:=true;
 
- {SQLQuery1.SQL.Clear;
- SQLQuery1.SQL.Text:='select * from setting';
- SQLQuery1.Open;
- SQLQuery1.First; }
 
  s := '';
  s := 'SELECT ';
@@ -10489,6 +11702,34 @@ DBGrid2.Columns[Nst6Pos].Width:= 130;
 end;
 end;
 
+procedure TfMian.DBGrid4TitleClick(Column: TColumn);
+var
+   s:string;
+   stCol:string;
+begin
+   stCol := Column.FieldName;         // pt1 sz1
+
+
+   if stCol = 'pt1' then
+   s := 'SELECT * FROM media ORDER BY pt1';
+
+   if stCol = 'sz1' then
+   s := 'SELECT * FROM media order by sz1';
+
+   SQLQueryMedia.Close;
+   SQLQueryMedia.Active:=false;
+   SQLQueryMedia.SQL.Clear;
+   SQLQueryMedia.SQL.Add(s);
+   SQLQueryMedia.Active:=true;
+   SQLQueryMedia.Open;
+
+   DBGrid4.Columns[0].Title.Caption:='Путь';
+   DBGrid4.Columns[0].Width:= 700;
+   DBGrid4.Columns[1].Title.Caption:='Размер';
+   DBGrid4.Columns[1].Width:= 112;
+
+end;
+
 procedure TfMian.AvtoPoiskPageContextPopup(Sender: TObject; MousePos: TPoint;
   var Handled: Boolean);
 
@@ -10567,20 +11808,6 @@ begin
   end;
   leFullPathKey.Text:=FullKey + leKeyName.Text + '\';
 
-  {
-  MyRegistry:=TRegistry.Create;
- MyRegistry.RootKey:=HKEY_LOCAL_MACHINE;  //  lKeyName.Caption
- If MyRegistry.OpenKey(PChar(FullKey + leKeyName.Text + '\'), False) Then
-   Begin
-    leDisplayName.Text:=CP1251ToUTF8(MyRegistry.ReadString('DisplayName'));
-    leVersionProg.Text:=CP1251ToUTF8(MyRegistry.ReadString('DisplayVersion'));
-    leKatalog.Text:=CP1251ToUTF8(MyRegistry.ReadString('InstallLocation'));
-    leRazrab.Text:=CP1251ToUTF8(MyRegistry.ReadString('Publisher'));
-    UninstallKey:=CP1251ToUTF8(MyRegistry.ReadString('UninstallString'));
-   End;
- // MyRegistry.CloseKey;
- //MyRegistry.Free;
- }
  //начало другого реестра
     MyRegistry2.RootKey:=HKEY_LOCAL_MACHINE;
     MyRegistry2.OpenKeyReadOnly(PChar(FullKey + leKeyName.Text + '\'));
@@ -10603,11 +11830,9 @@ begin
     FiltrNameProg:=leDisplayName.Text;
     end;
      FiltrNameProg:= InputBox('Сократите запрос в базу', 'Подсказка:  сократите название, чтобы программу было проще найти в базе данных', FiltrNameProg);
- //   s := 'SELECT name, type, license FROM program WHERE (name LIKE "%%%' + FiltrNameProg + '%%")';
       s := 'SELECT name, type, license, zamena FROM program WHERE (name LIKE "' + FiltrNameProg + '%%")';
 
   // всё, в s хранится запрос, его и используй для получения данных из БД
-  //Showmessage(s);
 
 SQLQuery4.Close;
 SQLQuery4.Active:=false;
@@ -10635,7 +11860,6 @@ DBGrid3.Columns[3].Width:= 130;
     cbInstallZam.Items.Add(FiltrInstZamena);
     cbInstallZam.ItemIndex:= 0;
     FiltrInstZamena:=SQLQuery4.FieldByName('zamena').AsString;
-    // UTF8Delete(FiltrStr, UTF8Pos('\', FiltrStr), UTF8Pos('\', FiltrStr));
     Poz3InstZam:=UTF8Pos(',', FiltrInstZamena);
     if (UTF8Pos(',', FiltrInstZamena)<>0) then
     begin
@@ -10667,6 +11891,92 @@ begin
    Exit;
   end;
   OpenURL('http://xn--90abhbolvbbfgb9aje4m.xn--p1ai/component/search/?searchword=' + cbInstallZam.Items.Strings[cbInstallZam.ItemIndex] + '&ordering=newest&searchphrase=all');
+end;
+
+procedure TfMian.bMediaPoiskClick(Sender: TObject);
+var
+   s1 : LongInt;
+  MyListMedia: TStringList; // нужно для получения значений из SQLite
+     N:word;
+     MassivMediaStr: array of array of string;
+begin
+
+// проверяю не нажали ли отмену при указании каталога
+ if leKatMediaSearch.Text = '' then
+ begin
+ ShowMessage('Указанный каталог не существует! Пожалуйста, укажите существующий каталог!');
+ exit;
+  end;
+ if not(DirectoryExists(leKatMediaSearch.Text)) then
+ begin
+ ShowMessage('Указанный каталог не существует! Пожалуйста, укажите существующий каталог!');
+ exit;
+  end;
+
+  MyListMedia:=TStringListUTF8.Create;
+
+//начало файлового поиска
+
+ // MyListMedia := FindAllFiles(put, '*.mp3;*.avi;*.mp4;*.mpg', true); //оригинал
+
+  MyListMedia := FindAllFiles(put, '*.mp3;*.avi;*.mp4;*.mpg;*.flv;*.wav;*.wv;*.mka;*.mks;*.mkv;*.webm;*.mov,*.opus,*.mpeg,*.mpv,*.asf,*.swf;*.vob;*.aac;*.wma;*.wmv;*.ac3;*.flac;*.aiff;*.ogg', true);
+
+        if MyListMedia.Count < 1 then
+        begin
+        showmessage('Медиа-файлы не найдены!');
+        exit;
+        end;
+//начало обработки массива
+        SQLQueryMedia.Close;          // очиска таблицы в базе, в которую
+        SQLQueryMedia.SQL.Text := 'delete from Media';    //  записывается список
+        SQLQueryMedia.ExecSQL;
+        SQLTransaction1.CommitRetaining;
+
+  SetLength(MassivMediaStr, MyListMedia.Count, 2);
+    for N := 0 to MyListMedia.Count - 1 do
+  begin
+    if MyListMedia.Count > N then
+    begin
+      if (UTF8ToSys(MyListMedia[N])) = '' then break;
+      s1:= FileUtil.FileSize(MyListMedia[N]);
+      if ((s1 Div 1024) Div 1024) < 1 then continue;
+        MassivMediaStr[N][0] := UTF8ToSys(MyListMedia[N]);
+        MassivMediaStr[N][1] := IntToStr((s1 Div 1024) Div 1024) + ' МБ';
+    end;
+  end;
+
+ // конец обработки массива
+
+  SQLQueryMedia.Close;
+  SQLQueryMedia.SQL.Clear;
+  //    Запись полученного списка прог в базу
+  SQLQueryMedia.SQL.Add('insert into media(pt1, sz1)');
+  SQLQueryMedia.SQL.Add('Values (:pText, :pText1)');
+  for N := 0 to High(MassivMediaStr) do
+  begin
+    if MassivMediaStr[N][0]='' then continue;
+    SQLQueryMedia.ParamByName('pText').AsString := MassivMediaStr[N][0];   //  Путь
+    SQLQueryMedia.ParamByName('pText1').AsString := MassivMediaStr[N][1];  //  Размер
+    SQLQueryMedia.ExecSQL;
+  end;
+    SQLTransaction1.CommitRetaining;
+
+    MyListMedia.Free;
+
+
+    SQLQueryMedia.Close;
+    SQLQueryMedia.Active:=false;
+    SQLQueryMedia.SQL.Clear;
+    SQLQueryMedia.SQL.Add('SELECT * FROM media');
+    SQLQueryMedia.Active:=true;
+    SQLQueryMedia.Open;
+
+   DBGrid4.Columns[0].Title.Caption:='Путь';
+   DBGrid4.Columns[0].Width:= 700;
+   DBGrid4.Columns[1].Title.Caption:='Размер';
+   DBGrid4.Columns[1].Width:= 112;
+
+
 end;
 
 procedure TfMian.bOpenKatPodrobClick(Sender: TObject);
@@ -10903,7 +12213,6 @@ ProgressBar1.Position:=3;
     SQLQuery3.Active:=false;
     SQLQuery3.SQL.Clear;
    // изначальный вариант поиска по названию
-   // s := 'SELECT * FROM program WHERE (name LIKE "' + MyFiltrList2[N] + '%%")';
    s := 'SELECT * FROM program WHERE (file LIKE "' + MyFiltrList2[N] + '")';
 
     SQLQuery3.SQL.Add(s);
@@ -10913,7 +12222,6 @@ ProgressBar1.Position:=3;
    FiltrStr:=SQLQuery3.FieldByName('file').AsString;
    if FiltrStr='' then
    begin
-   //s := 'SELECT * FROM program WHERE (name LIKE "' + MyFiltrList2[N] + '%%")';
    s := 'SELECT * FROM program WHERE (name LIKE "' + MyFiltrList2[N] + '")';
     SQLQuery3.Close;                          // ТУТ ЗАКОНЧИЛ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     SQLQuery3.Active:=false;
@@ -10967,10 +12275,6 @@ ProgressBar1.Position:=3;
     SQLQuery4.SQL.Add(s);
     SQLQuery4.Active:=true;
 
- {SQLQuery1.SQL.Clear;
- SQLQuery1.SQL.Text:='select * from setting';
- SQLQuery1.Open;
- SQLQuery1.First; }
 
  s := '';
  s := 'SELECT ';
@@ -11018,7 +12322,6 @@ ProgressBar1.Position:=3;
  s := s + ' FROM ruch ORDER BY st2 DESC'
  else
  s := s + ' FROM ruch';
- //showmessage(s);
  //конец постройки запроса
 
 
@@ -11805,6 +13108,73 @@ begin
 
 end;
 
+procedure TfMian.bUkazKatalogMediaClick(Sender: TObject);
+var
+s:string;
+//StRuchFullDisk:Word;
+begin
+
+//очистка старых данных дбгрид
+  if DBGrid4.DataSource.DataSet.RecordCount <> 0 then
+  begin
+DBGrid4.DataSource.DataSet.DisableControls;
+ try
+ DBGrid4.DataSource.DataSet.First;
+ while not DBGrid4.DataSource.DataSet.Eof
+ do DBGrid4.DataSource.DataSet.Delete;
+ finally
+ DBGrid4.DataSource.DataSet.EnableControls;
+end;
+ end;
+  //конец очистки старых данных дбгрид
+
+
+  //     пытаюсь получить каталог      leKatMediaSearch.SubLabel
+path := TSelectDirectoryDialog.Create(Application);
+if path.Execute then leKatMediaSearch.Text:= path.FileName;
+
+
+//FreeAndNil(path);
+//    конец получения каталога
+//showmessage(path.FileName);
+
+
+put := path.FileName + '\';
+
+{StRuchFullDisk:=SQLQuery2.FieldByName('RuchFullDisk').AsInteger;
+  if StRuchFullDisk=0 then
+  begin
+if path.FileName = 'C:\' then
+begin
+   Application.MessageBox('Пожалуйста, не указывайте для поиска весь диск!!! Для поиска укажите конкретную папку с программами. Данное ограничение можно отключить в настройках.',
+    'Указан весь диск', MB_ICONERROR + MB_OK);
+  if path.Execute then leKatalogSearch.Text:= path.FileName;
+  end;
+
+ if path.FileName = 'D:\' then
+begin
+   Application.MessageBox('Пожалуйста, не указывайте для поиска весь диск!!! Для поиска укажите конкретную папку с программами. Данное ограничение можно отключить в настройках.',
+    'Указан весь диск', MB_ICONERROR + MB_OK);
+  if path.Execute then leKatalogSearch.Text:= path.FileName;
+  end;
+
+ if path.FileName = 'F:\' then
+ begin
+    Application.MessageBox('Пожалуйста, не указывайте для поиска весь диск!!! Для поиска укажите конкретную папку с программами. Данное ограничение можно отключить в настройках.',
+     'Указан весь диск', MB_ICONERROR + MB_OK);
+   if path.Execute then leKatalogSearch.Text:= path.FileName;
+   end;
+ if path.FileName = 'J:\' then
+ begin
+    Application.MessageBox('Пожалуйста, не указывайте для поиска весь диск!!! Для поиска укажите конкретную папку с программами. Данное ограничение можно отключить в настройках.',
+     'Указан весь диск', MB_ICONERROR + MB_OK);
+   if path.Execute then leKatalogSearch.Text:= path.FileName;
+   end;
+
+ exit;
+  end;}
+end;
+
 procedure TfMian.bViewZamPodrobClick(Sender: TObject);
 var
   s:string;
@@ -11860,6 +13230,7 @@ begin
   end;
 end;
 
+
 procedure TfMian.DBGrid1CellClick(Column: TColumn);
 var
      bitnost:string;
@@ -11890,6 +13261,12 @@ var
      Nst4:word;
      Nst5:word;
      Nst6:word;
+     Podtver:String;
+   //  MyPodtverList: TStringList;    закрыт
+     SR:TSearchRec;
+    FindRes:Integer;
+    MyListPodv: TStringList;
+    PodvStr:String;
 begin
   if nilAvtoSearch<>1 then exit;
 
@@ -12154,6 +13531,9 @@ begin
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' CC 2017', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' CC 2018', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' CC 2019', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' CC 2020', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' CC 2021', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' CC 2022', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2015.1', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2015.2', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2015.3', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
@@ -12179,6 +13559,23 @@ begin
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2019.3', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2019.4', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2019.5', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2020.1', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2020.2', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2020.3', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2020.4', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2020.5', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2021.1', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2021.2', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2021.3', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2021.4', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2021.5', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2022.1', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2022.2', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2022.3', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2022.4', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2022.5', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    if (UTF8Pos('Microsoft Visual Studio', FiltrStrAllVar)=0) then
+    begin
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2015', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2016', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2017', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
@@ -12192,6 +13589,31 @@ begin
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2012', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2013', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2014', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2020', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2021', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2022', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    end;
+
+    if (UTF8Pos('Microsoft Visual Studio', FiltrStrAllVar)>=1) then
+    begin
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2015', FiltrStrAllVar), 5);
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2016', FiltrStrAllVar), 5);
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2017', FiltrStrAllVar), 5);
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2018', FiltrStrAllVar), 5);
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2019', FiltrStrAllVar), 5);
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2007', FiltrStrAllVar), 5);
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2008', FiltrStrAllVar), 5);
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2009', FiltrStrAllVar), 5);
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2010', FiltrStrAllVar), 5);
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2011', FiltrStrAllVar), 5);
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2012', FiltrStrAllVar), 5);
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2013', FiltrStrAllVar), 5);
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2014', FiltrStrAllVar), 5);
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2020', FiltrStrAllVar), 5);
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2021', FiltrStrAllVar), 5);
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2022', FiltrStrAllVar), 5);
+    end;
+
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' (2015', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' (2016', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' (2017', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
@@ -12205,6 +13627,9 @@ begin
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' (2012', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' (2013', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' (2014', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' (2020', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' (2021', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' (2022', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' (v0', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' (v1', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' (v2', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
@@ -12284,6 +13709,8 @@ begin
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' (64 bit', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' 64-bit', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' 32-bit', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos('64-bit', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos('32-bit', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' 64 bit', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' 32 bit', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' (V0', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
@@ -12373,6 +13800,34 @@ begin
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' X6', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' x5', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     UTF8Delete(FiltrStrAllVar, UTF8Pos(' x6', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' (remove', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' (Remove', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' [rev', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' - English', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 0-', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 1-', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 2-', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 3-', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 4-', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 5-', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 6-', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 7-', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 8-', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 9-', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' (учебная', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' (Учебная', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' (Учебная', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 10', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 11', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 12', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 13', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 14', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 15', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 16', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 17', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 18', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' 19', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
+    UTF8Delete(FiltrStrAllVar, UTF8Pos(' (только удаление', FiltrStrAllVar), UTF8Length(FiltrStrAllVar));
     // 11.11
     for p1 := 0 to 100 do
     begin
@@ -12443,10 +13898,59 @@ begin
      tsVseVarianti.Caption:='Все варианты ('+(IntToStr(DBGridAllVar.DataSource.DataSet.RecordCount))+')';
      end;
   //конец заполнения всех вариантов
+
+  // Подтвердить обнаружение программы
+
+   // Podtver := '\' + (SQLQueryAllVar.FieldByName('file').AsString) + '.exe';
+
+   if (SQLQueryAllVar.FieldByName('file').AsString) <> '' then
+   begin
+   Podtver := (SQLQueryAllVar.FieldByName('file').AsString) + '.exe';
+
+
+
+   if UTF8Pos('\\', (leKatalogPodrob.Text + Podtver)) > 0 then
+    UTF8Delete(Podtver, 1, UTF8Pos('\', Podtver));
+
+   lePodtvGde.Text := 'Идёт поиск...';
+
+   if leKatalogPodrob.Text <> '' then
+    begin
+   try
+   MyListPodv:=TStringListUTF8.Create;
+   Finally
+   MyListPodv := FindAllFiles(leKatalogPodrob.Text, Podtver, true);
+
+
+   if MyListPodv[0] <> ''  then
+   begin
+   PodvStr:=MyListPodv[0];
+   lePodtvGde.Text := PodvStr;
+   end
+     else
+     lePodtvGde.Text := 'Не найдено';
+    End;
+    end;
+
+  //   showmessage(ExtractFilePath(PodvStr)); вытащить путь файла
+  end;
+
+   if PodvStr = ''  then
+   lePodtvGde.Text := 'Не найдено';
+
+   lePodtvCheIshu.Text := (SQLQueryAllVar.FieldByName('file').AsString) + '.exe';
+   if (SQLQueryAllVar.FieldByName('file').AsString) = ''  then
+   lePodtvCheIshu.Text := 'Отсутствует в базе';
+
+   lePodtvGdeIskat.Text := leKatalogPodrob.Text;
+   if leKatalogPodrob.Text = ''  then
+   lePodtvGdeIskat.Text := 'Запись в реестре не заполнена';
+
 end;
 
 procedure TfMian.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
+
  //  MyList.Free;
         SQLQuery1.Close;                               // очиска таблицы в базе, в которую
         SQLQuery1.SQL.Text := 'delete from install';    //  записывается список программ
@@ -12460,6 +13964,11 @@ begin
 
         SQLQuery1.Close;                               // очиска таблицы в базе, в которую
         SQLQuery1.SQL.Text := 'delete from ruch';    //  записывается список программ
+        SQLQuery1.ExecSQL;
+        SQLTransaction1.CommitRetaining;
+
+        SQLQuery1.Close;                               // очиска таблицы в базе, в которую
+        SQLQuery1.SQL.Text := 'delete from media';    //  записывается список программ
         SQLQuery1.ExecSQL;
         SQLTransaction1.CommitRetaining;
 

@@ -46,11 +46,13 @@ begin
         2 : IpHtmlPanel1.OpenURL(expandLocalHtmlFileName('help/Type-lic-PO.html'));
         3 : IpHtmlPanel1.OpenURL(expandLocalHtmlFileName('help/avtopoisk.html'));
         4 : IpHtmlPanel1.OpenURL(expandLocalHtmlFileName('help/Ruch-poisk.html'));
-        5 : IpHtmlPanel1.OpenURL(expandLocalHtmlFileName('help/Install-PO.html'));
-        6 : IpHtmlPanel1.OpenURL(expandLocalHtmlFileName('help/Poisk-v-baze.html'));
-        7 : IpHtmlPanel1.OpenURL(expandLocalHtmlFileName('help/Zamena.html'));
-        8 : IpHtmlPanel1.OpenURL(expandLocalHtmlFileName('help/Settings.html'));
-        9 : IpHtmlPanel1.OpenURL(expandLocalHtmlFileName('help/Vozmozh-Oshibki.html'));
+        5 : IpHtmlPanel1.OpenURL(expandLocalHtmlFileName('help/media-poisk.html'));
+        6 : IpHtmlPanel1.OpenURL(expandLocalHtmlFileName('help/Install-PO.html'));
+        7 : IpHtmlPanel1.OpenURL(expandLocalHtmlFileName('help/Poisk-v-baze.html'));
+        8 : IpHtmlPanel1.OpenURL(expandLocalHtmlFileName('help/Zamena.html'));
+        9 : IpHtmlPanel1.OpenURL(expandLocalHtmlFileName('help/Settings.html'));
+        10 : IpHtmlPanel1.OpenURL(expandLocalHtmlFileName('help/park-comp.html'));
+        11 : IpHtmlPanel1.OpenURL(expandLocalHtmlFileName('help/Vozmozh-Oshibki.html'));
       end;
 end;
 

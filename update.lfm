@@ -9,7 +9,7 @@ object fUpdate: TfUpdate
   OnClose = FormClose
   OnCreate = FormCreate
   Position = poMainFormCenter
-  LCLVersion = '1.6.4.0'
+  LCLVersion = '1.8.0.6'
   object bUpdateBase: TButton
     Left = 176
     Height = 25
@@ -106,7 +106,8 @@ object fUpdate: TfUpdate
     MaxLineAction = maException
     Port = 0
     DefaultPort = 0
-    SSLOptions.Mode = sslmUnassigned
+    SSLOptions.Method = sslvSSLv23
+    SSLOptions.Mode = sslmBoth
     SSLOptions.VerifyMode = []
     SSLOptions.VerifyDepth = 0
     left = 128
